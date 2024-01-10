@@ -20,16 +20,18 @@ const synergy = {
     disco: ['Nami', 'Taric', 'Gragas', 'Blitzcrank', 'Twisted Fate'],
   },
 };
-var traits = []
+// to store all the traits of selected champions
+var prev_traits = []
 
 function App() {
-  // selected champion
+  // display selected champion
   const [displaySelectedChampion, setDisplaySelectedChampion] = useState('');
   // state that stores selected list of champions
   const [championSelectedList, setChampionSelectedList] = useState([]);
-  const [synergyList, setSynergyList] = useState({});
+  // display all the traits of selected champions
+  const [showAllTraits, setShowAllTraits] = useState({});
+  // display traits of selected champions
   const [showTraits, setShowTraits] = useState([]);
-
 
   // when user selects multiple champions (remove duplicates)
   const addChampionsToList = (champ) => {
@@ -38,13 +40,16 @@ function App() {
       return Array.from(new Set(list));
     });
   };
-
+  // when a champion is clicked
   const onClickHandler = (champ) => {
+    // display selected champion
     setDisplaySelectedChampion(champ);
+    // a function for finding traits of selected champion
     findChampionTraits(champ);
   };
-  // find selected champion's class
+  // find selected champion's traits
   const findChampionTraits = (champ) => {
+    // this variable is to store the traits of selected champion (this resets for every click)
     var display_traits_for_selected_champion = []
     // loop though the classes
     Object.keys(synergy.classes).forEach((clas) => {
@@ -52,60 +57,46 @@ function App() {
       for (const name_of_champion of synergy.classes[clas]) {
         if (name_of_champion === champ) {
           console.log(`${champ} found in `, clas);
-          // prevent from adding duplicated champions and synergy to the list
+          // prevent from adding duplicated class to the list when the same champion is clicked again
           if (!championSelectedList.includes(champ)) {
             setShowTraits(clas);
-            traits.push(clas)
+            // add class to global variable to accumulate traits
+            prev_traits.push(clas)
           }
-          // break;
+          // this will be stored in a state later
           display_traits_for_selected_champion.push(clas)
-        } else {
-          console.log(`${champ} not found in `, clas);
-          // remove previous class if the new selected champion doesnt have the class
-          // setShowTraits('');
         }
       }
     });
 
     Object.keys(synergy.origins).forEach((orig) => {
       for (const name_of_champion of synergy.origins[orig]) {
-        // break out of loop when origin of champion is found
-        // if (origin_of_champion === champ) break;
         // if the selected champion is found in the array of origins
         if (name_of_champion === champ) {
           console.log(`${champ} found in `, orig);
-          // prevent from adding duplicated champions and synergy to the list
+          // prevent from adding duplicated champions and synergy to the list when the same champion is clicked again
           if (!championSelectedList.includes(champ)) {
-            // addSynergyToList(orig);
             setShowTraits(orig);
-            traits.push(orig)
+            // add origin to global variable to accumulate traits
+            prev_traits.push(orig)
           }
-          // break;
           display_traits_for_selected_champion.push(orig)
-        } else {
-          console.log(`${champ} not found in `, orig);
-          // remove previous origin if the new selected champion doesnt have the origin
-          // setShowTraits('');
         }
       }
     });
+    // create a new variable to store the calculated traits from the global variable 
     var new_traits = []
-    traits.sort()
-    traits.forEach(item=>{
+    // this is to add up the number of duplicate traits and add as value to a key
+    prev_traits.forEach(item=>{
       new_traits[item] = (new_traits[item] || 0 ) + 1
     })
-    setSynergyList(new_traits)
+    // display accumulated traits from the list of all the selected champions
+    setShowAllTraits(new_traits)
+    // a function for adding selected champions to the list
     addChampionsToList(champ);
+    // display traits of selected champion
     setShowTraits(display_traits_for_selected_champion)
   };
-console.log('seynergy LIST: ',synergyList)
-console.log('seynergy LIST: ',showTraits)
-
-// useState(()=>{
-//   setShowTraits(()=>{
-//     // console.log('set show traits')
-//     return new_traits})
-// },[new_traits])
 
   return (
     <>
@@ -132,10 +123,10 @@ console.log('seynergy LIST: ',showTraits)
       <h3>Selected Champions' Synergy</h3>
       <ul>
        
-        {synergyList && Object.entries(synergyList).map(([key,value])=>{
+        {showAllTraits && Object.entries(showAllTraits).map(([key,value])=>{
           return <li key = {key}> {key}: {value} </li>
         })}
-        {console.log(synergyList)}
+        {console.log(showAllTraits)}
         
       </ul>
     </>
