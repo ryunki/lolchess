@@ -1,25 +1,12 @@
+// @ts-nocheck
 
+import CurrentChampion from './components/CurrentChampion';
+import ChampionsList from './components/ChampionsList';
+import SelectedChampions from './components/SelectedChampions';
+import Traits from './components/Traits';
 import { useState } from 'react';
+import {champs, synergy} from './constants'
 
-const champs = [
-  'Akali','Yorick','Bard','Lux','Nami','Lucian','Miss','Ziggs','Taric','Gragas','Blitzcrank','Twisted Fate',
-];
-const synergy = {
-  classes: {
-    dazzler: ['Nami', 'Bard', 'Lux', 'Twisted Fate', 'Ziggs'],
-    guardian: ['Yorick'],
-    mosher: ['Yorick'],
-    breakout: ['Akali'],
-    executioner: ['Akali'],
-  },
-  origins: {
-    trueDamage: ['Akali'],
-    kda: ['Akali'],
-    pentakill: ['Yorick'],
-    jazz: ['Bard', 'Miss', 'Lucian'],
-    disco: ['Nami', 'Taric', 'Gragas', 'Blitzcrank', 'Twisted Fate'],
-  },
-};
 // to store all the traits of selected champions
 var prev_traits = []
 
@@ -54,7 +41,7 @@ function App() {
     // loop though the classes
     Object.keys(synergy.classes).forEach((clas) => {
       // look for selected champion in every class
-      for (const name_of_champion of synergy.classes[clas]) {
+      for (const name_of_champion of synergy.classes[clas].champs) {
         if (name_of_champion === champ) {
           console.log(`${champ} found in `, clas);
           // prevent from adding duplicated class to the list when the same champion is clicked again
@@ -70,7 +57,7 @@ function App() {
     });
 
     Object.keys(synergy.origins).forEach((orig) => {
-      for (const name_of_champion of synergy.origins[orig]) {
+      for (const name_of_champion of synergy.origins[orig].champs) {
         // if the selected champion is found in the array of origins
         if (name_of_champion === champ) {
           console.log(`${champ} found in `, orig);
@@ -100,35 +87,10 @@ function App() {
 
   return (
     <>
-      <div>
-        <h1>Champs List</h1>
-        {champs.map((champ, idx) => (
-          <button key={idx} onClick={() => onClickHandler(champ)}>
-            {champ}
-          </button>
-        ))}
-      </div>
-      <div>{displaySelectedChampion && displaySelectedChampion}</div>
-        traits
-      <ul>
-        {showTraits && showTraits.map((item,idx)=>(
-          <li key = {idx}>{item}</li> 
-        ))}
-      </ul>
-      <h3>Selected Champions ({championSelectedList.length})</h3>
-      <ul>
-        {championSelectedList &&
-          championSelectedList.map((item, idx) => <li key={idx}>{item}</li>)}
-      </ul>
-      <h3>Selected Champions' Synergy</h3>
-      <ul>
-       
-        {showAllTraits && Object.entries(showAllTraits).map(([key,value])=>{
-          return <li key = {key}> {key}: {value} </li>
-        })}
-        {console.log(showAllTraits)}
-        
-      </ul>
+      <ChampionsList champs={champs} onClickHandler={onClickHandler}/>
+      <CurrentChampion displaySelectedChampion={displaySelectedChampion} showTraits ={showTraits}/>
+      <SelectedChampions championSelectedList={championSelectedList}/>
+      <Traits showAllTraits ={showAllTraits}/>
     </>
   );
 }
