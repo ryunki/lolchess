@@ -1,6 +1,7 @@
 
 
 const CurrentChampion = ({displayClickedChampion}) => {
+  // console.log("displayClickedChampion: ",displayClickedChampion)
   return (
     <>
     <div>you clicked : {displayClickedChampion && displayClickedChampion[0]}</div>
