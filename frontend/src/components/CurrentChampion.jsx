@@ -1,13 +1,13 @@
 
 
-const CurrentChampion = ({displaySelectedChampion, showTraits}) => {
+const CurrentChampion = ({displayClickedChampion}) => {
   return (
     <>
-    <div>{displaySelectedChampion && displaySelectedChampion}</div>
-        --traits--
+    <div>you clicked : {displayClickedChampion && displayClickedChampion[0]}</div>
       <ul>
-        {showTraits && showTraits.map((item,idx)=>(
-          <li key = {idx}>{item}</li> 
+        {displayClickedChampion[0] && displayClickedChampion[1].length !== 0 && <h4>Traits</h4>}
+        {displayClickedChampion[0] && displayClickedChampion[1].map((item,idx)=>(
+          <li key={idx}> {item} </li> 
         ))}
       </ul>
     </>

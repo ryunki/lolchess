@@ -1,0 +1,25 @@
+div.button {
+  background-color: rgb(96, 96, 244);
+  color: white;
+  padding: 10px 10px;
+  margin: 5px;
+  font-size: 16px;
+  width: auto;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 50px;
+  display: inline-block;
+}
+div.champions_list_wrapper{
+  /* display: inline-block; */
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  
+}
+div.clicked {
+  background-color: rgb(152, 201, 96);
+}
+input.invisible{
+  display:none;
+}

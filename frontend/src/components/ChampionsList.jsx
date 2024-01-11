@@ -1,14 +1,16 @@
-
+import '../css/ChampionsList.css'
 
 const ChampionsList = ({champs, onClickHandler}) => {
   return (
     <>
     <h1>Champs List</h1>
+    <div className='champions_list_wrapper'>
         {champs.map((champ, idx) => (
-          <button key={idx} onClick={() => onClickHandler(champ)}>
-            {champ}
-          </button>
+          <div  key = {idx} className = {'button'} onClick={(e)=>onClickHandler(champ,e)}>
+              {champ}
+            </div>
         ))}
+    </div>
     </>
   )
 }
