@@ -15,6 +15,8 @@ function App() {
   // display all the traits of selected champions
   const [showAllTraits, setShowAllTraits] = useState({});
 
+  const [displayActivation, setDisplayActivation] = useState([])
+
   // when a champion is clicked
   const onClickHandler = (champ, event) => {
       findChampionTraits(champ);
@@ -34,6 +36,7 @@ function App() {
   const findChampionTraits = (champ) => {
     // this variable is to store the traits of selected champion (this resets for every click)
     var traits_for_selected_champion = [];
+    var activation = [];
     // if selected champion already exists in the list then remove the champion
     if (championSelectedList[champ]){
       removeHandler(champ)
@@ -46,6 +49,7 @@ function App() {
           if (name_of_champion === champ) {
             // this will be stored in a state later
             traits_for_selected_champion.push(clas);
+            activation[clas] = synergy.classes[clas].activation
           }
         }
       });
@@ -56,6 +60,7 @@ function App() {
           if (name_of_champion === champ) {
             // this will be stored in a state later
             traits_for_selected_champion.push(orig);
+            activation[orig] = synergy.origins[orig].activation
           }
         }
       });
@@ -67,9 +72,17 @@ function App() {
           return
         // if champion does not exist in the list, add the champion and its traits
         }else{
+          // prev[champ] = [traits_for_selected_champion, activation]
           prev[champ] = traits_for_selected_champion
           // console.log(prev.sort())
         }
+        return prev
+      })
+      // add traits and its activation
+      setDisplayActivation(prev => {
+        Object.entries(activation).forEach(([key,value])=>{
+          prev[key] = prev[key] || value
+        })
         return prev
       })
     }
@@ -83,21 +96,32 @@ function App() {
     setDisplayClickedChampion([])
     setChampionSelectedList({})
     setShowAllTraits({})
+    setDisplayActivation([])
   }
-
 useEffect(()=>{
   const collectTraits = {}
-  // console.log("displaySelectedChampion: ",displaySelectedChampion)
+  // for adding up accumulated traits and sorting from high to low
   Object.entries(championSelectedList).forEach(([key,value])=>{
     value.forEach(item =>{
-      collectTraits[item] = (collectTraits[item] || null) + 1
+      collectTraits[item] = (collectTraits[item] || null) + 1 
     })
   })
-  
-  console.log(collectTraits)
-  setShowAllTraits(collectTraits)
-},[championSelectedList, displayClickedChampion])
-// console.log(championSelectedList)
+  // add activation limits to each traits
+  Object.entries(collectTraits).forEach(([key,value])=>{
+    if(displayActivation[key]){
+      collectTraits[key] = [collectTraits[key], displayActivation[key]]
+    }
+  })
+  // const entries = Object.entries(collectTraits);
+  // // Sort the array by values
+  // entries.sort((a, b) => b[1] - a[1]);
+  // // Convert back to object
+  // const sortedObject = Object.fromEntries(entries);
+  // // Update state with the sorted object
+  // setShowAllTraits(sortedObject);
+  setShowAllTraits(collectTraits);
+
+},[championSelectedList, displayClickedChampion,displayActivation])
   return (
     <>
       {/* display all champions */}
