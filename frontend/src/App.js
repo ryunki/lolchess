@@ -3,6 +3,7 @@
 import CurrentChampion from './components/CurrentChampion';
 import ChampionsList from './components/ChampionsList';
 import SelectedChampions from './components/SelectedChampions';
+import Recommendation from './components/Recommendation';
 import Traits from './components/Traits';
 import { useState, useRef, useEffect } from 'react';
 import { champs, synergy } from './constants';
@@ -16,6 +17,10 @@ function App() {
   const [showAllTraits, setShowAllTraits] = useState({});
   // display trait and its activation numbers
   const [displayActivation, setDisplayActivation] = useState([])
+  // // display recommended champions for inactivated traits
+  // const [recommendChamp, setRecommendChamp] = useState({})
+  // stores the inactivated traits with differences, and the selected champions list
+  const [dataForRecommendation, setDataForRecommendation] = useState()
 
   // when a champion is clicked
   const onClickHandler = (champ, event) => {
@@ -115,8 +120,8 @@ useEffect(()=>{
       collectTraits[key] = [collectTraits[key], displayActivation[key]]
     }
   })
-  // sort the traits in order
-  const [sortedData, sortedInactivatedCategories] = sortTraits(collectTraits)
+  // sort the traits in order, and bring inactivated traits list
+  const [sortedData, traitDifferenceList] = sortTraits(collectTraits)
   
   // Convert back to object
   const sortedObject = Object.fromEntries(sortedData);
@@ -124,10 +129,13 @@ useEffect(()=>{
   // // Update state with the sorted object
   setShowAllTraits(sortedObject);
   // setShowAllTraits(collectTraits);
-  console.log(championSelectedList)
-  console.log(collectTraits)
-  console.log(sortedInactivatedCategories)
-},[championSelectedList, displayClickedChampion,displayActivation])
+  // console.log(championSelectedList)
+  // console.log(collectTraits)
+  // console.log(traitDifferenceList)
+  if(Object.keys(championSelectedList).length !== 0){
+    setDataForRecommendation([championSelectedList, traitDifferenceList])
+  }
+},[championSelectedList, displayClickedChampion, displayActivation])
 
   return (
     <>
@@ -136,15 +144,17 @@ useEffect(()=>{
         champs={champs}
         onClickHandler={onClickHandler}
       />
-      <button onClick={()=>refreshHandler()}>Refresh</button>
+      {/* <button onClick={()=>refreshHandler()}>Refresh</button> */}
       {/* display currently selected champion */}
       <CurrentChampion
         displayClickedChampion={displayClickedChampion}
       />
       {/* display selected list of champions */}
-      <SelectedChampions championSelectedList={championSelectedList} />
+      <SelectedChampions championSelectedList={championSelectedList} refreshHandler={refreshHandler} />
       {/* display traits of all selected champions */}
       <Traits showAllTraits={showAllTraits} />
+
+      <Recommendation dataForRecommendation={dataForRecommendation}/>
     </>
   );
 }
@@ -214,12 +224,13 @@ function sortTraits(collectTraits) {
       Object.fromEntries(inactivatedCategories).kda[0] += -1
     }
   }
-  const traitDifference = []
+  // this variable is for saving inactivated traits and re-arrange them by diffence as a key and name of traits as value 
+  const traitDifference = {}
   // Sort inactivated categories by least differences to smallest activation number by high to low
   const sortedInactivatedCategories = inactivatedCategories.sort((a, b) => {
     const differenceA = Math.abs(a[1][0]  - a[1][1][0]);
     const differenceB = Math.abs(b[1][0]  - b[1][1][0]);
-    // if (differenceA === 1 || differenceB === 1){
+    // save the differences
     traitDifference[a[0]] = differenceA
     traitDifference[b[0]] = differenceB
 
@@ -230,11 +241,9 @@ function sortTraits(collectTraits) {
     // If differences are equal, sort values by high to low
     return b[1][0]- a[1][0];
   });
-  console.log(traitDifference)
-  Object.entries(traitDifference).reduce((acc,[key,value])=>{
-    console.log(acc, key,value)
+  // re-arrange the trait differences by {1:[name of traits], 2:[name of traits]}
+  const traitDifferenceList = Object.entries(traitDifference).reduce((acc,[key,value])=>{
     if(!acc[value]){
-      console.log("hey")
       acc[value] = []
     }
     acc[value].push(key)
@@ -269,6 +278,6 @@ function sortTraits(collectTraits) {
       prev_trueDamage=item[1][0]
     }
   })
-  return [sortedData, sortedInactivatedCategories]
+  return [sortedData, traitDifferenceList]
 }
 export default App;
