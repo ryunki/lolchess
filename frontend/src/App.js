@@ -21,9 +21,12 @@ function App() {
   const [recommendChamp, setRecommendChamp] = useState({})
   // stores the inactivated traits with differences, and the selected champions list
   const [dataForRecommendation, setDataForRecommendation] = useState({})
-
+  // for changing color of selected champion
+  const [selectedChampion, setSelectedChampion] = useState(null);
+  
   // when a champion is clicked
-  const onClickHandler = (champ) => {
+  const onClickHandler = (champ, idx) => {
+    setSelectedChampion( champ === selectedChampion ? null : champ)
     // this variable is to store the traits of selected champion (this resets for every click)
     var traits_for_selected_champion = [];
     // to store the array of activation indicators to corresponding traits
@@ -139,6 +142,7 @@ useEffect(()=>{
       <ChampionsList
         champs={champs}
         onClickHandler={onClickHandler}
+        selectedChampion={selectedChampion}
       />
       {/* <button onClick={()=>refreshHandler()}>Refresh</button> */}
       {/* display currently selected champion */}

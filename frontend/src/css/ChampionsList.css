@@ -1,4 +1,13 @@
-div.button {
+
+div.champions_list_wrapper{
+  /* display: inline-block; */
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.champion-item {
   background-color: rgb(96, 96, 244);
   color: white;
   padding: 10px 10px;
@@ -10,16 +19,8 @@ div.button {
   border-radius: 50px;
   display: inline-block;
 }
-div.champions_list_wrapper{
-  /* display: inline-block; */
-  gap: 5px;
-  justify-content: center;
-  align-items: center;
-  
-}
-div.clicked {
-  background-color: rgb(152, 201, 96);
-}
-input.invisible{
-  display:none;
+
+.selected {
+  background-color: lightcoral;
+  color: white; /* Change text color for better visibility */
 }

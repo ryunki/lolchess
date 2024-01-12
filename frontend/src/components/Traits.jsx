@@ -1,6 +1,7 @@
 import './style.css'
 
 const Traits = ({ showAllTraits }) => {
+  
 const displayActivation = (current, indicator) =>{
   const res = indicator.map((item, idx, arr)=>{
     // if the trait meets the any of the activation number it highlights
