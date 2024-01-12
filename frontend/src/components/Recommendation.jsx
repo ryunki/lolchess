@@ -2,19 +2,22 @@
 import { useState, useEffect } from 'react';
 import {synergy } from '../constants';
 
-const Recommendation = ({dataForRecommendation}) => {
+const Recommendation = ({dataForRecommendation, championSelectedList, recommendChamp, setRecommendChamp}) => {
+  //  dataForRecommendation
   // 1: [trait1,trait2,trait3]
   // 2: [trait1,trait2,trait3]
-  const [recommendChamp, setRecommendChamp] = useState()
 
-    useEffect(()=>{
-      if(dataForRecommendation){
+  useEffect(()=>{
+    const data = Object.entries(dataForRecommendation)
+    // 0: ['1' , [trait1,trait2]]
+    // 1: ['2' , [trait1,trait2]]
+      if(data.length > 0){
         // for storing the list of champions
         var recommendedChampionsList = []
-        // need to check truthy value for inactivation difference for 1 because this can be added to the list later
-        if(dataForRecommendation[1][1]){
+        // check if the inactivated trait exists
+        if(data[0][1]){
           // loop through the champ list of inactivated traits with difference of 1
-          Array.from(dataForRecommendation[1][1]).forEach(trait=>{
+          data[0][1].forEach(trait=>{
             // find all the champions that meets the trait 
             Object.keys(synergy.classes).forEach(clas => {
               if(trait === clas ){
@@ -30,23 +33,25 @@ const Recommendation = ({dataForRecommendation}) => {
         }
         // store list of selected champions
         var selectedChampions = []
-        Object.entries(dataForRecommendation[0]).forEach(item =>{
-          selectedChampions.push(item[0])
+        // extract the names only
+        const champList = Object.keys(championSelectedList)
+        champList.forEach(champ =>{
+          selectedChampions.push(champ)
         })
-      
-        // remove selected champions from the recommend list
+        // remove list of selected champions from the recommend list
         const filteredChamps = recommendedChampionsList.filter(champ => !selectedChampions.includes(champ))
         // count how many traits to be activated for one champion
+        // by counting the duplicate names
         const finalChampList = filteredChamps.reduce((counts,el)=>{
           counts[el] = (counts[el] || 0) + 1
           return counts
         },{})
-        // sort them high to low
+        // sort them high to low 
         const sorted = Object.entries(finalChampList).sort((a,b)=>{
           return b[1] - a[1]
         })
         setRecommendChamp(sorted)
-    }},[dataForRecommendation])
+}},[dataForRecommendation,setRecommendChamp,championSelectedList])
   
   return (<>
     <div>Recommendation</div>

@@ -5,7 +5,7 @@ import ChampionsList from './components/ChampionsList';
 import SelectedChampions from './components/SelectedChampions';
 import Recommendation from './components/Recommendation';
 import Traits from './components/Traits';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { champs, synergy } from './constants';
 
 function App() {
@@ -15,32 +15,18 @@ function App() {
   const [championSelectedList, setChampionSelectedList] = useState({});
   // display all the traits of selected champions
   const [showAllTraits, setShowAllTraits] = useState({});
-  // display trait and its activation numbers
+  // display activation indicator corresponding to its trait
   const [displayActivation, setDisplayActivation] = useState([])
-  // // display recommended champions for inactivated traits
-  // const [recommendChamp, setRecommendChamp] = useState({})
+  // display recommended champions for inactivated traits
+  const [recommendChamp, setRecommendChamp] = useState({})
   // stores the inactivated traits with differences, and the selected champions list
-  const [dataForRecommendation, setDataForRecommendation] = useState()
+  const [dataForRecommendation, setDataForRecommendation] = useState({})
 
   // when a champion is clicked
-  const onClickHandler = (champ, event) => {
-      findChampionTraits(champ);
-  };
-
-  // remove the selected champion from the list
-  const removeHandler = (champ) => {
-    setChampionSelectedList((prev) => {
-      if(prev[champ]){
-        const updatedList = {...prev}
-        delete updatedList[champ]
-        return updatedList
-      }
-    });
-  }
-  // find selected champion's traits
-  const findChampionTraits = (champ) => {
+  const onClickHandler = (champ) => {
     // this variable is to store the traits of selected champion (this resets for every click)
     var traits_for_selected_champion = [];
+    // to store the array of activation indicators to corresponding traits
     var activation = [];
     // if selected champion already exists in the list then remove the champion
     if (championSelectedList[champ]){
@@ -72,14 +58,12 @@ function App() {
 
       // a function for adding selected champions and traits to the list
       setChampionSelectedList(prev => {
-        // if champion already exists in the list, do not add
+        // if champion already exists in the list, do not add anything
         if (prev[champ]){
           return
         // if champion does not exist in the list, add the champion and its traits
         }else{
-          // prev[champ] = [traits_for_selected_champion, activation]
           prev[champ] = traits_for_selected_champion
-          // console.log(prev.sort())
         }
         return prev
       })
@@ -92,32 +76,48 @@ function App() {
       })
     }
     // to display currently clicked champion
-    setDisplayClickedChampion([
-      champ, traits_for_selected_champion
-    ]);
+    setDisplayClickedChampion([champ, traits_for_selected_champion]);
   };
 
+  // remove the selected champion from the list
+  const removeHandler = (champ) => {
+    setChampionSelectedList((prev) => {
+      if(prev[champ]){
+        const updatedList = {...prev}
+        delete updatedList[champ]
+        return updatedList
+      }
+    });
+  }
+
   const refreshHandler = () =>{
+    // delete currently clicked champion
     setDisplayClickedChampion([])
+    // delete displayed list of champions
     setChampionSelectedList({})
+    // delete traits of selected champions
     setShowAllTraits({})
-    setDisplayActivation([])
+    // delete champs for recommendation
+    setRecommendChamp({})
+    setDataForRecommendation({})
     prev_kda = []
     prev_trueDamage = []
   }
 
+// championSelectedList, displayClickedChampion, displayActivation
+// this useEffect is for organizing traits from selected list of champions
 useEffect(()=>{
   const collectTraits = {}
-  // for adding up number of accumulated traits and sorting from high to low
-  Object.entries(championSelectedList).forEach(([key,value])=>{
-    value.forEach(item =>{
-      collectTraits[item] = (collectTraits[item] || null) + 1 
+  // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
+  Object.values(championSelectedList).forEach((traits)=>{
+    traits.forEach(trait =>{
+      collectTraits[trait] = (collectTraits[trait] || null) + 1 
     })
   })
-  // add array of activation limits to each traits for display
-  Object.entries(collectTraits).forEach(([key,value])=>{
-    if(displayActivation[key]){
-      collectTraits[key] = [collectTraits[key], displayActivation[key]]
+  // attach array of activation limits to corresponding traits for display
+  Object.keys(collectTraits).forEach((trait)=>{
+    if(displayActivation[trait]){
+      collectTraits[trait] = [collectTraits[trait], displayActivation[trait]]
     }
   })
   // sort the traits in order, and bring inactivated traits list
@@ -126,14 +126,10 @@ useEffect(()=>{
   // Convert back to object
   const sortedObject = Object.fromEntries(sortedData);
  
-  // // Update state with the sorted object
+  // Update state with the sorted object to be displayed in Traits Component
   setShowAllTraits(sortedObject);
-  // setShowAllTraits(collectTraits);
-  // console.log(championSelectedList)
-  // console.log(collectTraits)
-  // console.log(traitDifferenceList)
   if(Object.keys(championSelectedList).length !== 0){
-    setDataForRecommendation([championSelectedList, traitDifferenceList])
+    setDataForRecommendation(traitDifferenceList)
   }
 },[championSelectedList, displayClickedChampion, displayActivation])
 
@@ -153,84 +149,88 @@ useEffect(()=>{
       <SelectedChampions championSelectedList={championSelectedList} refreshHandler={refreshHandler} />
       {/* display traits of all selected champions */}
       <Traits showAllTraits={showAllTraits} />
-
-      <Recommendation dataForRecommendation={dataForRecommendation}/>
+      {/* display recommended champions to activate traits */}
+      <Recommendation dataForRecommendation={dataForRecommendation} championSelectedList={championSelectedList} recommendChamp={recommendChamp} setRecommendChamp={setRecommendChamp}/>
     </>
   );
 }
 var prev_kda = []
 var prev_trueDamage = []
 function sortTraits(collectTraits) {
-  const sort = Object.entries(collectTraits);
+  // to identify which trait is activated and inactivated for AKALI
+  const akali = {kda:[false,0],trueDamage:[false,0]}
+  // to store and group by the trait results by activated or inactivated
   const activatedCategories = [];
   const inactivatedCategories = [];
-  const akali = {kda:[false,0],trueDamage:[false,0]}
-  sort.forEach((item) => {
+
+  Object.entries(collectTraits).forEach(([trait,value]) => {
     // check if the the current trait equals or greater than any number of the activation array 
-    const activated = item[1][1].some((num) => {
+    const activated = value[1].some((num) => {
       // if kda or trueDamage is activated then set it true and its trait 
-      if(akali[item[0]] && item[1][0] >= num){
-        akali[item[0]][0] = true
-        akali[item[0]][1] = item[1][0]
+      if(akali[trait] && value[0] >= num){
+        akali[trait][0] = true
+        akali[trait][1] = value[0]
       }
-      return item[1][0] >= num
+      return value[0] >= num
     });
     // group them by activated and inactivated
     if (activated) {
-      activatedCategories.push(item);
+      activatedCategories.push([trait,value]);
     } else {
-      inactivatedCategories.push(item);
+      inactivatedCategories.push([trait,value]);
     }
   });
-  // console.log("sort: ",sort)
-  // console.log("prev_kda and TD: ", prev_kda,prev_trueDamage)
-  // console.log("akali kda: ", akali.kda)
-  // console.log("akali TD: ", akali.trueDamage)
-  // if(sort)
-  // if both traits are activated
+ const activatedCat = Object.fromEntries(activatedCategories)
+ const inactivatedCat = Object.fromEntries(inactivatedCategories)
+  // if both traits are activated for AKALI
   if (akali.kda[0] && akali.trueDamage[0]){
+    // compare the value, if they are equal
     if (akali.kda[1] === akali.trueDamage[1]){
+      // then find out which trait was added last
       if(prev_kda < prev_trueDamage){
-        console.log(" kda was added lately so remove truedamage")
-        Object.fromEntries(activatedCategories).trueDamage[0] += -1
+        // console.log(" kda was added lately so remove truedamage")
+        activatedCat.trueDamage[0] += -1
       }
       if(prev_kda > prev_trueDamage){
-        console.log(" TD was added lately so remove kda")
-        Object.fromEntries(activatedCategories).kda[0] += -1
+        // console.log(" TD was added lately so remove kda")
+        activatedCat.kda[0] += -1
       }
     }
-    // prev_kda = []
-    // prev_trueDamage = []
+    // if both are activated but KDA has higher value
     if(akali.kda[1] > akali.trueDamage[1]){
-      Object.fromEntries(activatedCategories).trueDamage[0] += -1
-      console.log("deduct 1 trueDamage first")
+      activatedCat.trueDamage[0] += -1
+      // console.log("deduct 1 activated trueDamage")
     }
     if(akali.kda[1] < akali.trueDamage[1]){
-      Object.fromEntries(activatedCategories).kda[0] += -1
-      console.log("deduct 1 kda first")
+      activatedCat.kda[0] += -1
+      // console.log("deduct 1 activated kda")
     }
-    // if kda is activated only, deduct 1 from trueDamage
+  // if kda is activated only, deduct 1 from trueDamage
   }else if (akali.kda[0] && !akali.trueDamage[0]){
-    console.log("deduct 1 trueDamage second")
-    // trueDamage may not exist at this point
-    if (Object.fromEntries(inactivatedCategories).trueDamage){
-      Object.fromEntries(inactivatedCategories).trueDamage[0] += -1
+    // trueDamage may not exist at this point in inactivatedCategories
+    if (inactivatedCat.trueDamage){
+      // console.log("deduct 1 inactivated trueDamage")
+      inactivatedCat.trueDamage[0] += -1
     }
     // if trueDamage is activated only, deduct 1 from kda
   }else if (akali.trueDamage[0] && !akali.kda[0]){
-    console.log("deduct 1 kda second")
-    // kda may not exist at this point
-    if(Object.fromEntries(inactivatedCategories).kda){
-      Object.fromEntries(inactivatedCategories).kda[0] += -1
+    // kda may not exist at this point in inactivatedCategories
+    if(inactivatedCat.kda){
+      // console.log("deduct 1 inactivated kda")
+      inactivatedCat.kda[0] += -1
     }
   }
   // this variable is for saving inactivated traits and re-arrange them by diffence as a key and name of traits as value 
   const traitDifference = {}
   // Sort inactivated categories by least differences to smallest activation number by high to low
   const sortedInactivatedCategories = inactivatedCategories.sort((a, b) => {
+    // a[0] is the name of trait
+    // a[1][0] is the current value of trait
+    // aa[1][1][0] is the first number of activation indicator array
+    // calculate the differences needed to be activated
     const differenceA = Math.abs(a[1][0]  - a[1][1][0]);
     const differenceB = Math.abs(b[1][0]  - b[1][1][0]);
-    // save the differences
+    // save the differences to corresponding name of trait
     traitDifference[a[0]] = differenceA
     traitDifference[b[0]] = differenceB
 
@@ -249,7 +249,7 @@ function sortTraits(collectTraits) {
     acc[value].push(key)
     return acc
   },{})
-  // console.log(groupedData)
+  
   // Sort activated categories by value from high to low
   const sortedActivatedCategories = activatedCategories.sort((a, b) => {
     // Prioritize categories with activation array length of 1 at the top
@@ -268,14 +268,13 @@ function sortTraits(collectTraits) {
   // Combine sorted activated and inactivated categories
   const sortedData = sortedActivatedCategories.concat(sortedInactivatedCategories);
   
-  sort.forEach((item,idx) =>{
-    if (item[0] === "kda"){
-      // prev_kda.push(item[1][0])
-      prev_kda =  item[1][0]
+  // save AKALI's trait values for comparison
+  Object.entries(collectTraits).forEach(([trait,value]) =>{
+    if (trait === "kda"){
+      prev_kda = value[0]
     }
-    if (item[0] === "trueDamage"){
-      // prev_trueDamage.push(item[1][0])
-      prev_trueDamage=item[1][0]
+    if (trait === "trueDamage"){
+      prev_trueDamage = value[0]
     }
   })
   return [sortedData, traitDifferenceList]
