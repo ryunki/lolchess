@@ -1,0 +1,12 @@
+.horizontal-list {
+  list-style: none;
+}
+.inline-block-div {
+  display: inline-block;
+  width: auto; /* Adjust the width based on the number of divs you have */
+  box-sizing: border-box;
+}
+
+.highlight {
+  color: red
+}
