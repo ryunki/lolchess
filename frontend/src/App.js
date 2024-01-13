@@ -16,7 +16,7 @@ function App() {
   // display all the traits of selected champions
   const [showAllTraits, setShowAllTraits] = useState({});
   // display activation indicator corresponding to its trait
-  const [displayActivation, setDisplayActivation] = useState([]);
+  const [displayActivation, setDisplayActivation] = useState({});
   // display recommended champions for inactivated traits
   const [recommendChamp, setRecommendChamp] = useState({});
   // stores the inactivated traits with differences, and the selected champions list
@@ -42,6 +42,7 @@ function App() {
         activation[type] = synergy[synergyType][type].activation;
       }
     });
+    return [selectedChampionTraits, activation]
   };
 
   const onClickHandler = (champ, idx) => {
@@ -55,16 +56,14 @@ function App() {
     // Find traits in origins
     findTraits('origins', champ, selectedChampionTraits, activation);
 
-    // if selected champion already exists in the list, remove it
-    if (championSelectedList[champ]) {
-      removeHandler(champ);
-      // if selected champion does not exist in the list
-    } else {
-      // Add selected champions and traits to the list
+    championSelectedList[champ] ? 
+      // if selected champion already exists in the list, remove it
+      removeHandler(champ) :
+      // if selected champion does not exist in the list, Add selected champions and traits to the list
       setChampionSelectedList((prev) => ({ ...prev, [champ]: selectedChampionTraits }));
       // Add new traits and their activation indicator to the previous traits
       setDisplayActivation((prev) => ({ ...prev, ...activation }));
-    }
+
     // to display currently clicked champion
     setDisplayClickedChampion([champ, selectedChampionTraits]);
   };
@@ -91,6 +90,8 @@ function App() {
     // delete champs for recommendation
     setRecommendChamp({});
     setDataForRecommendation({});
+    setSelectedChampion([])
+    // setDisplayActivation({})
     prev_kda = [];
     prev_trueDamage = [];
   };
@@ -111,6 +112,7 @@ function App() {
         collectTraits[trait] = [collectTraits[trait], displayActivation[trait]];
       }
     });
+    
     // sort the traits in order, and bring inactivated traits list
     const [sortedData, traitDifferenceList] = sortTraits(collectTraits);
 
@@ -230,26 +232,33 @@ function sortTraits(collectTraits) {
   });
 
   // this variable is for saving inactivated traits and re-arrange them by diffence as a key and name of traits as value
-  const traitDifference = {};
-  // Sort inactivated categories by least differences to smallest activation number by high to low
-  const sortedInactivatedCategories = inactivatedCategories.sort((a, b) => {
-    // a[0] is the name of trait
-    // a[1][0] is the current value of trait
-    // aa[1][1][0] is the first number of activation indicator array
-    // calculate the differences needed to be activated
-    const differenceA = Math.abs(a[1][0] - a[1][1][0]);
-    const differenceB = Math.abs(b[1][0] - b[1][1][0]);
-    // save the differences to corresponding name of trait
-    traitDifference[a[0]] = differenceA;
-    traitDifference[b[0]] = differenceB;
-
-    // Sort by least differences from low to high
-    if (differenceA !== differenceB) {
-      return differenceA - differenceB;
-    }
-    // If differences are equal, sort values by high to low
-    return b[1][0] - a[1][0];
-  });
+  let traitDifference = {};
+  let sortedInactivatedCategories = []
+  if(inactivatedCategories.length > 1){
+    // Sort inactivated categories by least differences to smallest activation number by high to low
+     sortedInactivatedCategories = inactivatedCategories.sort((a, b) => {
+      // a[0] is the name of trait
+      // a[1][0] is the current value of trait
+      // aa[1][1][0] is the first number of activation indicator array
+      // calculate the differences needed to be activated
+      const differenceA = Math.abs(a[1][0] - a[1][1][0]);
+      const differenceB = Math.abs(b[1][0] - b[1][1][0]);
+      // save the differences to corresponding name of trait
+      traitDifference[a[0]] = differenceA;
+      traitDifference[b[0]] = differenceB;
+      // Sort by least differences from low to high
+      if (differenceA !== differenceB) {
+        return differenceA - differenceB;
+      }
+      // If differences are equal, sort values by high to low
+      return b[1][0] - a[1][0];
+    });
+  } else if(inactivatedCategories.length === 1){
+    const cat = inactivatedCategories[0]
+    const difference = Math.abs(cat[1][0] - cat[1][1][0])
+    traitDifference[cat[0]] = difference
+    sortedInactivatedCategories = inactivatedCategories
+  }
   // re-arrange the trait differences by {1:[name of traits], 2:[name of traits]}
   const traitDifferenceList = Object.entries(traitDifference).reduce(
     (acc, [key, value]) => {
@@ -261,6 +270,7 @@ function sortTraits(collectTraits) {
     },
     {}
   );
+
   // Sort activated categories by value from high to low
   const sortedActivatedCategories = activatedCategories.sort((a, b) => {
     // Prioritize categories with activation array length of 1 at the top

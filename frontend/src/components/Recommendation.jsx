@@ -6,14 +6,13 @@ const Recommendation = ({dataForRecommendation, championSelectedList, recommendC
   //  dataForRecommendation
   // 1: [trait1,trait2,trait3]
   // 2: [trait1,trait2,trait3]
-
   useEffect(()=>{
     const data = Object.entries(dataForRecommendation)
     // 0: ['1' , [trait1,trait2]]
     // 1: ['2' , [trait1,trait2]]
       if(data.length > 0){
         // for storing the list of champions
-        var recommendedChampionsList = []
+        let recommendedChampionsList = []
         // check if the inactivated trait exists
         if(data[0][1]){
           // loop through the champ list of inactivated traits with difference of 1
@@ -32,7 +31,7 @@ const Recommendation = ({dataForRecommendation, championSelectedList, recommendC
           })
         }
         // store list of selected champions
-        var selectedChampions = []
+        let selectedChampions = []
         // extract the names only
         const champList = Object.keys(championSelectedList)
         champList.forEach(champ =>{
@@ -51,6 +50,7 @@ const Recommendation = ({dataForRecommendation, championSelectedList, recommendC
           return b[1] - a[1]
         })
         setRecommendChamp(sorted)
+
 }},[dataForRecommendation,setRecommendChamp,championSelectedList])
   
   return (<>
