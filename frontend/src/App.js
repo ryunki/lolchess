@@ -108,8 +108,8 @@ function App() {
   useEffect(() => {
     const collectTraits = {};
     // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
-    Object.values(championSelectedList).forEach((traits) => {
-      traits.forEach((trait) => {
+    Object.values(championSelectedList).forEach((champ) => {
+      champ.forEach((trait) => {
         collectTraits[trait] = (collectTraits[trait] || null) + 1;
       });
     });
@@ -119,64 +119,23 @@ function App() {
         collectTraits[trait] = [collectTraits[trait], displayActivation[trait]];
       }
     });
-    
     // sort the traits in order, and get inactivated traits list
     const [sortedData, traitDifferenceList] = sortTraits(collectTraits);
-
     // Convert back to object
     const sortedObject = Object.fromEntries(sortedData);
 
     // Update with the sorted object to be displayed in Traits Component
     setShowAllTraits(sortedObject)
-    // console.log(sortedObject)
+  
     // if there are champions in the list
     if (Object.keys(championSelectedList).length !== 0) {
-      // for storing the list of recommended champions
-      let recommendedChampionsList = [];
-      Object.entries(traitDifferenceList).forEach(([diff, arrayOftraits]) => {
-        arrayOftraits.forEach((trait) => {
-          findAllChampionsWithTrait('classes');
-          findAllChampionsWithTrait('origins');
-          function findAllChampionsWithTrait(type) {
-            // find all the champs of inactivated traits
-            Object.keys(synergy[type]).forEach((item) => {
-              if (trait === item) {
-                // save the names of champion without the cost value
-                recommendedChampionsList = [...recommendedChampionsList,...synergy[type][item].champs.map(item=>item[0])];
-              }
-            });
-          }
-        });
-      });
-      // store list of selected champions
-      let selectedChampions = [];
-      // extract the names only
-      const champList = Object.keys(championSelectedList);
-      champList.forEach((champ) => {
-        selectedChampions.push(champ);
-      });
-      // remove list of selected champions from the recommend list
-      const filteredChamps = recommendedChampionsList.filter(
-        (champ) => !selectedChampions.includes(champ)
-        );
-        // count how many traits to be activated for one champion
-        // by counting the duplicate names
-      const finalChampList = filteredChamps.reduce((counts, el) => {
-        counts[el] = (counts[el] || 0) + 1;
-        return counts;
-      }, {});
-      // sort them high to low
-      const sorted = Object.entries(finalChampList).sort((a, b) => {
-        return b[1] - a[1];
-      });
-      setRecommendChamp(sorted);
+      
+      setRecommendChamp(traitDifferenceList);
     } else {
       // if the clicked champion is the last in selected champions list, remove recommended champ
       setRecommendChamp({});
     }
 
-    let prev_kda = [];
-    let prev_trueDamage = [];
     function sortTraits(collectTraits) {
       // to identify which trait is activated and inactivated for AKALI
       const updatedAkali = { kda: [false, 0], trueDamage: [false, 0] };
@@ -213,8 +172,6 @@ function App() {
       const activatedCat = Object.fromEntries(activatedCategories);
       const inactivatedCat = Object.fromEntries(inactivatedCategories);
       // if both traits are activated for AKALI
-      console.log("updatedAkali: ",updatedAkali)
-      console.log("prevAkali: ",prevAkali)
       if (updatedAkali.kda[0] && updatedAkali.trueDamage[0]) {
         // compare the value, if they are equal
         if (updatedAkali.kda[1] === updatedAkali.trueDamage[1]) {
@@ -252,25 +209,6 @@ function App() {
           inactivatedCat.kda[0] += -1;
         }
       }
-      console.log()
-      // save AKALI's trait values for comparison
-      Object.entries(collectTraits).forEach(([trait, value]) => {
-        if (trait === 'kda') {
-          // setPrevAkali(prev => {
-          //   prev.kda[1] = value[0]
-          //   return prev
-          // })
-          // setPrevAkali(prev=> prev = updatedAkali)
-         
-        }
-        if (trait === 'trueDamage') {
-          // setPrevAkali(prev => {
-          //   prev.trueDamage[1] = value[0]
-          //   return prev
-          // })
-          // setPrevAkali(prev=>updatedAkali)
-        }
-      });
     
       // this variable is for saving inactivated traits and re-arrange them by diffence as a key and name of traits as value
       let traitDifference = {};
@@ -349,7 +287,7 @@ function App() {
       {/* display traits of all selected champions */}
       <Traits showAllTraits={showAllTraits} />
       {/* display recommended champions to activate traits */}
-      <Recommendation recommendChamp={recommendChamp} />
+      <Recommendation recommendChamp={recommendChamp} championSelectedList={championSelectedList}/>
     </>
   );
 }
