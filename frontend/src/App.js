@@ -6,7 +6,7 @@ import SelectedChampions from './components/SelectedChampions';
 import Recommendation from './components/Recommendation';
 import Traits from './components/Traits';
 import { useState, useEffect } from 'react';
-import { champs, synergy } from './constants';
+import { synergy } from './constants';
 
 function App() {
   // display selected champion -> [stores name, traits]
@@ -276,7 +276,7 @@ function App() {
   return (
     <>
       {/* display all champions */}
-      <ChampionsList champs={champs} onClickHandler={onClickHandler} selectedChampion={selectedChampion}
+      <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion}
       />
       {/* <button onClick={()=>refreshHandler()}>Refresh</button> */}
       {/* display currently selected champion */}

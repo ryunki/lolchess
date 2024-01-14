@@ -51,7 +51,6 @@ const Recommendation = ({ recommendChamp, championSelectedList}) => {
     {displayRecommendChamp && Object.entries(displayRecommendChamp).map(([trait,champs]) => {
       return <div key={trait}> <h4>{trait} </h4>
         {champs.map((item, idx)=>{
-          console.log(item[0])
           return <div key={idx}>{item[0]} [activates {champAppearance[item[0]]}]</div>
         })}
       </div>
