@@ -8,8 +8,8 @@ div.champions_list_wrapper{
 }
 
 .champion-item {
-  background-color: rgb(96, 96, 244);
-  color: white;
+  /* background-color: rgb(96, 96, 244); */
+  color: rgb(248, 248, 248);
   padding: 10px 10px;
   margin: 5px;
   font-size: 16px;
@@ -18,9 +18,27 @@ div.champions_list_wrapper{
   text-align: center;
   border-radius: 50px;
   display: inline-block;
+  /* box-shadow: 0 0 5px 10px #c9c9c9; */
 }
 
+.one {
+  background-color: rgb(132,137,153);
+}
+.two {
+  background-color: rgb(20,178,137);
+}
+.three {
+  background-color: rgb(33,122,199);
+}
+.four {
+  background-color: rgb(196,64,218);
+}
+.five {
+  background-color: rgb(254,185,60);
+  /* opacity: 0.8; */
+}
 .selected {
-  background-color: lightcoral;
-  color: white; /* Change text color for better visibility */
+  background-color: rgb(48, 48, 48);
+  /* opacity:0.5; */
+  color:rgb(198, 198, 198);
 }
