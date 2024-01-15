@@ -1,16 +1,22 @@
 
+import '../css/ChampionsList.css';
+import { champs, synergy } from '../constants';
+const SelectedChampions = ({championSelectedList, refreshHandler, costArray}) => {
 
-const SelectedChampions = ({championSelectedList, refreshHandler,goBackHandler}) => {
   return (
-    <>
-    <h3>Selected Champions ({Object.keys(championSelectedList).length})</h3>
-    <button onClick={()=>refreshHandler()}>Refresh</button>
+    <div className='info-container'>
+      <div className='align-horizontal'>
+        <h4>Selected Champions ({Object.keys(championSelectedList).length})</h4>
+        <div className='reset' onClick={()=>refreshHandler()}>reset</div>
+      </div>
     {/* <button onClick={()=>goBackHandler()}>Go Back</button> */}
-      <ul>
-        {championSelectedList &&
-          Object.keys(championSelectedList).map((item, idx) => <li key={idx}>{item}</li>)}
-      </ul>
-    </>
+      <div>
+        {Object.keys(championSelectedList).length !== 0 &&
+          Object.entries(championSelectedList).map(([champ, info],idx)=>
+          <div key={idx} className={`champion-item ${costArray[info.cost]}`}> {champ}</div>
+          )}
+      </div>
+    </div>
   )
 }
 

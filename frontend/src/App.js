@@ -6,7 +6,9 @@ import SelectedChampions from './components/SelectedChampions';
 import Recommendation from './components/Recommendation';
 import Traits from './components/Traits';
 import { useState, useEffect } from 'react';
-import { synergy } from './constants';
+import { champs, synergy } from './constants';
+
+import './css/ChampionsList.css';
 
 function App() {
   // display selected champion -> [stores name, traits]
@@ -23,6 +25,9 @@ function App() {
   const [selectedChampion, setSelectedChampion] = useState([]);
 
   const [prevAkali, setPrevAkali] = useState({ kda: [false, 0], trueDamage: [false, 0] })
+
+  // champion's cost array for displaying color
+  const costArray = ['', 'one', 'two', 'three', 'four', 'five'];
 
   const changeButtonColor = (champ) => {
     setSelectedChampion((prev) =>
@@ -51,28 +56,31 @@ function App() {
   };
 
   const onClickHandler = (champ, idx) => {
-    changeButtonColor(champ);
+    changeButtonColor(champ[0]);
     // this variable is to store the traits of selected champion (this resets for every click)
     let selectedChampionTraits = [];
     // to store the array of activation indicators to corresponding traits
     let activation = [];
     // Find traits in classes
-    findTraits('classes', champ, selectedChampionTraits, activation);
+    findTraits('classes', champ[0], selectedChampionTraits, activation);
     // Find traits in origins
-    findTraits('origins', champ, selectedChampionTraits, activation);
-
-    championSelectedList[champ]
+    findTraits('origins', champ[0], selectedChampionTraits, activation);
+    
+    championSelectedList[champ[0]]
       ? // if selected champion already exists in the list, remove it
-        removeHandler(champ)
+        removeHandler(champ[0])
       : // if selected champion does not exist in the list, Add selected champions and traits to the list
         setChampionSelectedList((prev) => ({
           ...prev,
-          [champ]: selectedChampionTraits,
-        }));
+          [champ[0]]: {
+            'traits': selectedChampionTraits,
+            'cost': champ[1]
+        }}));
     // Add new traits and their activation indicator to the previous traits
     setDisplayActivation((prev) => ({ ...prev, ...activation }));
     // to display currently clicked champion
-    setDisplayClickedChampion([champ, selectedChampionTraits]);
+    const cham = champs.filter(champs => champs[0]===champ[0])
+    setDisplayClickedChampion([cham, selectedChampionTraits]);
   };
 
   // remove the selected champion from the list
@@ -109,7 +117,7 @@ function App() {
     const collectTraits = {};
     // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
     Object.values(championSelectedList).forEach((champ) => {
-      champ.forEach((trait) => {
+      champ.traits.forEach((trait) => {
         collectTraits[trait] = (collectTraits[trait] || null) + 1;
       });
     });
@@ -274,21 +282,24 @@ function App() {
   }, [championSelectedList, displayClickedChampion, displayActivation, prevAkali]);
 
   return (
-    <>
+    <div className='background' style={{padding: '50px 10%'}} >
       {/* display all champions */}
-      <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion}
+      <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion} costArray={costArray}
       />
       {/* <button onClick={()=>refreshHandler()}>Refresh</button> */}
-      {/* display currently selected champion */}
-      <CurrentChampion displayClickedChampion={displayClickedChampion} />
-      {/* display selected list of champions */}
-      <SelectedChampions championSelectedList={championSelectedList} refreshHandler={refreshHandler}
-      />
-      {/* display traits of all selected champions */}
-      <Traits showAllTraits={showAllTraits} />
-      {/* display recommended champions to activate traits */}
-      <Recommendation recommendChamp={recommendChamp} championSelectedList={championSelectedList}/>
-    </>
+      <div className='align-horizontal'>
+        {/* display currently selected champion */}
+        <CurrentChampion displayClickedChampion={displayClickedChampion} costArray={costArray}/>
+        {/* display selected list of champions */}
+        <SelectedChampions championSelectedList={championSelectedList} refreshHandler={refreshHandler} costArray={costArray}
+        />
+        {/* display traits of all selected champions */}
+        <Traits showAllTraits={showAllTraits} />
+        {/* display recommended champions to activate traits */}
+
+      </div>
+      <Recommendation recommendChamp={recommendChamp} championSelectedList={championSelectedList} costArray={costArray}/>
+    </div>
   );
 }
 

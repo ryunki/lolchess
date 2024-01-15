@@ -1,8 +1,9 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import { champs, synergy } from '../constants';
+import '../css/ChampionsList.css';
 
-const Recommendation = ({ recommendChamp, championSelectedList}) => {
+const Recommendation = ({ recommendChamp, championSelectedList, costArray}) => {
   // display recommended champions
   const [displayRecommendChamp, setDisplayRecommendChamp] = useState({})
   // number of traits will be added for each champion
@@ -43,19 +44,26 @@ const Recommendation = ({ recommendChamp, championSelectedList}) => {
     })
     setDisplayRecommendChamp(recommendedChampionsList)
     setChampAppearance(champAppearances)
-
+    console.log(recommendedChampionsList)
   },[recommendChamp])
-
-  return (<>
+// console.log(Object.entries(displayRecommendChamp))
+  return (<div>
     <div><h3>Recommendation</h3></div>
-    {displayRecommendChamp && Object.entries(displayRecommendChamp).map(([trait,champs]) => {
-      return <div key={trait}> <h4>{trait} </h4>
-        {champs.map((item, idx)=>{
-          return <div key={idx}>{item[0]} [activates {champAppearance[item[0]]}]</div>
-        })}
-      </div>
-    })}
-  </>)
+    <div className='align-horizontal'>
+      {Object.entries(displayRecommendChamp).length !==0 ? Object.entries(displayRecommendChamp).map(([trait,champs]) => {
+        return <div key={trait} style={{margin:'10px auto'}}> 
+          <h4>{trait} </h4>
+          {champs.map((item, idx)=>{
+            return <>
+              <div key={item+'-'+trait} className={`champion-item-small ${costArray[item[1]]}`}>{item[0]} {champAppearance[item[0]]}</div> 
+            </>
+          })}
+        </div>
+      }) :
+        <div><h4>No recommendation</h4></div>
+      }
+    </div>
+  </div>)
 }
 
 export default Recommendation

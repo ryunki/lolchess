@@ -1,6 +1,7 @@
 import './style.css'
 
 const Traits = ({ showAllTraits }) => {
+
 const displayActivation = (current, indicator) =>{
   const res = indicator.map((item, idx, arr)=>{
     // if the trait meets the any of the activation number it highlights
@@ -24,26 +25,29 @@ const displayActivation = (current, indicator) =>{
   })
 
   return <>
-  {current} [ {res} ]
+   {res} 
   </>
 }
   return (
-    <>
-    <h3>Selected Champions' Traits</h3>
-      <ul className="horizontal-list">
+    <div className='info-container'>
+      <div>
+        <h4>Selected Champions' Traits</h4>
+      </div>
+      <div>
         {showAllTraits &&
           Object.entries(showAllTraits).map(([key, value]) => {
             return (
-              <li key={key} style={{display:"flex", margin:"5px", height:"20px"}} >
-                <div style={{display:"flex"}}>
-                  {key} {displayActivation(value[0], value[1])}
-                </div>
-              </li>
+              <div key={key} style={{display:'flex', textAlign:'center'}} >
+                  <div>
+                    {value[0]}
+                  </div>
+                    {key} {displayActivation(value[0], value[1])}
+              </div>
             );
           })}
         {/* {showAllTraits && traitsManipulation(showAllTraits)} */}
-      </ul>
-    </>
+      </div>
+    </div>
     
   );
 };

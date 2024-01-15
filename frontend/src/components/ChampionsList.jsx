@@ -3,13 +3,11 @@ import { useEffect, useState } from 'react';
 import { champs } from '../constants';
 import '../css/ChampionsList.css';
 
-const ChampionsList = ({ onClickHandler, selectedChampion }) => {
+const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
   const [sortAtoZ, setSortAtoZ] = useState(true);
   const [sortCost, setSortCost] = useState(true);
   // display all champions
   const [champions, setChampions] = useState(champs);
-  // champion's cost array for displaying color
-  const costArray = ['', 'one', 'two', 'three', 'four', 'five'];
 
   // change alphabetical order of champion list
   const toggleAtoZ = () => {
@@ -39,7 +37,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion }) => {
       });
     });
   };
- 
+
   return (
     <>
       <div>
@@ -77,19 +75,23 @@ const ChampionsList = ({ onClickHandler, selectedChampion }) => {
         </div>
       </div>
       <div className="champions_list_wrapper">
-        {champions.map((champ, idx) => {
-          return (
-            <div
-              key={idx}
-              className={`champion-item ${costArray[champ[1]]} ${
-                selectedChampion.includes(champ[0]) ? 'selected' : ''
-              } `}
-              onClick={() => onClickHandler(champ[0])}
-            >
-              {champ[0]}
-            </div>
-          );
-        })}
+        {champions.length !== 0 ? 
+          champions.map((champ, idx) => (
+              <div
+                key={idx}
+                className={`champion-item ${costArray[champ[1]]} ${
+                  selectedChampion.includes(champ[0]) ? 'selected' : ''
+                } `}
+                // onClick={() => onClickHandler(champ[0])}
+                onClick={() => onClickHandler(champ)}
+              >
+                {champ[0]}
+              </div>
+          )) :
+          <div className="no-result">
+            No Champions
+          </div>
+        }
       </div>
     </>
   );
