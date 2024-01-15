@@ -37,8 +37,59 @@ div.champions_list_wrapper{
   background-color: rgb(254,185,60);
   /* opacity: 0.8; */
 }
+.five-indicator{
+  color: rgb(248, 248, 248);
+  background-color: rgb(254,185,60);
+  padding: 5px 10px;
+  margin: 10px;
+  border-radius: 50px;
+}
+.four-indicator {
+  color: rgb(248, 248, 248);
+  background-color: rgb(196,64,218);
+  padding: 5px 10px;
+  margin: 10px;
+  border-radius: 50px;
+}
+.three-indicator {
+  color: rgb(248, 248, 248);
+  background-color: rgb(33,122,199);
+  padding: 5px 10px;
+  margin: 10px;
+  border-radius: 50px;
+}
+.two-indicator {
+  color: rgb(248, 248, 248);
+  background-color: rgb(20,178,137);
+  padding: 5px 10px;
+  margin: 10px;
+  border-radius: 50px;
+}
+.one-indicator {
+  color: rgb(248, 248, 248);
+  background-color: rgb(132,137,153);
+  padding: 5px 10px;
+  margin: 10px;
+  border-radius: 50px;
+}
 .selected {
   background-color: rgb(48, 48, 48);
   /* opacity:0.5; */
   color:rgb(198, 198, 198);
 }
+
+.sort {
+  background-color: rgb(92, 91, 91);
+  color: rgb(248, 248, 248);
+  padding: 10px 10px;
+  margin: 5px;
+  font-size: 16px;
+  width: 50px;
+  height: 20px;
+  cursor: pointer;
+  /* text-align: center; */
+  border-radius: 50px;
+  display: inline-block;
+  align-items: center;
+} 
+
