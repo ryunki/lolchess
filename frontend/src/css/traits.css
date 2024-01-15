@@ -1,0 +1,36 @@
+.activatedValue{
+  color:white;
+  display: flex;
+  /* -webkit-box-align: center; */
+  align-items: center;
+  /* -webkit-box-pack: center; */
+  justify-content: center;
+  width: 20px;
+  height: 34px;
+  font-size: 16px;
+  background: rgb(54, 57, 68);
+  border-radius: 2px;
+}
+.no-highlight {
+  color: rgb(128, 128, 128);
+}
+.font-white{
+  color:white;
+}
+.trait-background{
+  margin:5px 5px;
+  background: rgb(39, 40, 46);
+  border: 1px solid rgb(50, 50, 50);
+  border-radius: 4px;
+  padding: 0px 8px;
+  width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.trait-wrapper{
+  text-align: start;
+}
+.level-indicator-text{
+  font-size:13px;
+}

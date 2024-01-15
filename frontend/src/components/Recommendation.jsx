@@ -44,7 +44,6 @@ const Recommendation = ({ recommendChamp, championSelectedList, costArray}) => {
     })
     setDisplayRecommendChamp(recommendedChampionsList)
     setChampAppearance(champAppearances)
-    console.log(recommendedChampionsList)
   },[recommendChamp])
 // console.log(Object.entries(displayRecommendChamp))
   return (<div>
@@ -54,9 +53,7 @@ const Recommendation = ({ recommendChamp, championSelectedList, costArray}) => {
         return <div key={trait} style={{margin:'10px auto'}}> 
           <h4>{trait} </h4>
           {champs.map((item, idx)=>{
-            return <>
-              <div key={item+'-'+trait} className={`champion-item-small ${costArray[item[1]]}`}>{item[0]} {champAppearance[item[0]]}</div> 
-            </>
+            return <div key={item[0]+'-'+trait} className={`champion-item-small ${costArray[item[1]]}`}>{item[0]} {champAppearance[item[0]]}</div> 
           })}
         </div>
       }) :
