@@ -217,7 +217,7 @@ function App() {
           inactivatedCat.kda[0] += -1;
         }
       }
-    
+
       // this variable is for saving inactivated traits and re-arrange them by diffence as a key and name of traits as value
       let traitDifference = {};
       let sortedInactivatedCategories = [];
@@ -257,25 +257,38 @@ function App() {
         },
         {}
       );
-    
       // Sort activated categories by value from high to low
-      const sortedActivatedCategories = activatedCategories.sort((a, b) => {
-        // Prioritize categories with activation array length of 1 at the top
-        if (a[1][1].length === 1 && b[1][1].length !== 1) {
-          // put first item before the second item
-          return -1;
-        }
-        if (b[1][1].length === 1 && a[1][1].length !== 1) {
-          // put second item before the first item
-          return 1;
-        }
-        // sort values by high to low
-        return b[1][0] - a[1][0];
-      });
-      // Combine sorted activated and inactivated categories
-      const sortedData = sortedActivatedCategories.concat(
-        sortedInactivatedCategories
+    const sortedActivatedCategories = activatedCategories.sort((a, b) => {
+      // Prioritize categories with activation array length of 1 at the top (for 5 cost champion's synergy)
+      if (a[1][1].length === 1 && b[1][1].length !== 1) {
+        // put first item before the second item
+        return -1;
+      }
+      if (b[1][1].length === 1 && a[1][1].length !== 1) {
+        // put second item before the first item
+        return 1;
+      }
+      // sort values by high to low
+      return b[1][0] - a[1][0];
+    });
+
+    // refilter because there is a case where kda/trueDamage is inactivated but included in activatedCategories
+    // filter out inactivated kda/trueDamage
+    const newSortedActivatedCategories = sortedActivatedCategories.filter(item=>{
+      if(item[1][1].length === 1) return true //for cost 5 champions
+      return item[1][1].some(num =>item[1][0] >= num)
+      })
+    // save inactivated kda/trueDamage
+    const takeaway = sortedActivatedCategories.filter(item=>{
+      if(item[1][1].length === 1) return false //for cost 5 champions
+      return !item[1][1].some(num =>  item[1][0] >= num)
+    })
+    
+    // Combine sorted activated and inactivated categories
+    const sortedData = newSortedActivatedCategories.concat(
+      takeaway.concat(sortedInactivatedCategories)
       );
+
       return [sortedData, traitDifferenceList];
     }
 
