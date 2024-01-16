@@ -5,10 +5,11 @@ import '../css/ChampionsList.css';
 
 const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
   const [sortAtoZ, setSortAtoZ] = useState(true);
-  const [sortCost, setSortCost] = useState(true);
+  const [sortCost, setSortCost] = useState([false, 0]);
+ 
   // display all champions
   const [champions, setChampions] = useState(champs);
-
+  
   // change alphabetical order of champion list
   const toggleAtoZ = () => {
     setSortAtoZ(!sortAtoZ);
@@ -19,13 +20,34 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
     });
   };
   // change cost order of champion list
-  const toggleCost = () => {
-    setSortCost(!sortCost);
-    setChampions((prev) => {
-      return [...prev].sort((a, b) => {
-        return sortCost ? a[1] - b[1] : b[1] - a[1];
+  const toggleCost = (cost) => {
+    // when cost button is clicked (sort by cost)
+    if(cost === 'cost'){
+      setChampions(() => {
+        return champs.sort((a,b)=> !sortAtoZ ? b[0].localeCompare(a[0]) : a[0].localeCompare(b[0]))
+          .sort((a, b) => sortCost[0] ? a[1] - b[1] : b[1] - a[1]);
       });
-    });
+      setSortCost([!sortCost[0], 0]);
+      // when one of the indicator is clicked. display the clicked cost of champions only
+    }else{
+      // if the same indicator is clicked again 
+      if (sortCost[1] === cost){
+        // then display whole list of champions 
+        setChampions(()=>{
+          // sort by current state of sortAtoZ
+          return champs.sort((a,b)=> sortAtoZ ? a[0].localeCompare(b[0]): b[0].localeCompare(a[0]) )
+        })
+        setSortCost([sortCost, 0])
+        // if different cost indicator is clicked
+      } else {
+        setChampions(()=>{
+          // first filter by the clicked cost, then sort by current state of sortAtoZ
+          return champs.filter((item)=> item[1] === cost)
+            .sort((a,b)=> sortAtoZ ? a[0].localeCompare(b[0]): b[0].localeCompare(a[0]) )
+        })
+        setSortCost([sortCost, cost])
+      }
+    }
   };
 
   // display champions as you type in the search bar
@@ -41,8 +63,8 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
   return (
     <>
       <div>
-        <div>
-          <h1>Champs List</h1>
+        <div className='title'>
+          Champions
         </div>
         <div style={{ display: 'flex' }}>
           <input
@@ -55,22 +77,18 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
             style={{ cursor: 'pointer' }}
             onClick={toggleAtoZ}
           >
-            {sortAtoZ ? 'ZtoA' : 'AtoZ'}
+            {sortAtoZ ? 'AtoZ' : 'ZtoA'}
           </div>
 
-          <div
-            className="sort"
-            style={{ cursor: 'pointer' }}
-            onClick={toggleCost}
-          >
+          <div className="sort" style={{ cursor: 'pointer' }}onClick={()=>toggleCost('cost')}>
             Cost
           </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            5<div className="five-indicator" />
-            4<div className="four-indicator" />
-            3<div className="three-indicator" />
-            2<div className="two-indicator" />
-            1<div className="one-indicator" />
+          <div className='cost-indicator' style={{ display: 'flex', alignItems: 'center' }}>
+            5<div className="five-indicator" onClick={()=>toggleCost(5)}/>
+            4<div className="four-indicator" onClick={()=>toggleCost(4)}/>
+            3<div className="three-indicator" onClick={()=>toggleCost(3)}/>
+            2<div className="two-indicator" onClick={()=>toggleCost(2)}/>
+            1<div className="one-indicator" onClick={()=>toggleCost(1)}/>
           </div>
         </div>
       </div>
