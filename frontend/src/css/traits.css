@@ -14,23 +14,27 @@
 .no-highlight {
   color: rgb(128, 128, 128);
 }
-.font-white{
-  color:white;
-}
+
 .trait-background{
   margin:5px 5px;
   background: rgb(39, 40, 46);
   border: 1px solid rgb(50, 50, 50);
   border-radius: 4px;
-  padding: 0px 8px;
-  width: 120px;
+  padding: 5px 8px;
+  width: 100px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 .trait-wrapper{
+  justify-content: center;
+  flex-wrap: wrap;
   text-align: start;
 }
 .level-indicator-text{
   font-size:13px;
 }
+.highlight{
+  box-shadow: 0 0 7px #f7f2b2;
+}
+

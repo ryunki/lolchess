@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { champs, synergy } from './constants';
 
 import './css/ChampionsList.css';
+import './css/style.css';
 
 function App() {
   // display selected champion -> [stores name, traits]
@@ -55,7 +56,7 @@ function App() {
     return [selectedChampionTraits, activation];
   };
 
-  const onClickHandler = (champ, idx) => {
+  const onClickHandler = (champ) => {
     changeButtonColor(champ[0]);
     // this variable is to store the traits of selected champion (this resets for every click)
     let selectedChampionTraits = [];
@@ -76,16 +77,24 @@ function App() {
             'traits': selectedChampionTraits,
             'cost': champ[1]
         }}));
+    // Array.from(championSelectedList[champ[0]])
+    
     // Add new traits and their activation indicator to the previous traits
     setDisplayActivation((prev) => ({ ...prev, ...activation }));
     // to display currently clicked champion
     const cham = champs.filter(champs => champs[0]===champ[0])
+
     setDisplayClickedChampion([cham, selectedChampionTraits]);
   };
 
   // remove the selected champion from the list
   const removeHandler = (champ) => {
+    // setDisplayClickedChampion([]);
     setChampionSelectedList((prev) => {
+      // if clicked champion is the last one in the list
+      if(Object.keys(prev).length === 1){
+        setDisplayClickedChampion([])
+      }
       if (prev[champ]) {
         const updatedList = { ...prev };
         delete updatedList[champ];
@@ -134,7 +143,7 @@ function App() {
 
     // Update with the sorted object to be displayed in Traits Component
     setShowAllTraits(sortedObject)
-  
+    console.log(traitDifferenceList)
     // if there are champions in the list
     if (Object.keys(championSelectedList).length !== 0) {
       
@@ -293,25 +302,39 @@ function App() {
     }
 
   }, [championSelectedList, displayClickedChampion, displayActivation, prevAkali]);
-
+// console.log(Object.keys(displayClickedChampion).length)
+// console.log(Object.keys(championSelectedList).length)
+// console.log(recommendChamp)
   return (
     <div className='background' style={{padding: '50px 10%'}} >
       {/* display all champions */}
       <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion} costArray={costArray}
       />
       {/* <button onClick={()=>refreshHandler()}>Refresh</button> */}
-      <div className='align-horizontal'>
-        {/* display currently selected champion */}
-        <CurrentChampion displayClickedChampion={displayClickedChampion} costArray={costArray}/>
-        {/* display selected list of champions */}
-        <SelectedChampions championSelectedList={championSelectedList} refreshHandler={refreshHandler} costArray={costArray}
-        />
-        {/* display traits of all selected champions */}
-        <Traits showAllTraits={showAllTraits} />
+      {Object.keys(championSelectedList).length !== 0 && 
+        Object.keys(displayClickedChampion).length !== 0 && 
+        Object.keys(showAllTraits).length !== 0 && 
+        <>
+        <div style={{ display: 'flex', justifyContent: 'center', margin:'1.5em'}}>
+          <div className='reset' onClick={()=>refreshHandler()}>reset</div> 
+        </div>
+          
+          <div className='contents-container'>
+          {/* display currently selected champion */}
+          <CurrentChampion displayClickedChampion={displayClickedChampion} costArray={costArray}/>
+          {/* display selected list of champions */}
+          <SelectedChampions championSelectedList={championSelectedList} refreshHandler={refreshHandler} costArray={costArray} onClickHandler={onClickHandler}/>
+          </div>
+          {/* display traits of all selected champions */}
+          <div className='contents-container'>
+            <Traits showAllTraits={showAllTraits} />
+          </div>
+        </>
+      }
         {/* display recommended champions to activate traits */}
-
-      </div>
-      <Recommendation recommendChamp={recommendChamp} championSelectedList={championSelectedList} costArray={costArray}/>
+        {Object.keys(recommendChamp).length !== 0 && 
+          <Recommendation recommendChamp={recommendChamp} championSelectedList={championSelectedList} costArray={costArray}/>
+        }
     </div>
   );
 }

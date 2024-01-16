@@ -1,0 +1,25 @@
+.recommended-traits-container{
+  
+}
+
+.champion-item-small {
+  /* background-color: rgb(96, 96, 244); */
+  color: rgb(248, 248, 248);
+  padding: 5px 5px;
+  margin: 5px;
+  font-size: 12px;
+  width: auto;
+  /* cursor: pointer; */
+  text-align: center;
+  border-radius: 5px;
+  /* display: inline-block; */
+  /* box-shadow: 0 0 10px 5px #c9c9c9; */
+  display:flex;
+  justify-content:space-between;
+  gap: 6px;
+}
+.number-of-synergy{
+  background-color: rgb(60, 60, 60);
+  border-radius: 2px;
+  width: 16px;
+}

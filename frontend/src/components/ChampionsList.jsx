@@ -63,32 +63,33 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
   return (
     <>
       <div>
-        <div className='title'>
+        {/* <div className='title'>
           Champions
-        </div>
-        <div style={{ display: 'flex' }}>
-          <input
-            placeholder="search champion"
+        </div> */}
+        <div style={{ margin: '10px',flexWrap: 'wrap',display: 'flex',gap: '10px' }}>
+          <input className='input-search-champion'
+            placeholder="search"
             onChange={(e) => searchChampionHandler(e)}
           />
           <div
             value={sortAtoZ}
-            className="sort"
+            className="sort indicator"
             style={{ cursor: 'pointer' }}
             onClick={toggleAtoZ}
           >
             {sortAtoZ ? 'AtoZ' : 'ZtoA'}
           </div>
 
-          <div className="sort" style={{ cursor: 'pointer' }}onClick={()=>toggleCost('cost')}>
+          <div className="sort indicator" style={{ cursor: 'pointer' }}onClick={()=>toggleCost('cost')}>
             Cost
           </div>
           <div className='cost-indicator' style={{ display: 'flex', alignItems: 'center' }}>
-            5<div className="five-indicator" onClick={()=>toggleCost(5)}/>
-            4<div className="four-indicator" onClick={()=>toggleCost(4)}/>
-            3<div className="three-indicator" onClick={()=>toggleCost(3)}/>
-            2<div className="two-indicator" onClick={()=>toggleCost(2)}/>
-            1<div className="one-indicator" onClick={()=>toggleCost(1)}/>
+            <span style={{ paddingLeft: '8px'}}>5</span>
+             <div className="five-indicator indicator-c" onClick={()=>toggleCost(5)}/>
+            4<div className="four-indicator indicator-c" onClick={()=>toggleCost(4)}/>
+            3<div className="three-indicator indicator-c" onClick={()=>toggleCost(3)}/>
+            2<div className="two-indicator indicator-c" onClick={()=>toggleCost(2)}/>
+            1<div className="one-indicator indicator-c" onClick={()=>toggleCost(1)}/>
           </div>
         </div>
       </div>

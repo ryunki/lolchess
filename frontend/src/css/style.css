@@ -1,0 +1,41 @@
+.title {
+  color: white;
+}
+
+.contents-container{
+    text-align:center;
+    display:flex;
+    /* align-items:center;  */
+    justify-content: space-evenly;
+    /* Allow items to wrap to the next line */
+    flex-wrap: wrap; 
+    gap:20px;
+    margin:20px auto;
+    /* padding-top:20px; */
+    padding: 20px;
+    background-color: rgb(60, 60, 60);
+    border-radius: 50px;
+}
+.info-container{
+  display:flex;
+  align-items: center;
+}
+.font-white{
+  color:white;
+  font-size: 12px;
+}
+.reset {
+  border-radius: 5px;
+  background-color: rgb(96, 96, 244);
+  color: white;
+  cursor: pointer;
+  /* text-align: center; */
+  width: 49px;
+  font-size: 15px;
+  text-align: center;
+  padding: 7px;
+}
+
+div::first-letter {
+  text-transform:capitalize;
+}

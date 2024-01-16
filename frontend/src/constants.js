@@ -129,7 +129,7 @@ export const synergy = {
     "jazz": {
       "champs":[BARD, MISSFORTUNE, LUCIAN],
       "activation":[2,3,4]},
-    "kda": {
+    "k/da": {
       "champs":[EVELYNN,LILLIA,KAISA,SERAPHINE,NEEKO,AHRI,AKALI],
       "activation":[3,5,7,10]},
     "maestro":{
@@ -144,7 +144,7 @@ export const synergy = {
     "punk":{
       "champs":[JINX,VI,PANTHEON,TWITCH],
       "activation":[2,4,6]},
-    "trueDamage": {
+    "true damage": {
       "champs":[KENNEN,YASUO,SENNA,EKKO,AKALI,QIYANA],
       "activation":[2,4,6,9]},
     "wildcard":{

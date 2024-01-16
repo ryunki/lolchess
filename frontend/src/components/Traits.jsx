@@ -1,6 +1,6 @@
-import './style.css'
-import '../css/traits.css'
 
+import '../css/traits.css'
+import '../css/style.css';
 const Traits = ({ showAllTraits }) => {
 
 const displayActivation = (trait, current, indicator) =>{
@@ -12,7 +12,7 @@ const displayActivation = (trait, current, indicator) =>{
   })
   if(activated[0]){
     return <>
-      <div className='activatedValue'>
+      <div className='activatedValue highlight '>
         <div>{current}</div>
       </div>
       <div className='trait-wrapper'>
@@ -38,37 +38,10 @@ const displayActivation = (trait, current, indicator) =>{
       </div>
     </>
   }
-  // const res = indicator.map((level, idx, arr)=>{
-  //   // if the trait meets the any of the activation number it highlights
-  //   if (level <= current){
-  //     return <div className = "highlight" key={idx}>
-  //       {level}
-  //     </div>
-  //   }else{
-  //     // if the trait is not activated
-  //     if(current < arr[0]){
-  //       if(idx > 0){
-  //         // this prevent from showing rest of the activation number
-  //         return null
-  //       }
-  //       // this shows the first activation number 
-  //       return <div className = "" key={idx}> {level}</div>
-  //     }
-  //     // this shows all the activation numbers for activated traits
-  //     return <div className = "" key={idx}> {level}</div>
-  //   }
-  // })
-  // return <>
-  //  {res} 
-  // </>
 }
   return (
-    <div className='info-container'>
-      <div>
-        <h4>Selected Champions' Traits</h4>
-      </div>
-      <div>
-        {showAllTraits &&
+    <div className='trait-wrapper' style={{display: 'flex'}}>
+        {
           Object.entries(showAllTraits).map(([trait, value]) => {
             return (
               <div className='trait-background' key={trait} style={{display:'flex', textAlign:'center'}} >
@@ -76,8 +49,6 @@ const displayActivation = (trait, current, indicator) =>{
               </div>
             );
           })}
-        {/* {showAllTraits && traitsManipulation(showAllTraits)} */}
-      </div>
     </div>
     
   );
