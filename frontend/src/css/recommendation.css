@@ -23,3 +23,9 @@
   border-radius: 2px;
   width: 16px;
 }
+.highlight-recommend{
+  box-shadow: 0 0 2px 1px #f7f2b2;
+}
+.no-highlight-recommend {
+  color: rgb(201, 201, 201);
+}

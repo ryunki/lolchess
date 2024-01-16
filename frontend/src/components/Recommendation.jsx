@@ -5,11 +5,7 @@ import '../css/ChampionsList.css';
 import '../css/style.css';
 import '../css/recommendation.css';
 
-const Recommendation = ({
-  recommendChamp,
-  championSelectedList,
-  costArray,
-}) => {
+const Recommendation = ({recommendChamp,championSelectedList,costArray,}) => {
   // display recommended champions
   const [displayRecommendChamp, setDisplayRecommendChamp] = useState({});
   // number of traits will be added for each champion
@@ -23,7 +19,7 @@ const Recommendation = ({
         findAllChampionsWithTrait('classes');
         findAllChampionsWithTrait('origins');
         function findAllChampionsWithTrait(type) {
-          // find all the champs of inactivated traits
+          // find all the champs of every inactivated traits
           Object.keys(synergy[type]).forEach((item) => {
             if (trait === item) {
               // save the names of champion with the cost value
@@ -50,8 +46,10 @@ const Recommendation = ({
         champAppearances[champ] = (champAppearances[champ] || 0) + 1;
       });
     });
+    
     setDisplayRecommendChamp(recommendedChampionsList);
     setChampAppearance(champAppearances);
+  
   }, [recommendChamp]);
   // console.log(displayRecommendChamp)
   return (
@@ -66,7 +64,7 @@ const Recommendation = ({
                 {champs.map((item, idx) => {
                   return (
                     <div key={item[0] + '-' + trait} className={`champion-item-small ${costArray[item[1]]}`}>
-                      {item[0]} <div className='number-of-synergy'>{champAppearance[item[0]]}</div>
+                      {item[0]} <div className={`number-of-synergy ${champAppearance[item[0]] > 1 ? 'highlight-recommend' : 'no-highlight-recommend'}`}>{champAppearance[item[0]]}</div>
                     </div>
                   );
                 })}

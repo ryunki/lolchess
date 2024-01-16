@@ -83,7 +83,7 @@ export const synergy = {
       "champs":[TWITCH,SAMIRA,VEX,AKALI,KARTHUS],
       "activation":[2,4,6]},
     "guardian": {
-      "champs":[KENNEN,TARIC,PANTHEON,AMUMU,NEEKO,THRESH,YORICK],
+      "champs":[TARIC,KENNEN,PANTHEON,AMUMU,NEEKO,THRESH,YORICK],
       "activation":[2,4,6]},
     "mosher": {
       "champs":[VI,GNAR,JAX,SETT,URGOT,POPPY,YORICK],
@@ -98,7 +98,7 @@ export const synergy = {
       "champs":[ANNIE,GRAGAS,SERAPHINE,EKKO,LULU,AHRI,SONA],
       "activation":[3,5,7,9]},
     "superfan":{
-      "champs":[KENNEN,LILLIA,GNAR,NEEKO],
+      "champs":[LILLIA,KENNEN,GNAR,NEEKO],
       "activation":[3,4,5]}
 },
   origins: {
@@ -145,7 +145,7 @@ export const synergy = {
       "champs":[JINX,VI,PANTHEON,TWITCH],
       "activation":[2,4,6]},
     "true damage": {
-      "champs":[KENNEN,YASUO,SENNA,EKKO,AKALI,QIYANA],
+      "champs":[YASUO,KENNEN,SENNA,EKKO,AKALI,QIYANA],
       "activation":[2,4,6,9]},
     "wildcard":{
       "champs":[KAYN],

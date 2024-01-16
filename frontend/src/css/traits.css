@@ -1,19 +1,4 @@
-.activatedValue{
-  color:white;
-  display: flex;
-  /* -webkit-box-align: center; */
-  align-items: center;
-  /* -webkit-box-pack: center; */
-  justify-content: center;
-  width: 20px;
-  height: 34px;
-  font-size: 16px;
-  background: rgb(54, 57, 68);
-  border-radius: 2px;
-}
-.no-highlight {
-  color: rgb(128, 128, 128);
-}
+
 
 .trait-background{
   margin:5px 5px;
@@ -34,7 +19,80 @@
 .level-indicator-text{
   font-size:13px;
 }
-.highlight{
+/* .highlight{
   box-shadow: 0 0 7px #f7f2b2;
+} */
+
+.activatedValue{
+  color:white;
+  display: flex;
+  /* -webkit-box-align: center; */
+  align-items: center;
+  /* -webkit-box-pack: center; */
+  justify-content: center;
+  width: 20px;
+  height: 34px;
+  font-size: 16px;
+  border-radius: 2px;
+  /* background: rgb(54, 57, 68); */
+  transition: all 0.3s ease 0s;
+  z-index:0;
+  position: relative;
+}
+.no-highlight {
+  color: rgb(128, 128, 128);
+}
+
+.activatedValue::before {
+  position: absolute;
+  content: "";
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  left: -2px;
+  top: -2px;
+  background: linear-gradient(
+    124deg,
+    #ffe100,
+    #ffd620,
+    #ffd856,
+    #fff08e,
+    #ffffff,
+    #ffeeb7,
+    #ffd36b,
+    #ffc423,
+    #ffcc00
+  );
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(1px);
+  animation: move 10s linear infinite;
+  border-radius: 2px;
+}
+
+.activatedValue::before {
+  opacity: 0.5;
+}
+.activatedValue::after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgb(54, 57, 68);
+  left: 0;
+  top: 0;
+  border-radius: 2px;
+}
+
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }
 

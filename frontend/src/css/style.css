@@ -19,9 +19,10 @@
 .info-container{
   display:flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 .font-white{
-  color:white;
+  color:rgb(228, 228, 228);
   font-size: 12px;
 }
 .reset {
@@ -39,3 +40,4 @@
 div::first-letter {
   text-transform:capitalize;
 }
+

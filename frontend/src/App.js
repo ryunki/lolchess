@@ -25,7 +25,7 @@ function App() {
   // for changing color of selected champion
   const [selectedChampion, setSelectedChampion] = useState([]);
 
-  const [prevAkali, setPrevAkali] = useState({ kda: [false, 0], trueDamage: [false, 0] })
+  const [prevAkali, setPrevAkali] = useState({ 'k/da': [false, 0], 'true damage': [false, 0] })
 
   // champion's cost array for displaying color
   const costArray = ['', 'one', 'two', 'three', 'four', 'five'];
@@ -115,7 +115,7 @@ function App() {
     setRecommendChamp({});
     setSelectedChampion([]);
     setDisplayActivation({});
-    setPrevAkali({ kda: [false, 0], trueDamage: [false, 0] })
+    setPrevAkali({ 'k/da': [false, 0], 'true damage': [false, 0] })
     // prev_kda = [];
     // prev_trueDamage = [];
   };
@@ -143,10 +143,9 @@ function App() {
 
     // Update with the sorted object to be displayed in Traits Component
     setShowAllTraits(sortedObject)
-    console.log(traitDifferenceList)
+
     // if there are champions in the list
     if (Object.keys(championSelectedList).length !== 0) {
-      
       setRecommendChamp(traitDifferenceList);
     } else {
       // if the clicked champion is the last in selected champions list, remove recommended champ
@@ -154,8 +153,10 @@ function App() {
     }
 
     function sortTraits(collectTraits) {
+      const kda = 'k/da'
+      const td = 'true damage'
       // to identify which trait is activated and inactivated for AKALI
-      const updatedAkali = { kda: [false, 0], trueDamage: [false, 0] };
+      const updatedAkali = { 'k/da': [false, 0], 'true damage': [false, 0] };
       // let updatedAkali = prevAkali
       // to store and group by the trait results by activated or inactivated
       const activatedCategories = [];
@@ -164,74 +165,35 @@ function App() {
         // check if the the current trait equals or greater than any number of the activation array
         const activated = value[1].some((num) => {
           // if kda or trueDamage is activated then update it to be true and save the trait
-          if ((trait === 'kda' || trait === 'trueDamage') && value[0] >= num) {
+          if ((trait === kda || trait === td) && value[0] >= num) {
             updatedAkali[trait][0] = true;
             updatedAkali[trait][1] = value[0];
           }
           return value[0] >= num;
         });
         // update previous values to be compared for the next time
-        if (trait === 'kda' || trait === 'trueDamage') {
-          setPrevAkali(prev => {
+       if (trait === kda || trait === td) {
+         setPrevAkali(prev => {
             prev[trait][0] = updatedAkali[trait][0]
             prev[trait][1] = value[0]
-            return prev
-          })
+           return prev}
+           )
         }
-
         // group them by activated and inactivated
-        if (activated) {
-          activatedCategories.push([trait, value]);
-        } else {
-          inactivatedCategories.push([trait, value]);
-        }
+        activated ? activatedCategories.push([trait, value]) : inactivatedCategories.push([trait, value])
       });
+      
       const activatedCat = Object.fromEntries(activatedCategories);
       const inactivatedCat = Object.fromEntries(inactivatedCategories);
-      // if both traits are activated for AKALI
-      if (updatedAkali.kda[0] && updatedAkali.trueDamage[0]) {
-        // compare the value, if they are equal
-        if (updatedAkali.kda[1] === updatedAkali.trueDamage[1]) {
-          // then find out which trait was added last
-          if (prevAkali.kda[1] < prevAkali.trueDamage[1]) {
-            // console.log(" kda was added lately so remove truedamage")
-            activatedCat.trueDamage[0] += -1;
-          }
-          if (prevAkali.kda[1] > prevAkali.trueDamage[1]) {
-            // console.log(" TD was added lately so remove kda")
-            activatedCat.kda[0] += -1;
-          }
-        }
-        // if both are activated but KDA has higher value
-        if (updatedAkali.kda[1] > updatedAkali.trueDamage[1]) {
-          activatedCat.trueDamage[0] += -1;
-          // console.log("deduct 1 activated trueDamage")
-        }
-        if (updatedAkali.kda[1] < updatedAkali.trueDamage[1]) {
-          activatedCat.kda[0] += -1;
-          // console.log("deduct 1 activated kda")
-        }
-        // if kda is activated only, deduct 1 from trueDamage
-      } else if (updatedAkali.kda[0] && !updatedAkali.trueDamage[0]) {
-        // trueDamage may not exist at this point in inactivatedCategories
-        if (inactivatedCat.trueDamage) {
-          // console.log("deduct 1 inactivated trueDamage")
-          inactivatedCat.trueDamage[0] += -1;
-        }
-        // if trueDamage is activated only, deduct 1 from kda
-      } else if (updatedAkali.trueDamage[0] && !updatedAkali.kda[0]) {
-        // kda may not exist at this point in inactivatedCategories
-        if (inactivatedCat.kda) {
-          // console.log("deduct 1 inactivated kda")
-          inactivatedCat.kda[0] += -1;
-        }
-      }
 
-      // this variable is for saving inactivated traits and re-arrange them by diffence as a key and name of traits as value
+      specialFunctionAkali(activatedCat,inactivatedCat,updatedAkali,prevAkali , kda,td)
+
+      // this variable is for saving inactivated traits and re-arrange them by diffence as {difference: [trait, trait2...]}
       let traitDifference = {};
       let sortedInactivatedCategories = [];
       if (inactivatedCategories.length > 1) {
-        // Sort inactivated categories by least differences to smallest activation number by high to low
+        // Sort inactivated categories by differences by low to high
+        // array( ['trait1',[1, [2,4,6,8]]], ['trait2',[1, [2,4,6,8]]] )
         sortedInactivatedCategories = inactivatedCategories.sort((a, b) => {
           // a[0] is the name of trait
           // a[1][0] is the current value of trait
@@ -242,69 +204,95 @@ function App() {
           // save the differences to corresponding name of trait
           traitDifference[a[0]] = differenceA;
           traitDifference[b[0]] = differenceB;
-          // Sort by least differences from low to high
+          // If differences are not equal, Sort by least differences from low to high
           if (differenceA !== differenceB) {
             return differenceA - differenceB;
           }
           // If differences are equal, sort values by high to low
           return b[1][0] - a[1][0];
         });
+        // because sort() won't work with length of 1
       } else if (inactivatedCategories.length === 1) {
         const cat = inactivatedCategories[0];
         const difference = Math.abs(cat[1][0] - cat[1][1][0]);
         traitDifference[cat[0]] = difference;
         sortedInactivatedCategories = inactivatedCategories;
       }
-      // re-arrange the trait differences by {1:[name of traits], 2:[name of traits]}
+      // from {trait: 1, trait2: 1, trait3: 2 ...}
+      // re-arrange the trait differences to {1:[name of traits], 2:[name of traits]}
+
       const traitDifferenceList = Object.entries(traitDifference).reduce(
         (acc, [key, value]) => {
-          if (!acc[value]) {
-            acc[value] = [];
-          }
-          acc[value].push(key);
+            if (!acc[value]) {acc[value] = [];}
+            acc[value].push(key);
           return acc;
-        },
-        {}
-      );
-      // Sort activated categories by value from high to low
-    const sortedActivatedCategories = activatedCategories.sort((a, b) => {
-      // Prioritize categories with activation array length of 1 at the top (for 5 cost champion's synergy)
-      if (a[1][1].length === 1 && b[1][1].length !== 1) {
-        // put first item before the second item
-        return -1;
-      }
-      if (b[1][1].length === 1 && a[1][1].length !== 1) {
-        // put second item before the first item
-        return 1;
-      }
-      // sort values by high to low
-      return b[1][0] - a[1][0];
+        },{});
+        // Sort activated categories by value from high to low
+      const sortedActivatedCategories = activatedCategories.sort((a, b) => {
+        // Prioritize categories with activation array length of 1 at the top (for 5 cost champion's synergy)
+        if (a[1][1].length === 1 && b[1][1].length !== 1) return -1 // put first item before the second item
+        if (b[1][1].length === 1 && a[1][1].length !== 1) return  1  // put second item before the first item
+        return (b[1][0] - a[1][0]) // sort values by high to low
     });
 
-    // refilter because there is a case where kda/trueDamage is inactivated but included in activatedCategories
-    // filter out inactivated kda/trueDamage
-    const newSortedActivatedCategories = sortedActivatedCategories.filter(item=>{
-      if(item[1][1].length === 1) return true //for cost 5 champions
-      return item[1][1].some(num =>item[1][0] >= num)
+      // refilter because there is a case where kda/trueDamage is inactivated but included in activatedCategories
+      // filter out inactivated kda/trueDamage from  sortedActivatedCategories
+      const newSortedActivatedCategories = sortedActivatedCategories.filter(item=>{
+        if(item[1][1].length === 1) return true //for cost 5 champions
+        return item[1][1].some(num =>item[1][0] >= num)
+        })
+      // extract inactivated kda/trueDamage from sortedActivatedCategories
+      const takeaway = sortedActivatedCategories.filter(item=>{
+        if(item[1][1].length === 1) return false //for cost 5 champions
+        return !item[1][1].some(num =>  item[1][0] >= num)
       })
-    // save inactivated kda/trueDamage
-    const takeaway = sortedActivatedCategories.filter(item=>{
-      if(item[1][1].length === 1) return false //for cost 5 champions
-      return !item[1][1].some(num =>  item[1][0] >= num)
-    })
     
-    // Combine sorted activated and inactivated categories
-    const sortedData = newSortedActivatedCategories.concat(
-      takeaway.concat(sortedInactivatedCategories)
-      );
-
-      return [sortedData, traitDifferenceList];
-    }
+      // Combine sorted activated and inactivated categories
+      const sortedData = newSortedActivatedCategories.concat(sortedInactivatedCategories.concat(takeaway));
+    return [sortedData, traitDifferenceList];
+  }
 
   }, [championSelectedList, displayClickedChampion, displayActivation, prevAkali]);
-// console.log(Object.keys(displayClickedChampion).length)
-// console.log(Object.keys(championSelectedList).length)
-// console.log(recommendChamp)
+
+function specialFunctionAkali (activatedCat,inactivatedCat,updatedAkali,prevAkali, kda,td) {
+    // if both traits are activated for AKALI
+    if (updatedAkali[kda][0] && updatedAkali[td][0]) {
+      // compare the value, if they are equal
+      if (updatedAkali[kda][1] === updatedAkali[td][1]) {
+        // then find out which trait was added last
+        // console.log(" kda was added lately so remove truedamage")
+        if (prevAkali[kda][1] < prevAkali[td][1]) {
+          activatedCat[td][0] += -1
+        } 
+          // console.log(" TD was added lately so remove kda")
+        if (prevAkali[kda][1] > prevAkali[td][1]) {
+          (activatedCat[kda][0] += -1)
+        } 
+      }
+        // if both are activated but KDA has higher value
+        // console.log("deduct 1 activated trueDamage")
+        if (updatedAkali[kda][1] > updatedAkali[td][1]) {
+          activatedCat[td][0] += -1
+        }
+          // console.log("deduct 1 activated kda")
+        if (updatedAkali[kda][1] < updatedAkali[td][1]) {
+          activatedCat[kda][0] += -1
+        }
+      
+        // if kda is activated only, deduct 1 from trueDamage
+    } else if (updatedAkali[kda][0] && !updatedAkali[td][0]) {
+      // trueDamage may not exist at this point in inactivatedCategories
+      if (inactivatedCat[td]) {
+        inactivatedCat[td][0] += -1
+      }
+      // kda may not exist at this point in inactivatedCategories
+    } else if (updatedAkali[td][0] && !updatedAkali[kda][0]) {
+      if (inactivatedCat[kda]) {
+        inactivatedCat[kda][0] += -1
+      }
+    }
+  }
+
   return (
     <div className='background' style={{padding: '50px 10%'}} >
       {/* display all champions */}
