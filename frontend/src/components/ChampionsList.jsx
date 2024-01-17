@@ -62,8 +62,8 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
 
   return (
     <>
-      <div>
-        <div style={{ margin: '10px',flexWrap: 'wrap',display: 'flex',gap: '10px' }}>
+      
+        <div className='search-sort-container'>
           <input className='input-search-champion'
             placeholder="search"
             onChange={(e) => searchChampionHandler(e)}
@@ -89,7 +89,6 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
             1<div className="one-indicator indicator-c" onClick={()=>toggleCost(1)}/>
           </div>
         </div>
-      </div>
       <div className="champions_list_wrapper">
         {champions.length !== 0 ? 
           champions.map((champ, idx) => (

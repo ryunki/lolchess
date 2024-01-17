@@ -1,10 +1,13 @@
 
-div.champions_list_wrapper{
-  /* display: inline-block; */
+.champions_list_wrapper{
   gap: 5px;
-  justify-content: center;
-  align-items: center;
-  
+}
+
+.search-sort-container{
+  display: flex;
+  margin: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .champion-item {
@@ -209,6 +212,19 @@ div.champions_list_wrapper{
 @media only screen 
 and (max-width : 430px) {
   /* Styles */
+  .search-sort-container{
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .champions_list_wrapper{
+    gap: 1px;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
   .input-search-champion{
     padding: 0px 0px 0px 10px;
     align-self: center;
@@ -224,6 +240,9 @@ and (max-width : 430px) {
     flex-wrap: wrap;
     border-radius: 10px;
     padding: 5px 10px;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
   }
 
   .five-indicator{
