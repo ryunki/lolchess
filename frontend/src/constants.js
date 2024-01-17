@@ -23,7 +23,7 @@ const KARTHUS = ["Karthus",4]
 const KATARINA = ["Katarina",3]
 const KAYLE = ["Kayle",2]
 const KAYN = ["Kayn",5]
-const KENNEN = ["Kennen",2]
+const KENNEN = ["Kennen",1]
 const LILLIA = ["Lillia",1]
 const LUCIAN = ["Lucian",5]
 const LULU = ["Lulu",3]
@@ -124,7 +124,7 @@ export const synergy = {
       "champs":[LULU,ZIGGS],
       "activation":[1,2,3,4]},
     "ILLBEATS":{
-      "champs":[ILLAOI],
+      "champs": [ILLAOI],
       "activation":[1]},
     "jazz": {
       "champs":[BARD, MISSFORTUNE, LUCIAN],
