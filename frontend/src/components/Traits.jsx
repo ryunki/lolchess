@@ -3,6 +3,7 @@ import '../css/traits.css'
 import '../css/style.css';
 const Traits = ({ showAllTraits }) => {
 
+// this function for giving highlight effect for activated synergy
 const displayActivation = (trait, current, indicator) =>{
   let activated = [false, 0]
   indicator.forEach((level,idx) =>{
@@ -10,6 +11,8 @@ const displayActivation = (trait, current, indicator) =>{
       activated = [true, idx]
     }
   })
+
+  // for activated synergy
   if(activated[0]){
     return <>
       <div className='activatedValue highlight '>
@@ -29,6 +32,7 @@ const displayActivation = (trait, current, indicator) =>{
       </div>
     </>
   }else{
+    // for inactivated synergy
     return <>
       <div className='trait-wrapper'>
         <div className='font-white'>{trait}</div>

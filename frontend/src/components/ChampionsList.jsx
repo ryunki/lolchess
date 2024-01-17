@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { champs } from '../constants';
 import '../css/ChampionsList.css';
 
@@ -63,9 +63,6 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
   return (
     <>
       <div>
-        {/* <div className='title'>
-          Champions
-        </div> */}
         <div style={{ margin: '10px',flexWrap: 'wrap',display: 'flex',gap: '10px' }}>
           <input className='input-search-champion'
             placeholder="search"

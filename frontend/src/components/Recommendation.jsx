@@ -49,12 +49,10 @@ const Recommendation = ({recommendChamp,championSelectedList,costArray,}) => {
     
     setDisplayRecommendChamp(recommendedChampionsList);
     setChampAppearance(champAppearances);
-  
   }, [recommendChamp]);
-  // console.log(displayRecommendChamp)
+
   return (
     <>
-      {/* <div className='title'>Recommendation</div> */}
       {
         <div className="contents-container">
           {Object.entries(displayRecommendChamp).map(([trait, champs]) => {
