@@ -207,7 +207,7 @@ div.champions_list_wrapper{
 
 /* Smartphones (portrait) ----------- */
 @media only screen 
-and (max-width : 320px) {
+and (max-width : 430px) {
   /* Styles */
   .input-search-champion{
     padding: 0px 0px 0px 10px;
