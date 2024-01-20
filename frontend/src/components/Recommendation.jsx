@@ -6,13 +6,10 @@ import '../css/style.css';
 import '../css/recommendation.css';
 
 const Recommendation = ({recommendChamp,championSelectedList,costArray,}) => {
-  // display recommended champions
-  const [displayRecommendChamp, setDisplayRecommendChamp] = useState({});
-  // number of traits will be added for each champion
-  const [champAppearance, setChampAppearance] = useState({});
+  // number of traits that will be added for each champion
+  let champAppearance = {}
 
-  useEffect(() => {
-    // for storing the list of recommended champions
+  // for storing the list of recommended champions
     let recommendedChampionsList = {};
     Object.entries(recommendChamp).forEach(([diff, arrayOfTraits]) => {
       arrayOfTraits.forEach((trait) => {
@@ -39,23 +36,19 @@ const Recommendation = ({recommendChamp,championSelectedList,costArray,}) => {
       );
     });
 
-    const champAppearances = {};
+    
     // find the number of traits to be added for each champion
     Object.values(recommendedChampionsList).forEach((champions) => {
       champions.forEach(([champ, cost]) => {
-        champAppearances[champ] = (champAppearances[champ] || 0) + 1;
+        champAppearance[champ] = (champAppearance[champ] || 0) + 1;
       });
     });
-    
-    setDisplayRecommendChamp(recommendedChampionsList);
-    setChampAppearance(champAppearances);
-  }, [recommendChamp]);
-
+  
   return (
     <>
       {
         <div className="contents-container">
-          {Object.entries(displayRecommendChamp).map(([trait, champs]) => {
+          {Object.entries(recommendedChampionsList).map(([trait, champs]) => {
             return (
               <div className="recommended-traits-container" key={trait}style={{ margin: '10px auto' }}>
                 <div className='font-white'>{trait} </div>

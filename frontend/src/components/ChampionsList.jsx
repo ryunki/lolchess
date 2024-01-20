@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from 'react';
+import { useState, React } from 'react';
 import { champs } from '../constants';
 import '../css/ChampionsList.css';
 
@@ -92,14 +92,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
       <div className="champions_list_wrapper">
         {champions.length !== 0 ? 
           champions.map((champ, idx) => (
-              <div
-                key={idx}
-                className={`champion-item ${costArray[champ[1]]} ${
-                  selectedChampion.includes(champ[0]) ? 'selected' : ''
-                } `}
-                // onClick={() => onClickHandler(champ[0])}
-                onClick={() => onClickHandler(champ)}
-              >
+              <div key={idx}  className={`champion-item ${costArray[champ[1]]} ${selectedChampion.includes(champ[0]) ? 'selected' : ''} `}onClick={() => onClickHandler(champ)}>
                 {champ[0]}
               </div>
           )) :

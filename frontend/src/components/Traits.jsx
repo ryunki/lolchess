@@ -6,6 +6,7 @@ const Traits = ({ showAllTraits }) => {
 // this function for giving highlight effect for activated synergy
 const displayActivation = (trait, current, indicator) =>{
   let activated = [false, 0]
+
   indicator.forEach((level,idx) =>{
     if(current >= level){
       activated = [true, idx]
