@@ -21,18 +21,17 @@ function App() {
   const [selectedChampion, setSelectedChampion] = useState([]);
   // showing all extra trait list
   const [displayExtraTraits, setDisplayExtraTraits] = useState({'switch': false, 'traits':{}})
-  // selecting extra trait
+  // selecting extra trait, accumulate selected traits
   const [selectedTrait, setSelectedTrait] = useState({})
-
-  // display activation indicator corresponding to its trait
-  let displayactivation = useRef({})
-  // for saving info for comparison
-  let traitHistory = useRef({'k/da': [false, 0], 'true damage': [false, 0]})
-
   // just a variable that saves results to display traits
   let showAllTraits = {}
   // accumulating traits info
   let saveTraits = useRef({})
+  // display activation indicator corresponding to its trait
+  let displayactivation = useRef({})
+  // for saving info for comparison
+  let traitHistory = useRef({'k/da': [false, 0], 'true damage': [false, 0]})
+  
   // champion's cost array for displaying color
   const costArray = ['', 'one', 'two', 'three', 'four', 'five'];
 
@@ -134,8 +133,8 @@ const saveHandler = (list) => {
   localStorage.setItem('Champions List', jsonString)
 }
 
-// when user clicks 'add trait' button
-const addTraitHandler = () =>{
+// when user clicks 'add trait' button, display extra traits to add
+const showExtraTraitHandler = () =>{
   let synergies = {}
   Object.keys(synergy).forEach(type=>{
     Object.entries(synergy[type]).forEach(([trait,value])=>{
@@ -148,6 +147,22 @@ const addTraitHandler = () =>{
     'switch': !displayExtraTraits.switch,
     'trait': synergies
   })
+}
+// add selected traits to synergy, this function is to accumulate selected traits
+const addExtraTraitHandler = (trait) => {
+  setSelectedTrait(prev => {
+    return {
+      ...prev,
+      // if the trait value doesnt exist (null or undefined), return 0
+      // { 'trait' : value, [activation indicator] } 
+      [trait[0]]: [(prev[trait[0]]?.[0] ?? 0) + 1, trait[1][1]],
+    }}
+  )
+}
+
+const deleteExtraTraitsFromSynergy = () =>{
+  // delete all the selected extra traits
+  setSelectedTrait({})
 }
 
 showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayactivation.current, traitHistory, selectedTrait, saveTraits)
@@ -162,19 +177,18 @@ return (
         <div style={{ display: 'flex', justifyContent: 'center', margin:'1.5em'}}>
           <div className='reset' onClick={()=>saveHandler(championSelectedList)}>save</div> 
           <div className='reset' onClick={()=>refreshHandler()}>reset</div> 
-          <div className='reset' onClick={()=>addTraitHandler()}>add trait</div> 
+          <div className='reset' onClick={()=>showExtraTraitHandler()}>{displayExtraTraits.switch ? 'Traits Close': 'Traits Open'}</div> 
+          {/* button for deleting all the extra traits added */}
+          {Object.keys(selectedTrait).length !== 0 && <div className='reset' onClick={()=>deleteExtraTraitsFromSynergy()}>delete extra traits</div>}
         </div>
-        {displayExtraTraits.switch && Object.entries(displayExtraTraits.trait).map((trait,idx)=>(
-            // this callBack function is to accumulate selected traits
-            <div key={idx} onClick={()=>setSelectedTrait(prev => {
-              return {
-                ...prev,
-                // if the trait value doesnt exist (null or undefined), return 0
-                // { 'trait' : value, [activation indicator] } 
-                [trait[0]]: [(prev[trait[0]]?.[0] ?? 0) + 1, trait[1][1]],
-              }}
-            )}> {trait[0]} </div>
-        ))}
+        {/* button for display extra traits to add */}
+          {displayExtraTraits.switch && 
+            <div className='contents-container-extraTraits font-white'>
+              {Object.entries(displayExtraTraits.trait).map((trait,idx)=>(
+                <div style={{cursor: 'pointer'}}className='current-traits' key={idx} onClick={()=>addExtraTraitHandler(trait)}> {trait[0]} </div>
+              ))}
+            </div>
+          }
           
           <div className='contents-container'>
           {/* display currently selected champion */}

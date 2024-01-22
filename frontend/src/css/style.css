@@ -16,6 +16,18 @@
     background-color: rgb(60, 60, 60);
     border-radius: 50px;
 }
+.contents-container-extraTraits{
+    text-align:center;
+    display:flex;
+
+    /* Allow items to wrap to the next line */
+    flex-wrap: wrap; 
+    margin:20px auto;
+    /* padding-top:20px; */
+    padding: 20px;
+    background-color: rgb(60, 60, 60);
+    border-radius: 50px;
+}
 .info-container{
   display:flex;
   align-items: center;

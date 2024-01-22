@@ -184,12 +184,12 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
 export const dataForTraitsAndRecommendation = (championSelectedList, displayActivation, traitHistory, selectedTrait, saveTraits) => {
 
   let collectTraits = {};
-    // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
-    Object.values(championSelectedList).forEach((champ) => {
-      champ.traits.forEach((trait) => {
-        collectTraits[trait] = (collectTraits[trait] || 0) + 1;
-      });
+  // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
+  Object.values(championSelectedList).forEach((champ) => {
+    champ.traits.forEach((trait) => {
+      collectTraits[trait] = (collectTraits[trait] || 0) + 1;
     });
+  });
     // attach array of activation indicator to corresponding traits
     Object.keys(collectTraits).forEach((trait) => {
       if (displayActivation[trait]) {
@@ -199,14 +199,10 @@ export const dataForTraitsAndRecommendation = (championSelectedList, displayActi
     // ***************************************
     // this is for adding extra trait (selected) to synergy 
     // ***************************************
-    if(Object.keys(selectedTrait).length !== 0){
-      console.log('extra trait exists')
-      collectTraits = {...collectTraits, ...selectedTrait}
-    }else{
-      
-      console.log('extra trait no exists')
-    }
-    console.log('collectTraits: ',collectTraits)
+    Object.entries(selectedTrait).forEach(([trait,value])=>{
+      collectTraits[trait] = [collectTraits[trait] ? collectTraits[trait][0] + value[0] : value[0], value[1]]
+    })
+
     // sort the traits in order, and get inactivated traits list
     const {sortedData, traitDifferenceList} = sortTraits(collectTraits, championSelectedList, traitHistory);
     // Convert back to object
