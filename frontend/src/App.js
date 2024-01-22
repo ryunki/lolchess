@@ -20,7 +20,7 @@ function App() {
   // for changing color of selected champion
   const [selectedChampion, setSelectedChampion] = useState([]);
   // showing all extra trait list
-  const [displayExtraTraits, setDisplayExtraTraits] = useState({'switch': false, 'traits':{}})
+  const [displayExtraTraits, setDisplayExtraTraits] = useState({switch: false, traits:{}})
   // selecting extra trait, accumulate selected traits
   const [selectedTrait, setSelectedTrait] = useState({})
   // just a variable that saves results to display traits
@@ -29,7 +29,7 @@ function App() {
   let saveTraits = useRef({})
   // display activation indicator corresponding to its trait
   let displayactivation = useRef({})
-  // for saving info for comparison
+  // for saving info for comparison (Akali season 10)
   let traitHistory = useRef({'k/da': [false, 0], 'true damage': [false, 0]})
   
   // champion's cost array for displaying color
@@ -100,6 +100,8 @@ function App() {
       if(Object.keys(prev).length === 1){
         setDisplayClickedChampion([])
         setSelectedTrait({})
+        // extra trait box closed
+        setDisplayExtraTraits(prev => ({...prev, switch: false}))
       }
       if (prev[champ]) {
         const updatedList = { ...prev };
@@ -119,6 +121,8 @@ function App() {
     setSelectedChampion([]);
     // delete all the selected extra traits
     setSelectedTrait({})
+    // extra trait box closed
+    setDisplayExtraTraits(prev => ({...prev, switch: false}))
     // delete all the saved traits and their activation indicators
     displayactivation.current = {}
     // delete trait history for comparison (Akali)
@@ -144,8 +148,8 @@ const showExtraTraitHandler = () =>{
     })
   })
   setDisplayExtraTraits({
-    'switch': !displayExtraTraits.switch,
-    'trait': synergies
+    switch: !displayExtraTraits.switch,
+    trait: synergies
   })
 }
 // add selected traits to synergy, this function is to accumulate selected traits
@@ -174,12 +178,12 @@ return (
       />
       {Object.keys(championSelectedList).length !== 0 && 
         <>
-        <div style={{ display: 'flex', justifyContent: 'center', margin:'1.5em'}}>
-          <div className='reset' onClick={()=>saveHandler(championSelectedList)}>save</div> 
-          <div className='reset' onClick={()=>refreshHandler()}>reset</div> 
-          <div className='reset' onClick={()=>showExtraTraitHandler()}>{displayExtraTraits.switch ? 'Traits Close': 'Traits Open'}</div> 
+        <div className='buttons-container'>
+          <div className='buttons-wrapper' onClick={()=>saveHandler(championSelectedList)}>save</div> 
+          <div className='buttons-wrapper' onClick={()=>refreshHandler()}>reset</div> 
+          <div className='buttons-wrapper' onClick={()=>showExtraTraitHandler()}>{displayExtraTraits.switch ? 'Traits Close': 'Traits Open'}</div> 
           {/* button for deleting all the extra traits added */}
-          {Object.keys(selectedTrait).length !== 0 && <div className='reset' onClick={()=>deleteExtraTraitsFromSynergy()}>delete extra traits</div>}
+          {Object.keys(selectedTrait).length !== 0 && <div className='buttons-wrapper' onClick={()=>deleteExtraTraitsFromSynergy()}>delete extra traits</div>}
         </div>
         {/* button for display extra traits to add */}
           {displayExtraTraits.switch && 

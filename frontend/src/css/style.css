@@ -37,13 +37,20 @@
   color:rgb(228, 228, 228);
   font-size: 12px;
 }
-.reset {
+
+.buttons-container{
+  align-items: center;
+  gap: 15px;
+  display: flex;
+  justify-content: center;
+  margin: 1.5em;
+}
+.buttons-wrapper {
   border-radius: 5px;
   background-color: rgb(96, 96, 244);
   color: white;
   cursor: pointer;
   /* text-align: center; */
-  width: 49px;
   font-size: 15px;
   text-align: center;
   padding: 7px;
