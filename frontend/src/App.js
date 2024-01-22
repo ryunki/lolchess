@@ -173,6 +173,7 @@ showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayacti
 
 return (
     <div className='background' style={{padding: '50px 10%'}} >
+    
       {/* display all champions */}
       <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion} costArray={costArray}
       />
