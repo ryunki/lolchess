@@ -1,10 +1,21 @@
+import { useEffect } from 'react';
 
 import '../css/traits.css'
 import '../css/style.css';
 const Traits = ({ showAllTraits }) => {
 
 // this function for giving highlight effect for activated synergy
-const displayActivation = (trait, current, indicator) =>{
+// const displayActivation = ([trait, current, indicator]) =>{
+const displayActivation = (data) =>{
+  let trait = ''
+  let current = 0
+  let indicator = []
+  if(data){
+    trait = data[0]
+    current = data[1][0]
+    indicator = data[1][1]
+  }
+
   let activated = [false, 0]
 
   indicator.forEach((level,idx) =>{
@@ -44,13 +55,14 @@ const displayActivation = (trait, current, indicator) =>{
     </>
   }
 }
+
   return (
     <div className='trait-wrapper' style={{display: 'flex'}}>
         {
-          Object.entries(showAllTraits).map(([trait, value]) => {
+          Object.entries(showAllTraits).map(([trait, value],idx) => {
             return (
-              <div className='trait-background' key={trait} style={{display:'flex', textAlign:'center'}} >
-                  {displayActivation(trait, value[0], value[1])}
+              <div className='trait-background' key={idx} style={{display:'flex', textAlign:'center'}} >
+                  {displayActivation([trait,value])}
               </div>
             );
           })}
