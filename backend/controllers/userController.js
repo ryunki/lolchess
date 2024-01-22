@@ -2,6 +2,15 @@ const User = require('../models/UserModel');
 const { hashPassword, comparePasswords } = require('../utils/hashPassword');
 const generateAuthToken = require('../utils/generateAuthToken');
 
+const cookieOptions = {
+  // This can enhance security by reducing the risk of cross-site scripting (XSS) attacks.
+  httpOnly: true,
+  //  helps prevent cross-site request forgery (CSRF) attacks
+  sameSite: 'strict',
+  // the cookie will be sent only over HTTPS connections. It's recommended to use this option when your site is served over HTTPS.
+  secure: process.env.NODE_ENV === 'production',
+}
+
 // Define functions to handle user-related logic
 exports.getAllUsers = (req, res) => {
   // Logic to get all users
@@ -13,9 +22,35 @@ exports.getUserById = (req, res) => {
   // Send response
 };
 
-exports.loginUser = (req, res) => {
+exports.loginUser = async (req, res , next) => {
   // Logic to get a user by ID
   // Send response
+  try{
+    const {username, password} = req.body
+    if (!(username && password)){
+      return res.status(400).send('All inputs are required')
+    }
+    const user = await User.findOne({username})
+    const passwordsMatch = comparePasswords(password, user.password)
+    if (user && passwordsMatch) {
+      const cookieValue = generateAuthToken(user._id, user.username)
+  
+      res.cookie('access_token',cookieValue, cookieOptions)
+      .status(201).json({
+                success: "User logged in",
+                userLoggedIn: {
+                  _id: user._id,
+                  username: user.username,
+                  deck: user.deck
+                },
+              })
+    }else{
+      return res.status(401).send("wrong credentials");
+    }
+
+  }catch(err){
+    next(err);
+  }
 };
 
 exports.createUser = async (req, res, next) => {
@@ -33,27 +68,17 @@ exports.createUser = async (req, res, next) => {
     if (userExists) {
       return res.status(400).send('User exists');
     } else {
-      // // Create a token with a secret key
-      // const token = jwt.sign({ username, password }, process.env.SECRET_KEY, { expiresIn: '1h' });
-      // console.log(token)
       console.log(username, password)
       const hashedPassword = hashPassword(password);
+      // create a user 
       const user = await User.create({
         username: username.toLowerCase(),
         password: hashedPassword,
       });
-      res.cookie(
-        'access_token',
-        generateAuthToken(user._id, user.username),
-        {
-          // This can enhance security by reducing the risk of cross-site scripting (XSS) attacks.
-          httpOnly: true,
-          //  helps prevent cross-site request forgery (CSRF) attacks
-          sameSite: 'strict',
-          // the cookie will be sent only over HTTPS connections. It's recommended to use this option when your site is served over HTTPS.
-          secure: process.env.NODE_ENV === 'production',
-        }
-      ).status(201).json({
+      const cookieValue = generateAuthToken(user._id, user.username)
+
+      res.cookie('access_token',cookieValue, cookieOptions)
+        .status(201).json({
           success: 'User created',
           userCreated: {username: user.username},
         })
