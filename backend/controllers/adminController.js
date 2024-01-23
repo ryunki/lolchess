@@ -1,7 +1,6 @@
 const Champion = require('../models/ChampionModel');
 const Trait = require('../models/TraitModel');
 
-
 exports.getChampions = async (req, res, next) => {
   try{
     const champions = await Champion.find()

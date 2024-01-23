@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-// const middleware = require('./middleware')
+
 const apiRoutes = require('./routes/apiRoutes')
 
 // middleware that allows postman website to send data to express

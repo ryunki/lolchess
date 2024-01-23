@@ -4,7 +4,11 @@
   "description": "",
   "main": "hey.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server-dev": "npx nodemon server.js",
+    "client": "npm start --prefix ../frontend",
+    "dev": "concurrently --kill-others-on-fail \"npm run server-dev\" \"npm run client\""
+    
   },
   "keywords": [],
   "author": "",
@@ -17,6 +21,7 @@
     "mongoose": "^8.1.0"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.0.3"
   }
 }
