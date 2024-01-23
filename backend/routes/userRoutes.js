@@ -1,13 +1,14 @@
 const express = require('express');
+const app = express();
 const router = express.Router();
 const userController = require('../controllers/userController');
+const {verifyIsAdmin, verifyIsLoggedin} = require("../middleware/verifyAuthToken")
 
 // Define user-related routes
-router.get('/users', userController.getAllUsers);
-router.get('/users/:id', userController.getUserById);
-router.post('/users/login', userController.loginUser);
-router.post('/users/register', userController.createUser);
-router.put('/users/:id', userController.updateUser);
-router.delete('/users/:id', userController.deleteUser);
+router.post('/login', userController.loginUser);
+router.post('/register', userController.createUser);
+router.use(verifyIsLoggedin)
+router.put('/:id', userController.updateUser);
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

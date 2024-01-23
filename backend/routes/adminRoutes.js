@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
-
+const {verifyIsAdmin, verifyIsLoggedin} = require("../middleware/verifyAuthToken")
+router.use(verifyIsLoggedin)
+router.use(verifyIsAdmin)
 // Define admin-related routes
-
 router.get('/', adminController.getChampion);
 router.post('/champion', adminController.addChampion);
 router.post('/trait', adminController.addTrait);

@@ -1,10 +1,10 @@
 const express = require("express")
 const app = express()
+const router = express.Router();
 const adminRoutes = require("./adminRoutes")
 const userRoutes = require("./userRoutes")
 
-// for DB query
-app.use("/admin", adminRoutes)
 app.use("/users", userRoutes)
+app.use("/admin", adminRoutes)
 
 module.exports = app
