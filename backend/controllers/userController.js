@@ -15,6 +15,8 @@ const cookieOptions = {
 exports.getAllUsers = (req, res) => {
   // Logic to get all users
   // Send response
+  console.log('get all users')
+  res.send('hey')
 };
 
 exports.getUserById = (req, res) => {
@@ -68,7 +70,6 @@ exports.createUser = async (req, res, next) => {
     if (userExists) {
       return res.status(400).send('User exists');
     } else {
-      console.log(username, password)
       const hashedPassword = hashPassword(password);
       // create a user 
       const user = await User.create({

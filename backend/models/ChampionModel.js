@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 // Define the schema for the User model
 const championSchema = new mongoose.Schema({
-  name: { type: String},
-  cost: { type: Number},
+  name: { type: String, required: true, unique: true},
+  cost: { type: Number, required: true},
   traits: [{type: mongoose.Schema.Types.ObjectId, ref: 'TraitModel' }]
 });
 

@@ -19,7 +19,6 @@ exports.getChampion = async (req, res, next) => {
   res.send('get champion')
 };
 exports.addChampion = async (req, res, next) => {
-  console.log('hey')
   try{
     const {name, cost} = req.body
     if(!(name, cost)){
