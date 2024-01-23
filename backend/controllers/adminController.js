@@ -1,22 +1,16 @@
 const Champion = require('../models/ChampionModel');
 const Trait = require('../models/TraitModel');
 
-const { hashPassword, comparePasswords } = require('../utils/hashPassword');
-const generateAuthToken = require('../utils/generateAuthToken');
 
-const cookieOptions = {
-  // This can enhance security by reducing the risk of cross-site scripting (XSS) attacks.
-  httpOnly: true,
-  //  helps prevent cross-site request forgery (CSRF) attacks
-  sameSite: 'strict',
-  // the cookie will be sent only over HTTPS connections. It's recommended to use this option when your site is served over HTTPS.
-  secure: process.env.NODE_ENV === 'production',
-}
-
-
-exports.getChampion = async (req, res, next) => {
-  console.log('hey')
-  res.send('get champion')
+exports.getChampions = async (req, res, next) => {
+  try{
+    const champions = await Champion.find()
+    res.json({
+      champions
+    })
+  }catch(err){
+    next(err)
+  }
 };
 exports.addChampion = async (req, res, next) => {
   try{
