@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const championSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true},
   cost: { type: Number, required: true},
-  traits: [{type: mongoose.Schema.Types.ObjectId, ref: 'TraitModel' }]
+  traits: [{type: mongoose.Schema.Types.ObjectId, ref: 'Trait' }]
 });
 
 // Create the User model using the schema

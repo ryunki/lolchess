@@ -1,10 +1,12 @@
 const express = require('express')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 const app = express()
 
 // Enable CORS for all routes
 app.use(cors());
-
+// Enable for express() to read cookie coming from browser
+app.use(cookieParser())
 const apiRoutes = require('./routes/apiRoutes')
 
 // middleware that allows postman website to send data to express

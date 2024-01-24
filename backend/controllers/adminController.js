@@ -3,7 +3,8 @@ const Trait = require('../models/TraitModel');
 
 exports.getChampions = async (req, res, next) => {
   try{
-    const champions = await Champion.find()
+    // populate traits by name
+    const champions = await Champion.find().populate('traits', 'name')
     res.json({
       champions
     })
@@ -13,28 +14,41 @@ exports.getChampions = async (req, res, next) => {
 };
 exports.addChampion = async (req, res, next) => {
   try{
-    const {name, cost} = req.body
-    if(!(name, cost)){
+    const {name, cost, traits} = req.body
+    console.log(name, cost, traits)
+    if(!(name, cost) && traits){
       return res.status(400).send('All inputs are required')
     }
     const championExists = await Champion.findOne({name})
     if (championExists){
       return res.status(400).send('Champion Exists')
     }else{
-      const champion = await Champion.create({name, cost})
+      const champion =  await Champion.create({name, cost, traits})
       res.status(201).json({
         success: 'Champion created',
         championCreated: {
           name: champion.name,
-          cost: champion.cost
+          cost: champion.cost,
+          traits: champion.traits
         },
       })
     }
   }catch(err){
     next(err)
   }
-  
 };
+
+exports.getTraits = async (req, res, next) => {
+  try{
+    const traits = await Trait.find()
+    res.json({
+      traits
+    })
+  }catch(err){
+    next(err)
+  }
+};
+
 exports.addTrait = async (req, res, next) => {
   try{
     const {name, champions, activation} = req.body
