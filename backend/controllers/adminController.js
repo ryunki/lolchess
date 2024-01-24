@@ -15,7 +15,6 @@ exports.getChampions = async (req, res, next) => {
 exports.addChampion = async (req, res, next) => {
   try{
     const {name, cost, traits} = req.body
-    console.log(name, cost, traits)
     if(!(name, cost) && traits){
       return res.status(400).send('All inputs are required')
     }
@@ -51,15 +50,16 @@ exports.getTraits = async (req, res, next) => {
 
 exports.addTrait = async (req, res, next) => {
   try{
-    const {name, champions, activation} = req.body
-    if(!name && champions.length !== 0 && activation.length !== 0){
+    const {name, activation} = req.body
+    if(!name && activation.length !== 0){
       return res.status(400).send('All inputs are required')
     }
+    console.log(name, activation)
     const traitExists = await Trait.findOne({name})
     if (traitExists){
       return res.status(400).send('Trait Exists')
     }else{
-      const trait = await Trait.create({name, champions, activation})
+      const trait = await Trait.create({name, activation})
       res.status(201).json({
         success: 'Trait created',
         traitCreated: {
