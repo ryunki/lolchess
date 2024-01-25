@@ -25,11 +25,7 @@ exports.addChampion = async (req, res, next) => {
       const champion =  await Champion.create({name, cost, traits})
       res.status(201).json({
         success: 'Champion created',
-        championCreated: {
-          name: champion.name,
-          cost: champion.cost,
-          traits: champion.traits
-        },
+        championCreated: champion,
       })
     }
   }catch(err){
@@ -39,7 +35,8 @@ exports.addChampion = async (req, res, next) => {
 
 exports.getTraits = async (req, res, next) => {
   try{
-    const traits = await Trait.find()
+    const traits = await Trait.find().populate('champions','champion')
+    
     res.json({
       traits
     })
@@ -54,7 +51,6 @@ exports.addTrait = async (req, res, next) => {
     if(!name && activation.length !== 0){
       return res.status(400).send('All inputs are required')
     }
-    console.log(name, activation)
     const traitExists = await Trait.findOne({name})
     if (traitExists){
       return res.status(400).send('Trait Exists')
@@ -62,11 +58,7 @@ exports.addTrait = async (req, res, next) => {
       const trait = await Trait.create({name, activation})
       res.status(201).json({
         success: 'Trait created',
-        traitCreated: {
-          name: trait.name,
-          champions: trait.champions,
-          activation: trait.activation
-        },
+        traitCreated: trait,
       })
     }
   }catch(err){

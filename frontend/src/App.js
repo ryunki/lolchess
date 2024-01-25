@@ -2,9 +2,9 @@
 import { createBrowserRouter as Router, RouterProvider } from 'react-router-dom';
 
 import Home from './pages/Home'
-import AdminPage from './pages/AdminPage'
-import AdminChampions from './components/admin/AdminChampions';
-import AdminTraits from './components/admin/AdminTraits';
+import AdminPage from './pages/admin/AdminPage'
+import AdminChampions from './pages/admin/AdminChampions';
+import AdminTraits from './pages/admin/AdminTraits';
 import ErrorPage from "./error-page";
 
 import './css/ChampionsList.css';

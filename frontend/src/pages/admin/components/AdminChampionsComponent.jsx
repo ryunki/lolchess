@@ -2,74 +2,38 @@
 import axios from "axios"
 import { useEffect, useState, useRef, useCallback } from "react"
 
-
-const AdminChampions = () => {
+const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editChampion}) => {
   // display champions from DB
-  const [displayChampions, setDisplayChampions] = useState([])
+  const [displayChampions, setDisplayChampions] = useState({})
   const [championUpdateMessage, setChampionUpdateMessage] = useState('')
   // display traits for selection
   const [displayTraits, setDisplayTraits] = useState([])
   // save all the traits a user selected for updating
   const [addTraits, setAddTraits] = useState({})
-  // for adding new champion
+  // data for adding new champion
   const [name, setName] = useState('')
   const [cost, setCost] = useState('')
+  // data for editing champion
   const [editName, setEditName] = useState('')
   const [editCost, setEditCost] = useState('')
   
-  // for opening edit field selected
+  // for opening edit field selected, and not displaying traits for adding new champion section
   const [editChampId, setEditChampId] = useState('')
+  
+  const [rerender, setRerender] = useState(false)
 
+  // controlling focus for edit section (input fields)
   const detectClickOtherThanEdit = useRef()
   const detectClickOtherThanEdit2 = useRef()
 
-  const getChampions = async () => {
-    const {data} = await axios.get('/api/admin/champions')
-    console.log(data)
-    setDisplayChampions(data.champions)
-    return data
-  }
-
-  const getTraits = async () => {
-    const {data} = await axios.get('/api/admin/traits')
-    console.log(data.traits)
-    setDisplayTraits(data.traits)
-  }
-
-  const addNewChampion = async() =>{
-    const traitId = []
-    Object.entries(addTraits).forEach(([trait, id ])=>{
-      // console.log(trait, id)
-      traitId.push(id)
-    })
-    await axios.post('/api/admin/champion', {
-      name:name,
-      cost:parseInt(cost),
-      traits: traitId
-    }).then(res=>{
-      const message = res.data.success
-      getChampions()
-      setChampionUpdateMessage(message)
-    }).catch(error=>{
-      console.log(error)
-    })
-  }
-
-  const editChampion = async(id) =>{
-    const traitId = []
-    Object.entries(addTraits).forEach(([trait, id])=>{
-      // console.log(trait, id)
-      traitId.push(id)
-    })
-    await axios.put(`/api/admin/champion/${id}`, {
-      name:editName,
-      cost:parseInt(editCost),
-      traits: traitId
-    }).then(res=>{
-      const message = res.data.success
-      getChampions()
+  const deleteChampionHandler = async(id) =>{
+    await axios.delete(`/api/admin/champion/${id}`).then(res=>{
+      const message = res.data
+      console.log(message)
+      // getChampions()
       setChampionUpdateMessage(message)
       setEditChampId('')
+      setRerender(!rerender)
     }).catch(error=>{
       console.log(error)
     })
@@ -77,7 +41,13 @@ const AdminChampions = () => {
   
   const addNewChampionSubmit = (e) =>{
     e.preventDefault()
-    addNewChampion()
+    addNewChampion(name, cost, addTraits).then(res=>{
+      const message = res.success
+      setDisplayChampions(prev => ({...prev, [Object.keys(prev).length]: res.championCreated}))
+      setChampionUpdateMessage(message)
+    }).catch(error=>{
+      console.log(error)
+    })
     setName('')
     setCost('')
     setAddTraits({})
@@ -85,13 +55,21 @@ const AdminChampions = () => {
 
   const editChampionSubmit = (e, id) => {
     e.preventDefault()
-    editChampion(id)
+    editChampion(id, editName, editCost, addTraits).then(res=>{
+      const message = res.success
+      setChampionUpdateMessage(message)
+      setEditChampId('')
+      setRerender(!rerender)
+    }).catch(error=>{
+      console.log(error)
+    })
     setEditName('')
     setEditCost('')
     setAddTraits({})
   }
 
-  const editHandler = (champ) => {
+  // when edit button is clicked
+  const editButtonClickHandler = (champ) => {
     const {_id, name, cost, traits} = champ
     setEditChampId(_id)
     // display existing data, when edit button is clicked
@@ -118,7 +96,6 @@ const AdminChampions = () => {
   }
 
   const deleteTrait = (trait) => {
-    console.log(trait)
     setAddTraits(prev=>{
       if(prev[trait]){
         // This is using object destructuring assignment. 
@@ -130,10 +107,28 @@ const AdminChampions = () => {
       }
     })
   }
+  useEffect(()=>{
+    console.log('useEffect : get champions')
+    getChampions().then(res=>{
+      console.log(res)
+      setDisplayChampions(res.champions)
+    }).catch(error=>{
+      console.log(error)
+    })
+    
+  },[rerender])
+
+  useEffect(()=>{
+    console.log('useEffect : get traits')
+    getTraits().then(res=>{
+      setDisplayTraits(res.traits)
+    }).catch(error=>{
+      console.log(error)
+    })
+  },[])
 
   useEffect(() => {
-    getChampions()
-    getTraits()
+    console.log('click use Effect')
     const handleClickOutside = (e) =>{
       if (detectClickOtherThanEdit.current && !detectClickOtherThanEdit.current.contains(e.target)){
         if (detectClickOtherThanEdit2.current && !detectClickOtherThanEdit2.current.contains(e.target)){
@@ -147,10 +142,10 @@ const AdminChampions = () => {
     document.addEventListener('mousedown', handleClickOutside)
     // Remove event listener when the component unmounts
     return () => {
-      document.addEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
-  
+console.log('AC component')
   return (
     <>
       <div>AdminChampions</div>
@@ -161,14 +156,16 @@ const AdminChampions = () => {
           <label htmlFor="cost">Cost</label>
           <input type="number" id="cost" name="cost" value={cost} onChange={(e)=>{setCost(e.target.value)}} required />
           {/* <input type="text" */}
-          {/* if edit button is clicked, do not show traits here! */}
+          {/* if edit button is clicked, do not show traits here! (adding new champion section) */}
+          {/* otherwise, show traits to be added to new champion */}
           {!editChampId && <>
-              {Object.keys(addTraits).length !== 0 && <div>Traits</div>}
+              {/* {Object.keys(addTraits).length !== 0 && <div>Traits</div>}
               {Object.keys(addTraits).length !== 0 && Object.keys(addTraits).map((trait,idx)=>(
-                <div key={idx}>
+                <div key={addTraits[trait]}>
                   <div>{trait} </div><div onClick={()=>deleteTrait(trait)}>delete</div> 
                 </div>
-              ))}
+              ))} */}
+              <DisplayAddedTraits addTraits={addTraits} deleteTrait={deleteTrait}/>
             </>
           }
           {/* {Object.entries(addTraits).map(([key,value]))} */}
@@ -178,31 +175,34 @@ const AdminChampions = () => {
         {championUpdateMessage && championUpdateMessage}
       </div>
       {/* display all champion with cost and traits */}
-      {displayChampions.length !== 0 && displayChampions.map((champ,idx)=>(
-      <div key={idx}>
-        {/* when user clicks edit button, field appears */}
+      {displayChampions && Object.entries(displayChampions).map(([key,champ])=>(
+      <div key={champ._id}>
+        {/* {console.log(champ)} */}
+        {/* when user clicks edit button, input field appears */}
         {editChampId === champ._id ? 
-        <form ref={detectClickOtherThanEdit} onSubmit={e=>editChampionSubmit(e,champ._id)} key={champ._id}>
-        {/* <form onSubmit={e=>editChampionSubmit(e,champ._id)} key={champ._id}> */}
+        <form ref={detectClickOtherThanEdit} onSubmit={e=>editChampionSubmit(e,champ._id)}>
           <label htmlFor="editName">Name</label>
             <input type="text" id="editName" name="editName" value={editName} placeholder={champ.name} onChange={(e)=>{setEditName(e.target.value)}} required />
           <label htmlFor="editCost">Cost</label>
             <input type="number" id="editCost" name="editCost" value={editCost} placeholder={champ.cost} onChange={(e)=>{setEditCost(e.target.value)}} required />
-            {Object.keys(addTraits).length !== 0 && <div>Traits</div>}
-              {Object.keys(addTraits).length !== 0 && Object.keys(addTraits).map((trait,idx)=>(
-                <div key={idx}>
+            {/* {Object.keys(addTraits).length !== 0 && <div>Traits</div>}
+              {Object.keys(addTraits).length !== 0&& Object.keys(addTraits).map((trait,idx)=>(
+                <div key={addTraits[trait]}>
+                  {console.log(trait)}
                   <div>{trait} </div><div onClick={()=>deleteTrait(trait)}>delete</div> 
                 </div>
-              ))}
+              ))} */}
+              <DisplayAddedTraits addTraits={addTraits} deleteTrait={deleteTrait}/>
 
           <button type="submit">edit</button>
         </form>
           : 
-          <div key={champ._id}>name: {champ.name}, cost: {champ.cost} 
+          <div> name: {champ.name}, cost: {champ.cost} 
             {(champ.traits).length !== 0 && (champ.traits).map((trait,idx)=>(
               <div key={trait._id}>{trait.name}</div>
             ))}
-            <button onClick={()=>editHandler(champ)}>edit</button>
+            <button onClick={()=>editButtonClickHandler(champ)}>edit</button>
+            <button onClick={()=>deleteChampionHandler(champ._id)}>delete</button>
           </div>
         }
         </div>
@@ -219,4 +219,16 @@ const AdminChampions = () => {
   )
 }
 
-export default AdminChampions
+const DisplayAddedTraits = ({addTraits,deleteTrait}) =>{
+  return (
+    <>
+      {Object.keys(addTraits).length !== 0 && <div>Traits</div>}
+      {Object.keys(addTraits).length !== 0&& Object.keys(addTraits).map((trait,idx)=>(
+        <div key={addTraits[trait]}>
+          <div>{trait} </div><div onClick={()=>deleteTrait(trait)}>delete</div> 
+        </div>
+      ))}
+    </>
+  )
+}
+export default AdminChampionsComponent

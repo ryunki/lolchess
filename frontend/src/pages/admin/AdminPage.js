@@ -1,4 +1,4 @@
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { Form, useNavigate, NavLink, Outlet  } from 'react-router-dom';
 
 const AdminPage = ({showLogin, setShowLogin}) => {
