@@ -4,6 +4,8 @@ import { Form, useNavigate, NavLink  } from 'react-router-dom';
 
 import axios from 'axios'
 
+import '../css/Header.css'
+
 const Header = ({showLogin, setShowLogin}) => {
 
   const [username, setUsername] = useState('')
@@ -37,20 +39,24 @@ const Header = ({showLogin, setShowLogin}) => {
     localStorage.clear()
   }
   return (
-    <div>
+    <div className="header-container">
       {showLogin ?
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">username</label>
-            <input onChange={(e)=>{setUsername(e.target.value)}} 
-              type="text" id="username" name="username" value={username} required/>
-          <label htmlFor="password">password</label>
-            <input onChange={(e)=>{setPassword(e.target.value)}} 
-              type="password" id="password" name="password" value={password} required/>
-          <button type="submit">submit</button>
-        </form>
-    :<div style={{display:'flex', gap:'5px'}}>welcome 
-      <div onClick={()=>navigate('/admin')}>admin page</div>
-      <div onClick={()=>logoutHandler()}>logout</div>
+        <div className="header-wrapper">
+          <div>
+            <label className="label font-white" htmlFor="username">User name</label>
+              <input className="login-input-field" onChange={(e)=>{setUsername(e.target.value)}} 
+                type="text" id="username" name="username" value={username} required/>
+          </div>
+          <div>
+            <label className="label font-white" htmlFor="password">Password</label>
+              <input className="login-input-field" onChange={(e)=>{setPassword(e.target.value)}} 
+                type="password" id="password" name="password" value={password} required/>
+          </div>
+          <button className="login-button" onClick={handleSubmit}>Login</button>
+        </div>
+    :<div className="header-wrapper-admin font-white">
+      <div onClick={()=>navigate('/admin')} style={{alignSelf: 'center'}}>Admin page</div>
+        <button className="login-button" onClick={()=>logoutHandler()}>Logout</button>
       </div>}
     </div>
   )

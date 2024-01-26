@@ -1,4 +1,5 @@
 import Header from '../../components/Header';
+import '../../css/AdminPage.css'
 import { Form, useNavigate, NavLink, Outlet  } from 'react-router-dom';
 
 const AdminPage = ({showLogin, setShowLogin}) => {
@@ -6,10 +7,10 @@ const AdminPage = ({showLogin, setShowLogin}) => {
     <>
       <Header showLogin={showLogin} setShowLogin={setShowLogin}/>
     
-      <div style={{display:'flex', gap:'10px'}}>
-          <NavLink to={'/admin/champions'}>Champions</NavLink>
-          <NavLink to={'/admin/traits'}>Traits</NavLink>
-          <NavLink to={'/'}>Back to home</NavLink>
+      <div className='navbar'>
+          <NavLink to='/admin/champions' className={({isActive})=>(isActive?`active`:`inactive`)}>Champions</NavLink>
+          <NavLink to='/admin/traits' className={({isActive})=>(isActive?'active':'inactive')}>Traits</NavLink>
+          <NavLink to='/' className={({isActive})=>(isActive?'active':'inactive')}>Back to home</NavLink>
       </div>
       <Outlet/>
     </>

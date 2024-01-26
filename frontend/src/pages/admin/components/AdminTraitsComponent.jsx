@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
+import '../../../css/AdminPage.css'
+
 const AdminTraitsComponent = ({getTraits, addTrait}) => {
   // display traits
   const [displayTraits, setDisplayTraits] = useState([])
@@ -59,13 +61,12 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
       setActivationList([...activationList, parseInt(e.target.value)])
     }
   }
+
   const deleteActivation = () => {
     setActivationList([])
   }
 
-
   useEffect(() => {
-    console.log('use Effect')
     getTraits().then(res=>{
       setDisplayTraits(res.traits)
     }).catch(error=>{
@@ -74,33 +75,49 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
   }, [rerender])
 
   return (
-    <>
-      <div>AdminTraits</div>
-      <div>
-        <label>Trait Name</label>
-        <input type='text' id='trait' name='trait' value={trait} onChange={e=>setTrait(e.target.value)}/>
-        <label>Activation</label>
-        <input type='number' id='activation' name='activation' value={activation} onKeyDown={handleKeyDown} onChange={e=>setActivation(e.target.value)}/>
-        <button onClick={addNewTraitSubmit}>Submit</button>
-        <div>Entered trait name:</div>
+    <div className="container">
+      <div className="page-title">AdminTraits</div>
+      <div className="input-container">
+        <div className="input-wrapper">
+          <label>Trait Name</label>
+          <input type='text' id='trait' name='trait' value={trait} onChange={e=>setTrait(e.target.value)}/>
+        </div>
+        <div className="input-wrapper">
+          <label>Activation</label>
+          <input className="small" type='number' id='activation' name='activation' value={activation} onKeyDown={handleKeyDown} onChange={e=>setActivation(e.target.value)}/>
+        </div>
+        <div >
+          <div className="display-button" onClick={()=>addNewTraitSubmit()}>Add</div>
+        </div>
+      </div>
+      {trait && 
+      <div className="display-input-data ">
         <div>{trait}</div>
           {activationList.length !== 0 && 
-          <>
-            <div>Entered activation:</div><div onClick={()=>deleteActivation()}>delete</div>
-            <div>[{activationList.join(',')}]</div>
-          </>
-        }
-      </div>
-      {traitUpdateMessage && traitUpdateMessage}
-      {displayTraits && 
-        Object.values(displayTraits).map((item,idx)=>(
-          <div key={item._id}>
-            <div>name: {item.name}</div>
-            <div>activation: [{item.activation.length > 0 ? item.activation.join(',') : item.activation}]</div>
-            <button onClick={()=>deleteTraitHandler(item._id)}>delete</button>
+          <div className="added-trait-wrapper display-trait">
+            <div className="display-button-delete" onClick={()=>deleteActivation()}>delete</div>
+            <div className="display-trait">[ {activationList.join(', ')} ]</div>
           </div>
-      ))}
-    </>
+          }
+      </div>
+      }
+        {traitUpdateMessage && 
+          <div className="display-updated-message">
+            {traitUpdateMessage}
+          </div>
+        }
+        {Object.keys(displayTraits).length !== 0 && 
+        <div className="traits-container-trait-page">
+          {Object.values(displayTraits).map((item,idx)=>(
+            <div className="input-container-display-champions"key={item._id}>
+              <div>{item.name}</div>
+              <div className="display-trait">[ {item.activation.length > 0 ? item.activation.join(', ') : item.activation} ]</div>
+              <div className="display-button-delete" onClick={()=>deleteTraitHandler(item._id)}>delete</div>
+            </div>
+          ))}
+        </div>
+        }
+    </div>
   )
 }
 
