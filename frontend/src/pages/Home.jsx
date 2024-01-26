@@ -14,7 +14,7 @@ import '../css/ChampionsList.css';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
 
-const Home = ({showLogin, setShowLogin}) => {
+const Home = ({showLogin, setShowLogin,backToAdmin, setBackToAdmin}) => {
   // display login fields
   // const [showLogin, setShowLogin] = useState(Boolean)
   // display selected champion -> [stores name, traits]
@@ -181,7 +181,7 @@ showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayacti
 
   return (
     <>
-      <Header showLogin={showLogin} setShowLogin={setShowLogin}/>
+      <Header showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>
       {/* <Header/> */}
     <div className='background' style={{padding: '50px 10%'}} >
       {/* display all champions */}

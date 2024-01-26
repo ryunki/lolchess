@@ -6,7 +6,7 @@ import axios from 'axios'
 
 import '../css/Header.css'
 
-const Header = ({showLogin, setShowLogin}) => {
+const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -25,11 +25,12 @@ const Header = ({showLogin, setShowLogin}) => {
           setShowLogin(false)
           if(userLoggedIn.username === 'admin'){
             navigate('/admin')
+            setBackToAdmin(false)
           }
         }
       })
       .catch(error => {
-        console.error(error.response.data.message ? error.response.data.message : error.response.data )
+        console.error(error )
       })
   }
 
@@ -38,6 +39,14 @@ const Header = ({showLogin, setShowLogin}) => {
     navigate('/')
     localStorage.clear()
   }
+  const redirectHandler = () => {
+    if(!backToAdmin){
+      setBackToAdmin(true)
+    }else{
+      setBackToAdmin(false)
+      navigate('/admin')
+    }
+}
   return (
     <div className="header-container">
       {showLogin ?
@@ -55,7 +64,7 @@ const Header = ({showLogin, setShowLogin}) => {
           <button className="login-button" onClick={handleSubmit}>Login</button>
         </div>
     :<div className="header-wrapper-admin font-white">
-      <div onClick={()=>navigate('/admin')} style={{alignSelf: 'center'}}>Admin page</div>
+      <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>{backToAdmin ? 'Back to Admin Page' : 'Admin'}</div>
         <button className="login-button" onClick={()=>logoutHandler()}>Logout</button>
       </div>}
     </div>

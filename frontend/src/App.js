@@ -15,18 +15,19 @@ import {useState, useEffect} from 'react'
 
 
 function App() {
-  const [showLogin, setShowLogin] = useState(Boolean)
-  // const [isAdmin, setIsAdmin] = useState(false)
-  // const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showLogin, setShowLogin] = useState(true)
+  // to switch text in the header for admin
+  const [backToAdmin, setBackToAdmin] = useState(false)
+
   const router = Router([
     {
       path: "/",
-      element: <Home showLogin={showLogin} setShowLogin={setShowLogin}/>,
+      element: <Home showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>,
       errorElement: <ErrorPage/>
     },
     {
       path:"admin",
-      element: <AdminPage showLogin={showLogin} setShowLogin={setShowLogin}/>,
+      element: <AdminPage showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>,
       children: [
         {
           path:"champions",
