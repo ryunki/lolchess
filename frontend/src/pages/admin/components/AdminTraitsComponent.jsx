@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import {  useSetRecoilState, useRecoilValue } from 'recoil'
+import { userInfo,logoutSelector } from '../../../recoil/stateAtoms';
 
 import '../../../css/AdminPage.css'
 
@@ -16,6 +18,8 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
   // for displaying updated traits after deleting one
   const [rerender, setRerender] = useState(false)
 
+  const {logout} = useRecoilValue(logoutSelector);
+  const userRecoil = useSetRecoilState(userInfo)
 
   const deleteTraitHandler = async (id) =>{
     await axios.delete(`/api/admin/trait/${id}`).then(res=>{
@@ -70,7 +74,8 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
     getTraits().then(res=>{
       setDisplayTraits(res.traits)
     }).catch(error=>{
-      window.location.href = '/'
+      logout()
+      userRecoil('')
       console.log(error)
     })
   }, [rerender])

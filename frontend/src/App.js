@@ -15,8 +15,6 @@ import './css/style.css';
 import { useState, useEffect } from 'react';
 
 function App() {
-  // switch login/logout button
-  const [showLogin, setShowLogin] = useState(true);
   // to switch text in the header for admin
   const [backToAdmin, setBackToAdmin] = useState(false);
   
@@ -28,7 +26,7 @@ function App() {
     <div className="background">
       <RecoilRoot>
         <Router>
-          <Header showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>
+          <Header backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<AdminPage clickToHomePage={clickToHomePage}/>}>
@@ -43,3 +41,4 @@ function App() {
 }
 
 export default App;
+

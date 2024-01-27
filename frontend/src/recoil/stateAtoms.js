@@ -1,8 +1,9 @@
-import { atom} from 'recoil';
+import axios from 'axios';
+import { atom, selector, useRecoilState} from 'recoil';
 
 export const userInfo = atom({
   key: 'userInfo',
-  default: localStorage.getItem('userInfo') || null,
+  default: JSON.parse(localStorage.getItem('userInfo')) || null,
 });
 
 export const userDeck = atom({
@@ -12,3 +13,16 @@ export const userDeck = atom({
     champions:[],
   }],
 });
+
+export const logoutSelector = selector({
+  key:'logoutSelector',
+  get: ({get}) => {
+    return {
+      logout: ()=>{
+      localStorage.clear()
+      // document.location.href = "/";
+      axios.get('/api/logout')
+    }
+  }
+  }
+})

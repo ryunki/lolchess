@@ -1,18 +1,20 @@
 // @ts-nocheck
 import {useState} from 'react'
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { userInfo } from '../recoil/stateAtoms';
+import { useNavigate,useLocation  } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userInfo,logoutSelector } from '../recoil/stateAtoms';
 
 import axios from 'axios'
 
 import '../css/Header.css'
 
-const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
+const Header = ({backToAdmin, setBackToAdmin}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [userRecoil, setUserRecoil] = useRecoilState(userInfo);
+  const {logout} = useRecoilValue(logoutSelector);
   const navigate = useNavigate()
+  const location = useLocation()
   const handleSubmit = async (e) =>{
     e.preventDefault()
     await axios.post('/api/users/login', {username,password})
@@ -22,7 +24,6 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
           localStorage.setItem('userInfo',JSON.stringify(userLoggedIn))
           setUsername('')
           setPassword('')
-          setShowLogin(false)
           if(userLoggedIn.username === 'admin'){
             setBackToAdmin(false)
             navigate('/admin')
@@ -39,23 +40,24 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
   }
 
   const logoutHandler = async () => {
-    setShowLogin(true)
-    localStorage.clear()
-    await axios.get('/api/logout')
+    setUserRecoil('')
+    logout()
     navigate('/')
-    console.log('logout')
-    
   }
   const redirectHandler = () => {
+    console.log(location)
     if(backToAdmin){
+      if(location.pathname === '/'){
+        return setBackToAdmin(true)
+      }
       navigate('/admin')
       setBackToAdmin(false)
     }
 }
-
+console.log(userRecoil)
   return (
     <div className="header-container">
-      {showLogin ?
+      {!userRecoil ?
         <div className="header-wrapper">
           <div>
             <label className="label font-white" htmlFor="username">User name</label>
@@ -70,7 +72,9 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
           <button className="login-button" onClick={handleSubmit}>Login</button>
         </div>
     :<div className="header-wrapper-admin font-white">
-      <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>{userRecoil.username==='admin' ? (backToAdmin ? 'Back to Admin Page' : 'Admin'):
+      <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>
+        {/* this logic is to prevent misbehaviors when refreshing the website */}
+        {userRecoil.username==='admin' ? (backToAdmin || location.pathname === '/' ? 'Back to Admin Page' : 'Admin'):
       'Welcome '+userRecoil.username+'!'}</div>
         <button className="login-button" onClick={()=>logoutHandler()}>Logout</button>
       </div>}

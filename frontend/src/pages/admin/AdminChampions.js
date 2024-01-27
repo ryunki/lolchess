@@ -33,8 +33,6 @@ const AdminChampions = () => {
 
   const editChampion = async(id, editName, editCost, addTraits) =>{
     const traitId = collectTraitsId(addTraits)
-    console.log(id, editName, editCost, addTraits)
-    console.log(traitId)
     const {data} = await axios.put(`/api/admin/champion/${id}`, {
       name:editName,
       cost:parseInt(editCost),

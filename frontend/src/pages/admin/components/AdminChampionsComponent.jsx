@@ -1,7 +1,8 @@
 // @ts-nocheck
 import axios from "axios"
 import React, { useEffect, useState, useRef, useCallback } from "react"
-
+import {  useSetRecoilState, useRecoilValue } from 'recoil'
+import { userInfo,logoutSelector } from '../../../recoil/stateAtoms';
 import '../../../css/AdminPage.css'
 
 const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editChampion}) => {
@@ -23,6 +24,8 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
   const [editChampId, setEditChampId] = useState('')
   
   const [rerender, setRerender] = useState(false)
+  const {logout} = useRecoilValue(logoutSelector);
+  const userRecoil = useSetRecoilState(userInfo)
 
   // controlling focus for edit section (input fields)
   const detectClickOtherThanEdit = useRef()
@@ -115,7 +118,8 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
       console.log(res)
       setDisplayChampions(res.champions)
     }).catch(error=>{
-      window.location.href = '/'
+      logout()
+      userRecoil('')
       console.log(error)
     })
     
