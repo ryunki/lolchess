@@ -1,6 +1,6 @@
 // @ts-nocheck
-import {useState, useEffect, createContext, useContext} from 'react'
-import { Form, NavLink, useNavigate } from 'react-router-dom';
+import {useState} from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios'
 
@@ -16,7 +16,7 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin, token, se
       .then(response =>{
         const {success, userLoggedIn} = response.data
         if(success === 'User logged in'){
-          // localStorage.setItem('userInfo',JSON.stringify(userLoggedIn))
+          localStorage.setItem('userInfo',JSON.stringify(userLoggedIn))
           setUsername('')
           setPassword('')
           setShowLogin(false)
@@ -37,14 +37,13 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin, token, se
 
   const logoutHandler = async () => {
     setShowLogin(true)
-    // localStorage.clear()
+    localStorage.clear()
     await axios.get('/api/logout')
     navigate('/')
     console.log('logout')
     
   }
   const redirectHandler = () => {
-    console.log("backtoAdmin: ",backToAdmin)
     if(backToAdmin){
       navigate('/admin')
       setBackToAdmin(false)

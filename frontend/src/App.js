@@ -31,10 +31,9 @@ function App() {
         <Router>
           <Header showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin} token={token} setToken={setToken}/>
           <Routes>
-            {/* {console.log(token)} */}
+       
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<AdminPage clickToHomePage={clickToHomePage} token={token} setToken={setToken}/>}>
-                {/* <Route element={<AdminPage clickToHomePage={clickToHomePage} />}/> */}
                 <Route path="/admin/champions" element={<AdminChampions />} />
                 <Route path="/admin/traits" element={<AdminTraits />} />
             </Route>

@@ -6,7 +6,7 @@ const generateAuthToken = (_id, username) => {
     { _id, username },
     process.env.JWT_SECRET_KEY,
     // set expired time
-    { expiresIn: "7h" }
+    { expiresIn: "10s" }
   );
 };
 module.exports = generateAuthToken

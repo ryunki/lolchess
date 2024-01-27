@@ -36,7 +36,6 @@ exports.addChampion = async (req, res, next) => {
 exports.getTraits = async (req, res, next) => {
   try{
     const traits = await Trait.find().populate('champions','champion')
-    
     res.json({
       traits
     })

@@ -12,7 +12,6 @@ import {dataForTraitsAndRecommendation } from '../functions'
 
 import '../css/ChampionsList.css';
 import '../css/style.css';
-import { useNavigate } from 'react-router-dom';
 
 const Home = ({showLogin, setShowLogin,backToAdmin, setBackToAdmin}) => {
   // display login fields
@@ -36,7 +35,6 @@ const Home = ({showLogin, setShowLogin,backToAdmin, setBackToAdmin}) => {
   // for saving info for comparison (Akali season 10)
   let traitHistory = useRef({'k/da': [false, 0], 'true damage': [false, 0]})
   
-  const navigate = useNavigate()
   // champion's cost array for displaying color
   const costArray = ['', 'one', 'two', 'three', 'four', 'five'];
 
@@ -168,10 +166,7 @@ const addExtraTraitHandler = (trait) => {
     }}
   )
 }
-// const logoutHandler = () => {
-//   setShowLogin(true)
-//   localStorage.clear()
-// }
+
 const deleteExtraTraitsFromSynergy = () =>{
   // delete all the selected extra traits
   setSelectedTrait({})
@@ -181,8 +176,6 @@ showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayacti
 
   return (
     <>
-      <Header showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>
-      {/* <Header/> */}
     <div className='background' style={{padding: '50px 10%'}} >
       {/* display all champions */}
       <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion} costArray={costArray}

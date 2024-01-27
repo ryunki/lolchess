@@ -1,6 +1,5 @@
 // @ts-nocheck
 import axios from "axios"
-import { useEffect, useState, useRef, useCallback } from "react"
 import AdminChampionsComponent from "./components/AdminChampionsComponent"
 
 
