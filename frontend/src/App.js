@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {RecoilRoot,atom,selector,useRecoilState,useRecoilValue} from 'recoil';
+
 
 import Home from './pages/Home';
 import AdminPage from './pages/admin/AdminPage';
@@ -11,12 +13,8 @@ import './css/ChampionsList.css';
 import './css/style.css';
 
 import { useState, useEffect } from 'react';
-import ProtectedRoutes from 'utils/ProtectedRoutes';
-import axios from 'axios';
 
 function App() {
-  // store username/admin name
-  const [token, setToken] = useState('');
   // switch login/logout button
   const [showLogin, setShowLogin] = useState(true);
   // to switch text in the header for admin
@@ -28,17 +26,18 @@ function App() {
   
   return (
     <div className="background">
+      <RecoilRoot>
         <Router>
-          <Header showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin} token={token} setToken={setToken}/>
+          <Header showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>
           <Routes>
-       
             <Route path="/" element={<Home />} />
-            <Route path="/admin" element={<AdminPage clickToHomePage={clickToHomePage} token={token} setToken={setToken}/>}>
+            <Route path="/admin" element={<AdminPage clickToHomePage={clickToHomePage}/>}>
                 <Route path="/admin/champions" element={<AdminChampions />} />
                 <Route path="/admin/traits" element={<AdminTraits />} />
             </Route>
           </Routes>
         </Router>
+      </RecoilRoot>
     </div>
   );
 }

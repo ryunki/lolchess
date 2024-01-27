@@ -1,14 +1,17 @@
 // @ts-nocheck
 import {useState} from 'react'
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { userInfo } from '../recoil/stateAtoms';
 
 import axios from 'axios'
 
 import '../css/Header.css'
 
-const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin, token, setToken}) => {
+const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [userRecoil, setUserRecoil] = useRecoilState(userInfo);
   const navigate = useNavigate()
   const handleSubmit = async (e) =>{
     e.preventDefault()
@@ -27,7 +30,7 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin, token, se
           }else{
             navigate('/')
           }
-          setToken(userLoggedIn.username)
+          setUserRecoil(userLoggedIn)
         }
       })
       .catch(error => {
@@ -67,8 +70,8 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin, token, se
           <button className="login-button" onClick={handleSubmit}>Login</button>
         </div>
     :<div className="header-wrapper-admin font-white">
-      <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>{token==='admin' ? (backToAdmin ? 'Back to Admin Page' : 'Admin'):
-      'Welcome '+token+'!'}</div>
+      <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>{userRecoil.username==='admin' ? (backToAdmin ? 'Back to Admin Page' : 'Admin'):
+      'Welcome '+userRecoil.username+'!'}</div>
         <button className="login-button" onClick={()=>logoutHandler()}>Logout</button>
       </div>}
     </div>
