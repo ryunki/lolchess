@@ -1,32 +1,33 @@
 // @ts-nocheck
-import {useState, useEffect} from 'react'
-import { Form, useNavigate, NavLink  } from 'react-router-dom';
+import {useState, useEffect, createContext, useContext} from 'react'
+import { Form, NavLink, useNavigate } from 'react-router-dom';
 
 import axios from 'axios'
 
 import '../css/Header.css'
 
-const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
-
+const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin, token, setToken}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-
   const handleSubmit = async (e) =>{
     e.preventDefault()
     await axios.post('/api/users/login', {username,password})
       .then(response =>{
-        console.log(response.data)
         const {success, userLoggedIn} = response.data
         if(success === 'User logged in'){
-          localStorage.setItem('userInfo',JSON.stringify(userLoggedIn))
+          // localStorage.setItem('userInfo',JSON.stringify(userLoggedIn))
           setUsername('')
           setPassword('')
           setShowLogin(false)
           if(userLoggedIn.username === 'admin'){
-            navigate('/admin')
             setBackToAdmin(false)
+            navigate('/admin')
+            console.log('username admin logged in')
+          }else{
+            navigate('/')
           }
+          setToken(userLoggedIn.username)
         }
       })
       .catch(error => {
@@ -34,19 +35,22 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
       })
   }
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
     setShowLogin(true)
+    // localStorage.clear()
+    await axios.get('/api/logout')
     navigate('/')
-    localStorage.clear()
+    console.log('logout')
+    
   }
   const redirectHandler = () => {
-    if(!backToAdmin){
-      setBackToAdmin(true)
-    }else{
-      setBackToAdmin(false)
+    console.log("backtoAdmin: ",backToAdmin)
+    if(backToAdmin){
       navigate('/admin')
+      setBackToAdmin(false)
     }
 }
+
   return (
     <div className="header-container">
       {showLogin ?
@@ -64,7 +68,8 @@ const Header = ({showLogin, setShowLogin, backToAdmin, setBackToAdmin}) => {
           <button className="login-button" onClick={handleSubmit}>Login</button>
         </div>
     :<div className="header-wrapper-admin font-white">
-      <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>{backToAdmin ? 'Back to Admin Page' : 'Admin'}</div>
+      <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>{token==='admin' ? (backToAdmin ? 'Back to Admin Page' : 'Admin'):
+      'Welcome '+token+'!'}</div>
         <button className="login-button" onClick={()=>logoutHandler()}>Logout</button>
       </div>}
     </div>

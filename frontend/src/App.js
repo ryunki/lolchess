@@ -1,50 +1,46 @@
 // @ts-nocheck
-import { createBrowserRouter as Router, RouterProvider } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Home from './pages/Home'
-import AdminPage from './pages/admin/AdminPage'
+import Home from './pages/Home';
+import AdminPage from './pages/admin/AdminPage';
 import AdminChampions from './pages/admin/AdminChampions';
 import AdminTraits from './pages/admin/AdminTraits';
-import ErrorPage from "./error-page";
-
+import ErrorPage from './error-page';
+import Header from 'components/Header';
 import './css/ChampionsList.css';
 import './css/style.css';
 
-import { Form, useNavigate, NavLink, Outlet  } from 'react-router-dom';
-import {useState, useEffect} from 'react'
-
+import { useState, useEffect } from 'react';
+import ProtectedRoutes from 'utils/ProtectedRoutes';
+import axios from 'axios';
 
 function App() {
-  const [showLogin, setShowLogin] = useState(true)
+  // store username/admin name
+  const [token, setToken] = useState('');
+  // switch login/logout button
+  const [showLogin, setShowLogin] = useState(true);
   // to switch text in the header for admin
-  const [backToAdmin, setBackToAdmin] = useState(false)
-
-  const router = Router([
-    {
-      path: "/",
-      element: <Home showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>,
-      errorElement: <ErrorPage/>
-    },
-    {
-      path:"admin",
-      element: <AdminPage showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>,
-      children: [
-        {
-          path:"champions",
-          element: <AdminChampions/>
-        },
-        {
-          path:"traits",
-          element: <AdminTraits/>
-        }
-      ]
-    }
-  ]);
+  const [backToAdmin, setBackToAdmin] = useState(false);
   
-return (
-  <div className="background">
-      <RouterProvider router={router}/>
-  </div>
+  const clickToHomePage = () => {
+    setBackToAdmin(true);
+  };
+  
+  return (
+    <div className="background">
+        <Router>
+          <Header showLogin={showLogin} setShowLogin={setShowLogin} backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin} token={token} setToken={setToken}/>
+          <Routes>
+            {/* {console.log(token)} */}
+            <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<AdminPage clickToHomePage={clickToHomePage} token={token} setToken={setToken}/>}>
+                {/* <Route element={<AdminPage clickToHomePage={clickToHomePage} />}/> */}
+                <Route path="/admin/champions" element={<AdminChampions />} />
+                <Route path="/admin/traits" element={<AdminTraits />} />
+            </Route>
+          </Routes>
+        </Router>
+    </div>
   );
 }
 

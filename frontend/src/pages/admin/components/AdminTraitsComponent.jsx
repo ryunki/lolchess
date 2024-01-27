@@ -70,6 +70,7 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
     getTraits().then(res=>{
       setDisplayTraits(res.traits)
     }).catch(error=>{
+      window.location.href = '/'
       console.log(error)
     })
   }, [rerender])

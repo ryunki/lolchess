@@ -115,6 +115,7 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
       console.log(res)
       setDisplayChampions(res.champions)
     }).catch(error=>{
+      window.location.href = '/'
       console.log(error)
     })
     
@@ -146,7 +147,7 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
-console.log('AC component')
+
   return (
     <div className="container">
       <div className="page-title">Add New Champions</div>
