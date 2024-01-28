@@ -11,9 +11,8 @@ exports.getChampions = async (req, res, next) => {
         _id: champ._id,
         name: champ.name,
         cost: champ.cost,
-        traits : champ.traits.map(trait=>{
-          return trait.name
-        })
+        traits : champ.traits.map(trait=>trait.name),
+        // traitsInfo: champ.traits
       }
     })
     res.json({
@@ -26,11 +25,15 @@ exports.getChampions = async (req, res, next) => {
 
 exports.getTraits = async (req, res, next) => {
   try{
-    const traits = await Trait.find().populate('champions')
-    console.log(traits)
-    res.json({
-      traits
-    })
+    const traits = await Trait.find().populate('champions','name')
+    // re arranging data for frontend
+    const newTraits = traits.map((trait) => ({
+      _id: trait._id,
+      name: trait.name,
+      champions: trait.champions.map((item) => item.name),
+      activation: trait.activation,
+    }));
+    res.json({traits:newTraits})
   }catch(err){
     next(err)
   }

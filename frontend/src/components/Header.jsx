@@ -51,7 +51,6 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
       setBackToAdmin(false)
     }
 }
-console.log(userRecoil)
   return (
     <div className="header-container">
       {!userRecoil ?

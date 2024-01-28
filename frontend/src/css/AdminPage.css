@@ -53,6 +53,7 @@
   justify-content: space-between;
 } */
 .input-container-display-champions{
+  height: fit-content;
   width: fit-content;
   display: flex;
   flex-wrap: wrap;
@@ -142,6 +143,7 @@ input.small{
 }
 
 .button-container{
+  height: fit-content;
   display: flex;
   gap: 5px;
   flex-wrap: wrap;
@@ -154,6 +156,7 @@ input.small{
   justify-content: center;
 }
 .champions-container{
+  height: fit-content;
   width: 70vw;
   border-radius: 20px;
   background-color: rgb(75 74 74);
@@ -189,7 +192,7 @@ input.small{
 }
 
 .trait-and-button-container{
-  /* justify-content: space-around; */
+  align-items: center;
   display: flex;
 }
 .display-updated-message{

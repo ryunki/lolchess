@@ -15,6 +15,8 @@ import '../css/style.css';
 import axios from 'axios';
 
 const Home = () => {
+  const [getTraits, setGetTraits] = useState({})
+  const [getChampions, setGetChampions] = useState({})
   // display login fields
   // const [showLogin, setShowLogin] = useState(Boolean)
   // display selected champion -> [stores name, traits]
@@ -51,33 +53,57 @@ const Home = () => {
     const getTraits = async () =>{
       await axios.get('/api/content/traits').then(res=>{
         let traits = []
-        console.log(res.data.traits)
-        Object.values(res.data.traits).map((item,idx)=>{
-          traits[item.name] = {activation: item.activation, champ: item.champions}
+        Object.values(res.data.traits).forEach((item,idx)=>{
+          traits[item.name] = {activation: item.activation, champions: item.champions}
         })
-        console.log(traits)
+        setGetTraits(traits)
       }).catch(error=>{
         console.log(error)
       }) 
     }
     getTraits()
+
+    const getChampions = async () =>{
+      await axios.get('/api/content/champions').then(res=>{
+        setGetChampions(res.data.champions)
+      }).catch(error=>{
+        console.log(error)
+      }) 
+    }
+    getChampions()
   },[])
+  const findTraits = (champ,selectedChampionTraits,activation) => {
+        // go through array of champions in a trait
+        console.log(getTraits)
+          Object.entries(getTraits).forEach(([trait,info])=>{
+            console.log(trait)
+            Object.values(info.champions).forEach((champion)=>{
+              console.log(champion)
+              // if champion is found then save the trait and activation indicator
+              if(champion === champ){
+                selectedChampionTraits.push(trait);
+                activation[trait] = info.activation;
+              }
+            })
+          
+          })
+    };
   // Function to find traits for the selected champion in a given synergy type
-  const findTraits = (synergyType,champ,selectedChampionTraits,activation) => {
-    // look for selected champion in every trait
-    Object.keys(synergy[synergyType]).forEach((type) => {
-      // for every trait
-      const trait = synergy[synergyType][type]
-      // go through array of champions in a trait
-        trait.champs.forEach((item, idx)=>{
-          // if champion is found then save the trait and activation indicator
-          if(item[0] === champ){
-            selectedChampionTraits.push(type);
-            activation[type] = trait.activation;
-          }
-        })
-    });
-  };
+  // const findTraits = (synergyType,champ,selectedChampionTraits,activation) => {
+  //   // look for selected champion in every trait
+  //   Object.keys(synergy[synergyType]).forEach((type) => {
+  //     // for every trait
+  //     const trait = synergy[synergyType][type]
+  //     // go through array of champions in a trait
+  //       trait.champs.forEach((item, idx)=>{
+  //         // if champion is found then save the trait and activation indicator
+  //         if(item[0] === champ){
+  //           selectedChampionTraits.push(type);
+  //           activation[type] = trait.activation;
+  //         }
+  //       })
+  //   });
+  // };
 
   const onClickHandler = (champ) => {
     console.log(champ)
@@ -86,11 +112,12 @@ const Home = () => {
     let selectedChampionTraits = [];
     // to store the array of activation indicators to corresponding traits
     let activation = [];
-    // Find traits in classes
-    findTraits('classes', champ[0], selectedChampionTraits, activation);
-    // Find traits in origins
-    findTraits('origins', champ[0], selectedChampionTraits, activation);
-  
+    // // Find traits in classes
+    // findTraits('classes', champ[0], selectedChampionTraits, activation);
+    // // Find traits in origins
+    // findTraits('origins', champ[0], selectedChampionTraits, activation);
+    findTraits(champ[0], selectedChampionTraits, activation)
+    console.log(selectedChampionTraits, activation)
     if(championSelectedList[champ[0]]){
       // if selected champion already exists in the list, remove it
       removeHandler(champ[0])
@@ -107,9 +134,11 @@ const Home = () => {
     // Add new traits and their activation indicator to the previous traits
     displayactivation.current = {...displayactivation.current, ...activation}
     // to display currently clicked champion
-    const cham = champs.filter(champs => champs[0]===champ[0])
-
-    setDisplayClickedChampion([cham, selectedChampionTraits]);
+    console.log(getChampions)
+    const cham = getChampions.filter(item=> item.name.toLowerCase() === champ[0].toLowerCase())
+ 
+    console.log(cham[0].name,cham[0].cost)
+    setDisplayClickedChampion([[cham[0].name,cham[0].cost], selectedChampionTraits]);
     };
 
   // remove the selected champion from the list

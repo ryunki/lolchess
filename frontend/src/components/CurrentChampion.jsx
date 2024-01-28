@@ -3,12 +3,13 @@ import '../css/style.css';
 import '../css/CurrentChampion.css';
 
 const CurrentChampion = ({ displayClickedChampion, costArray }) => {
+  console.log('displayClickedChampion: ',displayClickedChampion)
   return (
     <>
     {
       <div className='info-container current-champ-container'>
-          <div className={`champion-item ${costArray[displayClickedChampion[0][0][1]]}`}>
-            {displayClickedChampion[0][0][0]}
+          <div className={`champion-item ${costArray[displayClickedChampion[0][1]]}`}>
+            {displayClickedChampion[0][0]}
           </div>
           <div className='font-white'>
             {/* displaying traits */}
