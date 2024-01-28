@@ -59,10 +59,13 @@ exports.createUser = async (req, res, next) => {
   try {
     // Logic to create a new user
     // Send response
-    const { username, password } = req.body;
+    const { username, password, repeatPassword } = req.body;
     // check if user sent all the data needed
-    if (!(username && password)) {
+    if (!(username && password && repeatPassword)) {
       return res.status(400).send('All inputs are required');
+    }
+    if (password !== repeatPassword){
+      return res.status(400).send('password does not match');
     }
     // check if email already exists
     const userExists = await User.findOne({ username });

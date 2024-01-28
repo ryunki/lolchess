@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { atom, selector, useRecoilState} from 'recoil';
+import { atom, selector} from 'recoil';
 
 export const userInfo = atom({
   key: 'userInfo',

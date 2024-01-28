@@ -61,6 +61,8 @@ const Home = () => {
     }
     getTraits()
 
+  },[])
+  useEffect(()=>{
     const getChampions = async () =>{
       await axios.get('/api/content/champions').then(res=>{
         setGetChampions(res.data.champions)
@@ -70,7 +72,10 @@ const Home = () => {
     }
     getChampions()
     console.log('useEffect Home')
+
   },[])
+
+   // Function to find traits for the selected champion 
   const findTraits = (champ,selectedChampionTraits,activation) => {
         // go through array of champions in a trait
           Object.entries(getTraits).forEach(([trait,info])=>{
@@ -81,25 +86,9 @@ const Home = () => {
                 activation[trait] = info.activation;
               }
             })
-          
           })
     };
-  // Function to find traits for the selected champion in a given synergy type
-  // const findTraits = (synergyType,champ,selectedChampionTraits,activation) => {
-  //   // look for selected champion in every trait
-  //   Object.keys(synergy[synergyType]).forEach((type) => {
-  //     // for every trait
-  //     const trait = synergy[synergyType][type]
-  //     // go through array of champions in a trait
-  //       trait.champs.forEach((item, idx)=>{
-  //         // if champion is found then save the trait and activation indicator
-  //         if(item[0] === champ){
-  //           selectedChampionTraits.push(type);
-  //           activation[type] = trait.activation;
-  //         }
-  //       })
-  //   });
-  // };
+
 
   const onClickHandler = (champ) => {
     changeButtonColor(champ[0]);

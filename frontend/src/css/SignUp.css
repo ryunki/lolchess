@@ -1,0 +1,13 @@
+.sign-up-container{
+  padding: 33px;
+  border-radius: 35px;
+  background-color: #414141;
+  position: absolute;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  top: 14%;
+  left: 50%;
+}
+.close{
+  
+}

@@ -7,14 +7,18 @@ import { userInfo,logoutSelector } from '../recoil/stateAtoms';
 import axios from 'axios'
 
 import '../css/Header.css'
+import SignUp from './SignUp';
 
 const Header = ({backToAdmin, setBackToAdmin}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [userRecoil, setUserRecoil] = useRecoilState(userInfo);
+  const [openSignUpModal, setOpenSignUpModal] = useState(false)
+
   const {logout} = useRecoilValue(logoutSelector);
   const navigate = useNavigate()
   const location = useLocation()
+
   const handleSubmit = async (e) =>{
     e.preventDefault()
     await axios.post('/api/users/login', {username,password})
@@ -27,7 +31,6 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
           if(userLoggedIn.username === 'admin'){
             setBackToAdmin(false)
             navigate('/admin')
-            console.log('username admin logged in')
           }else{
             navigate('/')
           }
@@ -39,20 +42,23 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
       })
   }
 
-  const logoutHandler = async () => {
+  const logoutHandler = () => {
     setUserRecoil('')
     logout()
     navigate('/')
   }
+
   const redirectHandler = () => {
-    console.log(location, backToAdmin)
     if(backToAdmin){
       navigate('/admin')
       setBackToAdmin(false)
     }
 }
+
+
   return (
     <div className="header-container">
+      {openSignUpModal && <SignUp setOpenSignUpModal={setOpenSignUpModal}/>}
       {!userRecoil ?
         <div className="header-wrapper">
           <div>
@@ -65,7 +71,10 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
               <input className="login-input-field" onChange={(e)=>{setPassword(e.target.value)}} 
                 type="password" id="password" name="password" value={password} required/>
           </div>
-          <button className="login-button" onClick={handleSubmit}>Login</button>
+          <div>
+            <button className="login-button" onClick={handleSubmit}>Login</button>
+            <button className="login-button" onClick={()=>setOpenSignUpModal(true)}>Sign Up</button>
+          </div>
         </div>
     :<div className="header-wrapper-admin font-white">
       <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>

@@ -41,7 +41,6 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampio
     }else{
       // if the same indicator is clicked again 
       if (sortCost[1] === cost){
-        console.log('hey')
         // then display whole list of champions 
         setChampions(()=>{
           // if the same indicator is clicked.
@@ -72,7 +71,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampio
     const typed = e.target.value.toLowerCase();
     setChampions(() => {
       return [...getChampions].filter((champ) => {
-        return champ[0].toLowerCase().startsWith(typed);
+        return champ.name.toLowerCase().startsWith(typed);
       });
     });
   };

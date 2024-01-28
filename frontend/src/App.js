@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {RecoilRoot,atom,selector,useRecoilState,useRecoilValue} from 'recoil';
+import {RecoilRoot} from 'recoil';
 
 
 import Home from './pages/Home';
