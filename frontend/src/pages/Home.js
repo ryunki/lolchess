@@ -12,8 +12,9 @@ import {dataForTraitsAndRecommendation } from '../functions'
 
 import '../css/ChampionsList.css';
 import '../css/style.css';
+import axios from 'axios';
 
-const Home = ({showLogin, setShowLogin,backToAdmin, setBackToAdmin}) => {
+const Home = () => {
   // display login fields
   // const [showLogin, setShowLogin] = useState(Boolean)
   // display selected champion -> [stores name, traits]
@@ -46,6 +47,21 @@ const Home = ({showLogin, setShowLogin,backToAdmin, setBackToAdmin}) => {
     );
   };
 
+  useEffect(()=>{
+    const getTraits = async () =>{
+      await axios.get('/api/content/traits').then(res=>{
+        let traits = []
+        console.log(res.data.traits)
+        Object.values(res.data.traits).map((item,idx)=>{
+          traits[item.name] = {activation: item.activation, champ: item.champions}
+        })
+        console.log(traits)
+      }).catch(error=>{
+        console.log(error)
+      }) 
+    }
+    getTraits()
+  },[])
   // Function to find traits for the selected champion in a given synergy type
   const findTraits = (synergyType,champ,selectedChampionTraits,activation) => {
     // look for selected champion in every trait
@@ -64,7 +80,7 @@ const Home = ({showLogin, setShowLogin,backToAdmin, setBackToAdmin}) => {
   };
 
   const onClickHandler = (champ) => {
-    
+    console.log(champ)
     changeButtonColor(champ[0]);
     // this variable is to store the traits of selected champion (this resets for every click)
     let selectedChampionTraits = [];

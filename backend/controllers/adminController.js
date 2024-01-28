@@ -75,15 +75,51 @@ exports.updateChampion = async (req, res, next) => {
     champion.cost = cost || champion.cost 
     champion.traits = traits || champion.traits 
     await champion.save()
-    res.status(201).send({
-      success: 'Champion updated'
-    })
+    // if traits is added move on to addChampionToTrait() function
+    next()
   }catch(err){
     next(err)
   }
   
 };
 
+// add champion to all the traits in Trait DB
+exports.addChampionToTrait = async (req,res,next) =>{
+  const {_id, traits} = req.body
+  try{
+        // first remove champion from all the traits that matches the champion id
+        const deleted = await Trait.updateMany({champions: _id}, {$pull: {champions: _id}})
+        // if there are traits from client
+        if(traits.length > 0){
+          // Use updateMany method to add championId to the champions array in all traits
+          const result = await Trait.updateMany(
+            { _id: { $in: traits } }, // Match traits with the specified IDs of array
+            { $addToSet: { champions: _id } } // Add championId to the champions array, $addToSet ensures uniqueness
+          )
+          if (result.modifiedCount > 0) {
+            // At least one trait was updated
+            return res.status(201).send({
+              success: 'Champion updated'
+            })
+          } else {
+            // No matching traits found
+            next({ error: 'No matching traits found' });
+          }
+        }else{
+          // deleted champion from Trait DB
+          if (deleted.modifiedCount > 0) {
+            return res.status(201).send({
+              success: 'Champion updated'
+            })
+          }else {
+            next({ error: 'Could not delete champions from trait' });
+          }
+        }
+
+  }catch(error){
+    next(error)
+  }
+}
 exports.updateTrait = async (req, res, next) => {
   try{
     const {name, champions, activation} = req.body

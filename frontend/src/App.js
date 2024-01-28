@@ -13,11 +13,17 @@ import './css/ChampionsList.css';
 import './css/style.css';
 
 import { useState, useEffect } from 'react';
-
+import { useNavigate,useLocation  } from 'react-router-dom';
 function App() {
   // to switch text in the header for admin
-  const [backToAdmin, setBackToAdmin] = useState(false);
-  
+  const [backToAdmin, setBackToAdmin] = useState(()=>{
+    // for persisting correct state when refreshed (home/admin page)
+    if(window.location.href.split('/')[3] === ''){
+      return true
+    }else{
+      return false
+    }
+  });
   const clickToHomePage = () => {
     setBackToAdmin(true);
   };

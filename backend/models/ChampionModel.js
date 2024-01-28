@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Trait = require('./TraitModel')
 // Define the schema for the User model
 const championSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true},
@@ -8,7 +8,7 @@ const championSchema = new mongoose.Schema({
 });
 
 // Create the User model using the schema
-const User = mongoose.model('Champion', championSchema);
+const Champion = mongoose.model('Champion', championSchema);
 
 // Export the User model
-module.exports = User;
+module.exports = Champion;

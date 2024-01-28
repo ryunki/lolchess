@@ -2,13 +2,16 @@
 import { useState, React } from 'react';
 import { champs } from '../constants';
 import '../css/ChampionsList.css';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
   const [sortAtoZ, setSortAtoZ] = useState(true);
   const [sortCost, setSortCost] = useState([false, 0]);
  
   // display all champions
-  const [champions, setChampions] = useState(champs);
+  // const [champions, setChampions] = useState(champs);
+  const [champions, setChampions] = useState([]);
   
   // change alphabetical order of champion list
   const toggleAtoZ = () => {
@@ -60,6 +63,19 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
     });
   };
 
+  useEffect(()=>{
+    const getChampions = async () =>{
+      await axios.get('/api/content/champions').then(res=>{
+        let champions = Object.values(res.data.champions).map((item,idx)=>{
+          return [item.name, item.cost]
+        })
+        setChampions(champions)
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    getChampions()
+  },[])
   return (
     <>
       

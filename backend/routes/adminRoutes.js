@@ -10,7 +10,7 @@ router.get('/champions', adminController.getChampions);
 router.post('/champion', adminController.addChampion);
 router.get('/traits', adminController.getTraits);
 router.post('/trait', adminController.addTrait);
-router.put('/champion/:id', adminController.updateChampion);
+router.put('/champion/:id', adminController.updateChampion, adminController.addChampionToTrait);
 router.put('/trait/:id', adminController.updateTrait);
 router.delete('/champion/:id', adminController.deleteChampion);
 router.delete('/trait/:id', adminController.deleteTrait);

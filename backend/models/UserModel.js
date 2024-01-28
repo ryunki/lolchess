@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Deck = require('./DeckModel')
 // Define the schema for the User model
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true , unique: true},

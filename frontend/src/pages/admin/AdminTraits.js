@@ -7,7 +7,7 @@ import AdminTraitsComponent from "./components/AdminTraitsComponent"
 const AdminTraits = () => {
 
   const getTraits = async() =>{
-    const {data} = await axios.get('/api/admin/traits')
+    const {data} = await axios.get('/api/content/traits')
     // setDisplayTraits(data.traits)
     return data
   }

@@ -3,6 +3,7 @@ const app = express()
 const router = express.Router();
 const adminRoutes = require("./adminRoutes")
 const userRoutes = require("./userRoutes")
+const contentRoutes = require("./contentRoutes")
 
 const jwt = require("jsonwebtoken")
 app.get("/logout", (req,res)=>{
@@ -18,7 +19,7 @@ app.get("/get-token", (req,res)=>{
     return res.status(401).send("Unauthorized. Invalid Token")
   }
 })
-
+app.use("/content", contentRoutes)
 app.use("/users", userRoutes)
 app.use("/admin", adminRoutes)
 

@@ -13,7 +13,7 @@ const deckSchema = new mongoose.Schema({
 });
 
 // Create the User model using the schema
-const User = mongoose.model('Deck', deckSchema);
+const Deck = mongoose.model('Deck', deckSchema);
 
 // Export the User model
-module.exports = User;
+module.exports = Deck;

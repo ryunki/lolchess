@@ -45,11 +45,8 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
     navigate('/')
   }
   const redirectHandler = () => {
-    console.log(location)
+    console.log(location, backToAdmin)
     if(backToAdmin){
-      if(location.pathname === '/'){
-        return setBackToAdmin(true)
-      }
       navigate('/admin')
       setBackToAdmin(false)
     }
@@ -74,7 +71,7 @@ console.log(userRecoil)
     :<div className="header-wrapper-admin font-white">
       <div onClick={()=>redirectHandler()} style={{alignSelf: 'center', cursor:'pointer'}}>
         {/* this logic is to prevent misbehaviors when refreshing the website */}
-        {userRecoil.username==='admin' ? (backToAdmin || location.pathname === '/' ? 'Back to Admin Page' : 'Admin'):
+        {userRecoil.username==='admin' ? (backToAdmin ? 'Back to Admin Page' : 'Admin'):
       'Welcome '+userRecoil.username+'!'}</div>
         <button className="login-button" onClick={()=>logoutHandler()}>Logout</button>
       </div>}
