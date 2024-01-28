@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 
 import '../css/traits.css'
 import '../css/style.css';

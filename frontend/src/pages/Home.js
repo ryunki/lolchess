@@ -4,10 +4,9 @@ import ChampionsList from '../components/ChampionsList';
 import SelectedChampions from '../components/SelectedChampions';
 import Recommendation from '../components/Recommendation';
 import Traits from '../components/Traits';
-import Header from '../components/Header';
 
 import { useState, useRef, useEffect} from 'react';
-import { champs, synergy } from '../constants';
+
 import {dataForTraitsAndRecommendation } from '../functions'
 
 import '../css/ChampionsList.css';
@@ -17,8 +16,7 @@ import axios from 'axios';
 const Home = () => {
   const [getTraits, setGetTraits] = useState({})
   const [getChampions, setGetChampions] = useState({})
-  // display login fields
-  // const [showLogin, setShowLogin] = useState(Boolean)
+ 
   // display selected champion -> [stores name, traits]
   const [displayClickedChampion, setDisplayClickedChampion] = useState([]);
   // state that stores selected list of champions -> {champ: [traits], champ2: [traits]}
@@ -71,16 +69,14 @@ const Home = () => {
       }) 
     }
     getChampions()
+    console.log('useEffect Home')
   },[])
   const findTraits = (champ,selectedChampionTraits,activation) => {
         // go through array of champions in a trait
-        console.log(getTraits)
           Object.entries(getTraits).forEach(([trait,info])=>{
-            console.log(trait)
             Object.values(info.champions).forEach((champion)=>{
-              console.log(champion)
               // if champion is found then save the trait and activation indicator
-              if(champion === champ){
+              if(champion[0] === champ){
                 selectedChampionTraits.push(trait);
                 activation[trait] = info.activation;
               }
@@ -106,7 +102,6 @@ const Home = () => {
   // };
 
   const onClickHandler = (champ) => {
-    console.log(champ)
     changeButtonColor(champ[0]);
     // this variable is to store the traits of selected champion (this resets for every click)
     let selectedChampionTraits = [];
@@ -117,7 +112,6 @@ const Home = () => {
     // // Find traits in origins
     // findTraits('origins', champ[0], selectedChampionTraits, activation);
     findTraits(champ[0], selectedChampionTraits, activation)
-    console.log(selectedChampionTraits, activation)
     if(championSelectedList[champ[0]]){
       // if selected champion already exists in the list, remove it
       removeHandler(champ[0])
@@ -134,10 +128,9 @@ const Home = () => {
     // Add new traits and their activation indicator to the previous traits
     displayactivation.current = {...displayactivation.current, ...activation}
     // to display currently clicked champion
-    console.log(getChampions)
+
     const cham = getChampions.filter(item=> item.name.toLowerCase() === champ[0].toLowerCase())
  
-    console.log(cham[0].name,cham[0].cost)
     setDisplayClickedChampion([[cham[0].name,cham[0].cost], selectedChampionTraits]);
     };
 
@@ -182,18 +175,17 @@ const Home = () => {
 
 const saveHandler = (list) => {
   const jsonString = JSON.stringify(list)
+  console.log(list)
   localStorage.setItem('Champions List', jsonString)
 }
 
 // when user clicks 'add trait' button, display extra traits to add
 const showExtraTraitHandler = () =>{
   let synergies = {}
-  Object.keys(synergy).forEach(type=>{
-    Object.entries(synergy[type]).forEach(([trait,value])=>{
-      if (value.activation.length !== 1){
-        synergies[trait] = [1, value.activation]
+  Object.entries(getTraits).forEach(([trait,info])=>{
+      if (info.activation.length !== 1){
+        synergies[trait] = [1, info.activation]
       }
-    })
   })
   setDisplayExtraTraits({
     switch: !displayExtraTraits.switch,
@@ -218,13 +210,12 @@ const deleteExtraTraitsFromSynergy = () =>{
 }
 
 showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayactivation.current, traitHistory, selectedTrait, saveTraits)
-
+console.log('render home')
   return (
     <>
     <div className='background' style={{padding: '50px 10%'}} >
       {/* display all champions */}
-      <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion} costArray={costArray}
-      />
+      <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion} costArray={costArray} getChampions={getChampions} />
       {Object.keys(championSelectedList).length !== 0 && 
         <>
         <div className='buttons-container'>
@@ -252,9 +243,8 @@ showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayacti
           {/* display traits of all selected champions */}
           <div className='contents-container'>
             {Object.keys(showAllTraits[0]).length !== 0 && <Traits showAllTraits={showAllTraits[0]} />}
-            
           </div>
-            <Recommendation recommendChamp={showAllTraits[1]} championSelectedList={championSelectedList} costArray={costArray}/>
+            <Recommendation recommendChamp={showAllTraits[1]} championSelectedList={championSelectedList} costArray={costArray} getTraits={getTraits}/>
         </>
       }
         

@@ -1,24 +1,25 @@
 // @ts-nocheck
 import { useState, React } from 'react';
-import { champs } from '../constants';
-import '../css/ChampionsList.css';
 import { useEffect } from 'react';
 import axios from 'axios';
+import '../css/ChampionsList.css';
 
-const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
+const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampions}) => {
+  //  getChampions from parents component for sorting actions
+  // sorting by certain cost filters the champions arraylist. 
+  // so always get complete list of champions from parent's component
   const [sortAtoZ, setSortAtoZ] = useState(true);
   const [sortCost, setSortCost] = useState([false, 0]);
  
   // display all champions
-  // const [champions, setChampions] = useState(champs);
-  const [champions, setChampions] = useState([]);
-  
+  const [champions, setChampions] = useState({});
+
   // change alphabetical order of champion list
   const toggleAtoZ = () => {
     setSortAtoZ(!sortAtoZ);
-    setChampions((prev) => {
-      return [...prev].sort((a, b) => {
-        return sortAtoZ ? b[0].localeCompare(a[0]) : a[0].localeCompare(b[0]);
+    setChampions(() => {
+      return [...getChampions].sort((a, b) => {
+        return sortAtoZ ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
       });
     });
   };
@@ -27,28 +28,41 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
     // when cost button is clicked (sort by cost)
     if(cost === 'cost'){
       setChampions(() => {
-        return champs.sort((a,b)=> !sortAtoZ ? b[0].localeCompare(a[0]) : a[0].localeCompare(b[0]))
-          .sort((a, b) => sortCost[0] ? a[1] - b[1] : b[1] - a[1]);
+        return [...getChampions].sort((a,b)=> !sortAtoZ ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name))
+          .sort((a, b) => sortCost[0] ? a.cost - b.cost : b.cost - a.cost);
       });
-      setSortCost([!sortCost[0], 0]);
+      // if the cost button is clicked twice in a row, trigger re-rendering
+      if(sortCost[0]===false){
+        setSortCost([true, 0]);
+      }else{
+        setSortCost([false, 0]);
+      }
       // when one of the indicator is clicked. display the clicked cost of champions only
     }else{
       // if the same indicator is clicked again 
       if (sortCost[1] === cost){
+        console.log('hey')
         // then display whole list of champions 
         setChampions(()=>{
-          // sort by current state of sortAtoZ
-          return champs.sort((a,b)=> sortAtoZ ? a[0].localeCompare(b[0]): b[0].localeCompare(a[0]) )
+          // if the same indicator is clicked.
+          if(sortCost[0] === false){
+            setSortCost([true, cost])
+            return [...getChampions].filter((item)=> item.cost === cost)
+            .sort((a,b)=> sortAtoZ ? a.name.localeCompare(b.name): b.name.localeCompare(a.name))
+          }else{
+            setSortCost([false, cost])
+            // sort by current state of sortAtoZ
+            return [...getChampions].sort((a,b)=> sortAtoZ ? a.name.localeCompare(b.name): b.name.localeCompare(a.name) )
+          }
         })
-        setSortCost([sortCost, 0])
         // if different cost indicator is clicked
       } else {
         setChampions(()=>{
           // first filter by the clicked cost, then sort by current state of sortAtoZ
-          return champs.filter((item)=> item[1] === cost)
-            .sort((a,b)=> sortAtoZ ? a[0].localeCompare(b[0]): b[0].localeCompare(a[0]) )
+          return [...getChampions].filter((item)=> item.cost === cost)
+            .sort((a,b)=> sortAtoZ ? a.name.localeCompare(b.name): b.name.localeCompare(a.name))
         })
-        setSortCost([sortCost, cost])
+        setSortCost([true, cost])
       }
     }
   };
@@ -57,25 +71,26 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
   const searchChampionHandler = (e) => {
     const typed = e.target.value.toLowerCase();
     setChampions(() => {
-      return champs.filter((champ) => {
+      return [...getChampions].filter((champ) => {
         return champ[0].toLowerCase().startsWith(typed);
       });
     });
   };
 
+  // this useEffect is for initial rendering of champions
   useEffect(()=>{
     const getChampions = async () =>{
       await axios.get('/api/content/champions').then(res=>{
-        let champions = Object.values(res.data.champions).map((item,idx)=>{
-          return [item.name, item.cost]
-        })
-        setChampions(champions)
+        setChampions(res.data.champions)
       }).catch(error=>{
         console.log(error)
       })
     }
+    console.log('useEffect championsList')
     getChampions()
   },[])
+
+  console.log('render championsList')
   return (
     <>
       
@@ -106,12 +121,18 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray}) => {
           </div>
         </div>
       <div className="champions_list_wrapper">
-        {champions.length !== 0 ? 
-          champions.map((champ, idx) => (
-              <div key={idx}  className={`champion-item ${costArray[champ[1]]} ${selectedChampion.includes(champ[0]) ? 'selected' : ''} `}onClick={() => onClickHandler(champ)}>
-                {champ[0]}
+        {Object.keys(champions).length !== 0 ? 
+          Object.values(champions).map((champ, idx) => (
+              <div key={idx}  className={`champion-item ${costArray[champ.cost]} ${selectedChampion.includes(champ.name) ? 'selected' : ''} `}onClick={() => onClickHandler([champ.name,champ.cost])}>
+                {champ.name}
               </div>
           )) :
+        // {/* {champions.length !== 0 ? 
+        //   champions.map((champ, idx) => (
+        //       <div key={idx}  className={`champion-item ${costArray[champ.cost]} ${selectedChampion.includes(champ[0]) ? 'selected' : ''} `}onClick={() => onClickHandler(champ)}>
+        //         {champ[0]}
+        //       </div>
+        //   )) : */}
           <div className="no-result">
             No Champions
           </div>

@@ -3,7 +3,6 @@ import '../css/style.css';
 import '../css/CurrentChampion.css';
 
 const CurrentChampion = ({ displayClickedChampion, costArray }) => {
-  console.log('displayClickedChampion: ',displayClickedChampion)
   return (
     <>
     {
