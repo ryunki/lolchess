@@ -58,7 +58,7 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
 
   return (
     <div className="header-container">
-      {openSignUpModal && <SignUp setOpenSignUpModal={setOpenSignUpModal}/>}
+      {openSignUpModal && <SignUp setOpenSignUpModal={setOpenSignUpModal} setUserRecoil={setUserRecoil}/>}
       {!userRecoil ?
         <div className="header-wrapper">
           <div>

@@ -84,7 +84,9 @@ exports.createUser = async (req, res, next) => {
       res.cookie('access_token',cookieValue, cookieOptions)
         .status(201).json({
           success: 'User created',
-          userCreated: {username: user.username},
+          userCreated: {
+            _id: user._id,
+            username: user.username},
         })
     }
   } catch (err) {

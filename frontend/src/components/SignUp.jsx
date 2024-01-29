@@ -1,15 +1,16 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react"
-import "../css/SignUp.css"
 import axios from "axios"
 import { useRecoilState } from "recoil"
 import { userInfo } from "recoil/stateAtoms"
 
-const SignUp = ({setOpenSignUpModal}) => {
+import "../css/SignUp.css"
+
+const SignUp = ({setOpenSignUpModal, setUserRecoil}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
-  const [user, setUser] = useRecoilState(userInfo)
+  const [message, setMessage] = useState('')
   const detectClickOtherThanEdit = useRef()
 
   const signUpHandler = async () =>{
@@ -17,16 +18,23 @@ const SignUp = ({setOpenSignUpModal}) => {
     if(username && password && repeatPassword){
       await axios.post('/api/users/register',{username,password,repeatPassword}).then(res=>{
         if(res.data.success === 'User created'){
-          setUser(res.data.userCreated.username)
+          console.log(res.data.userCreated.username)
           setOpenSignUpModal(false)
+          localStorage.setItem('userInfo', res.data.userCreated)
+          setUserRecoil(res.data.userCreated)
         }
       }).catch(error=>{
-        console.log(error)
+        setMessage(error.response.data)
+        console.log(error.response.data)
       })
     }else{
-      console.log('missing input')
+      setMessage('missing input')
     }
   }
+
+  useEffect(()=>{
+    setMessage('')
+  },[username,password,repeatPassword])
 
   // when clicked outside of the modal. make it disappear
 useEffect(()=>{
@@ -43,26 +51,31 @@ useEffect(()=>{
   }
 },[])
   return (
-    <div className="sign-up-container font-white" ref={detectClickOtherThanEdit}>
-      <div className="header">
-        <div>Create new account</div><label className="close"onClick={()=>setOpenSignUpModal(false)}>close</label>
+    <>
+    <div className="dim-overlay"></div>
+    <div className="signup-container font-white" ref={detectClickOtherThanEdit}>
+      <div className="signup-header">
+        <div>Create new account</div><label className="close"onClick={()=>setOpenSignUpModal(false)}>X</label>
       </div>
-      <div>
-        <label>User name</label>
-        <input type="text" onChange={e=>setUsername(e.target.value)} value={username}/>
+      <div className="signup-input-wrapper">
+        <label className="signup-label">User name</label>
+        <input type="text"id="username" name="username" placeholder="Enter your username" onChange={e=>setUsername(e.target.value)} value={username}/>
       </div>
-      <div>
-        <label>Password</label>
-        <input type="password" onChange={e=>setPassword(e.target.value)} value={password}/>
+      <div className="signup-input-wrapper">
+        <label className="signup-label">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password"onChange={e=>setPassword(e.target.value)} value={password}/>
       </div>
-      <div>
-        <label>Repeat password</label>
-        <input type="password" onChange={e=>setRepeatPassword(e.target.value)} value={repeatPassword} />
+      <div className="signup-input-wrapper">
+        <label className="signup-label">Repeat password</label>
+        <input type="password" id="repeatPassword" name="repeatPassword" placeholder="Repeat your password"onChange={e=>setRepeatPassword(e.target.value)} value={repeatPassword} />
       </div>
-      <div className="footer">
-        <div onClick={()=>signUpHandler()}>Sign up</div>
+        {message && <div style={{textAlign:'center', marginBottom:"5px"}}>{message}</div>}
+      <div className="signup-footer">
+        <div className="signup-button" onClick={()=>signUpHandler()}>Sign up</div>
       </div>
+      
     </div>
+    </>
   )
 }
 
