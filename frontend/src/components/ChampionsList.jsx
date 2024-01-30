@@ -88,11 +88,8 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampio
     console.log('useEffect championsList')
     getChampions()
   },[])
-
-  console.log('render championsList')
   return (
     <>
-      
         <div className='search-sort-container'>
           <input className='input-search-champion'
             placeholder="search"

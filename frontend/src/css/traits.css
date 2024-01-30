@@ -96,3 +96,22 @@
   }
 }
 
+.current-traits{
+  margin: 5px 5px;
+    background: rgb(39, 40, 46);
+    border: 1px solid rgb(50, 50, 50);
+    border-radius: 5px;
+    padding: 4px 8px;
+    display: flex;
+    font-size: 12px;
+}
+.current-traits.active{
+  opacity:0.8;
+  border-color:#ffffff;
+  margin: 5px 5px;
+  border-radius: 5px;
+  padding: 4px 8px;
+  display: flex;
+  font-size: 12px;
+}
+

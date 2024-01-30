@@ -266,6 +266,7 @@ showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayacti
 
       {Object.keys(championSelectedList).length !== 0 && 
         <>
+        
         <div className='buttons-container'>
           {/* display save button when logged in */}
           {userRecoil &&<>

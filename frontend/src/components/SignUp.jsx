@@ -20,7 +20,7 @@ const SignUp = ({setOpenSignUpModal, setUserRecoil}) => {
         if(res.data.success === 'User created'){
           console.log(res.data.userCreated.username)
           setOpenSignUpModal(false)
-          localStorage.setItem('userInfo', res.data.userCreated)
+          localStorage.setItem('userInfo', JSON.stringify(res.data.userCreated))
           setUserRecoil(res.data.userCreated)
         }
       }).catch(error=>{

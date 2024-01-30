@@ -2,7 +2,7 @@
 import {useState} from 'react'
 import { useNavigate,useLocation  } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { userInfo,logoutSelector } from '../recoil/stateAtoms';
+import { userInfo, logoutSelector } from '../recoil/stateAtoms';
 
 import axios from 'axios'
 
@@ -17,7 +17,6 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
 
   const {logout} = useRecoilValue(logoutSelector);
   const navigate = useNavigate()
-  const location = useLocation()
 
   const handleSubmit = async (e) =>{
     e.preventDefault()

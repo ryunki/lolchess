@@ -57,24 +57,25 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
     let inactivatedCategories = [];
 
     let currentAkali = { 'k/da': [false, 0], 'true damage': [false, 0] }
-
+    console.log(collectTraits)
     Object.entries(collectTraits).forEach(([trait, value]) => {
- 
-      // check if the the current trait equals or greater than any number of the activation array
-      const activated = value[1].some((num) => {
-        // update kda or trueDamage's current state
-        if (trait === kda || trait === td) {
-          if (value[0] >= num){
-            currentAkali[trait][0] = true;
-            currentAkali[trait][1] = value[0];
-          }else{
-            currentAkali[trait][0] = false;
-            currentAkali[trait][1] = value[0];
+      let activated = false
+      if(value.length !== 1){
+        // check if the the current trait equals or greater than any number of the activation array
+        activated = value[1].some((num) => {
+          // update kda or trueDamage's current state
+          if (trait === kda || trait === td) {
+            if (value[0] >= num){
+              currentAkali[trait][0] = true;
+              currentAkali[trait][1] = value[0];
+            }else{
+              currentAkali[trait][0] = false;
+              currentAkali[trait][1] = value[0];
+            }
           }
-        }
-        return value[0] >= num;
-      });
-     
+          return value[0] >= num;
+        });
+      }
       // group them by activated and inactivated
       activated ? activatedCategories.push([trait, value]) : inactivatedCategories.push([trait, value])
     });
@@ -181,8 +182,8 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
     
 }
 
-export const dataForTraitsAndRecommendation = (championSelectedList, displayActivation, traitHistory, selectedTrait, saveTraits) => {
-
+export const dataForTraitsAndRecommendation = (championSelectedList, displayActivation, traitHistory, selectedTrait) => {
+  console.log(championSelectedList,displayActivation)
   let collectTraits = {};
   // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
   Object.values(championSelectedList).forEach((champ) => {
@@ -202,7 +203,7 @@ export const dataForTraitsAndRecommendation = (championSelectedList, displayActi
     Object.entries(selectedTrait).forEach(([trait,value])=>{
       collectTraits[trait] = [collectTraits[trait] ? collectTraits[trait][0] + value[0] : value[0], value[1]]
     })
-
+    console.log(collectTraits)
     // sort the traits in order, and get inactivated traits list
     const {sortedData, traitDifferenceList} = sortTraits(collectTraits, championSelectedList, traitHistory);
     // Convert back to object
