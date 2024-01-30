@@ -9,5 +9,6 @@ router.post('/register', userController.createUser);
 router.use(verifyIsLoggedin)
 router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
-
+router.post('/composition', userController.saveComposition)
+router.get('/compositions/:id', userController.getCompositions)
 module.exports = router;

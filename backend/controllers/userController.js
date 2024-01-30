@@ -1,6 +1,7 @@
 const User = require('../models/UserModel');
 const { hashPassword, comparePasswords } = require('../utils/hashPassword');
 const generateAuthToken = require('../utils/generateAuthToken');
+const Deck = require('../models/DeckModel');
 
 const cookieOptions = {
   // This can enhance security by reducing the risk of cross-site scripting (XSS) attacks.
@@ -103,3 +104,42 @@ exports.deleteUser = (req, res) => {
   // Logic to delete a user by ID
   // Send response
 };
+
+exports.saveComposition = async (req, res, next) =>{
+  try{
+    const {userId, championSelectedList,deckName} = req.body
+    console.log(userId, championSelectedList,deckName)
+    if(!userId && !deckName){
+      return res.status(400).send('Composition name is required');
+    }
+    const result = await Deck.create({
+      name:deckName,
+      champions: championSelectedList,
+      user: userId
+    })
+    res.status(200).json({
+      success: 'Composition created',
+      composition: {
+        name: result.name,
+        champions: result.champions,
+        userId: result.user
+      }
+    })
+  }catch(error){
+    next(error)
+  }
+}
+
+exports.getCompositions = async (req,res,next) => {
+  try{
+    const {id} = req.params
+    console.log(id)
+    const compositionsFound = await Deck.find({user:id})
+    console.log(compositionsFound)
+    if(compositionsFound){
+      res.json({compositions: compositionsFound})
+    }
+  }catch(error){
+    console.log(error)
+  }
+}
