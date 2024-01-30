@@ -107,15 +107,15 @@ exports.deleteUser = (req, res) => {
 
 exports.saveComposition = async (req, res, next) =>{
   try{
-    const {userId, championSelectedList,deckName} = req.body
-    console.log(userId, championSelectedList,deckName)
+    const {userId, championSelectedList,deckName, selectedTrait} = req.body
     if(!userId && !deckName){
       return res.status(400).send('Composition name is required');
     }
     const result = await Deck.create({
       name:deckName,
       champions: championSelectedList,
-      user: userId
+      user: userId,
+      extraTraits: selectedTrait
     })
     res.status(200).json({
       success: 'Composition created',
@@ -133,9 +133,7 @@ exports.saveComposition = async (req, res, next) =>{
 exports.getCompositions = async (req,res,next) => {
   try{
     const {id} = req.params
-    console.log(id)
     const compositionsFound = await Deck.find({user:id})
-    console.log(compositionsFound)
     if(compositionsFound){
       res.json({compositions: compositionsFound})
     }

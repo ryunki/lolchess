@@ -35,6 +35,7 @@ const Home = () => {
   const[deckName, setDeckName] = useState('')
   const[openDeckInput, setOpenDeckInput] = useState(false)
   const[deckMessage, setDeckMessage] = useState('')
+  const [retrieveCompositions, setRetrieveCompositions] = useState(false)
   const userRecoil = useRecoilValue(userInfo);
   // save composition to recoil
   const [deckRecoil,setDeckRecoil] = useRecoilState(userDeck);
@@ -113,7 +114,7 @@ const Home = () => {
     if(userRecoil){
       getCompositions()
     }
-  },[userRecoil])
+  },[userRecoil,retrieveCompositions])
 
 
    // Function to find traits for the selected champion 
@@ -228,11 +229,16 @@ useEffect(() => {
   }
 }, [])
 
+// when saving composition, send extra added traits as well
 const saveComposition = async() => {
-  await axios.post('/api/users/composition',{userId: userRecoil._id, championSelectedList, deckName})
+  await axios.post('/api/users/composition',{userId: userRecoil._id, championSelectedList, deckName, selectedTrait})
   .then(res=>{
     setDeckMessage(res.data.success)
+    setRetrieveCompositions(!retrieveCompositions)
     openModal()
+    setChampionSelectedList({})
+    setSelectedTrait({})
+    setDisplayExtraTraits({switch: false, traits:{}})
   }).catch(error=>{
     console.log(error.response.data.message)
   })
@@ -262,7 +268,7 @@ showAllTraits = dataForTraitsAndRecommendation(championSelectedList, displayacti
       {/* display all champions */}
       <ChampionsList onClickHandler={onClickHandler} selectedChampion={selectedChampion} costArray={costArray} getChampions={getChampions} />
       {/* display compositions */}
-      <Compositions getTraits={getTraits} displayCompositions={displayCompositions} displayactivation={displayactivation} setChampionSelectedList={setChampionSelectedList} setDisplayCompositions={setDisplayCompositions}/>
+      <Compositions getTraits={getTraits} displayCompositions={displayCompositions} displayactivation={displayactivation} setChampionSelectedList={setChampionSelectedList} setDisplayCompositions={setDisplayCompositions} setSelectedTrait={setSelectedTrait}/>
 
       {Object.keys(championSelectedList).length !== 0 && 
         <>

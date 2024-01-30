@@ -203,6 +203,7 @@ export const dataForTraitsAndRecommendation = (championSelectedList, displayActi
     Object.entries(selectedTrait).forEach(([trait,value])=>{
       collectTraits[trait] = [collectTraits[trait] ? collectTraits[trait][0] + value[0] : value[0], value[1]]
     })
+    
     console.log(collectTraits)
     // sort the traits in order, and get inactivated traits list
     const {sortedData, traitDifferenceList} = sortTraits(collectTraits, championSelectedList, traitHistory);

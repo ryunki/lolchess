@@ -6,6 +6,7 @@ const deckSchema = new mongoose.Schema({
   champions: {type: Object, required: true},
   // champions: [{type: mongoose.Schema.Types.ObjectId, ref: 'Champion'}],
   // traits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trait'}],
+  extraTraits: {type:Object},
   user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   createdAt: { type: Date, default: Date.now },
 },{

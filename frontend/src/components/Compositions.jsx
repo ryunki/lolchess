@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userDeck, userInfo } from 'recoil/stateAtoms'
 import '../css/Compositions.css'
-const Compositions = ({getTraits, displayCompositions, displayactivation, setChampionSelectedList, setDisplayCompositions}) => {
+const Compositions = ({getTraits, displayCompositions, displayactivation, setChampionSelectedList, setDisplayCompositions, setSelectedTrait}) => {
 const userRecoil = useRecoilValue(userInfo)
 const deckRecoil = useRecoilValue(userDeck)
 const [selectedComposition, setSelectedComposition] = useState('')
@@ -24,6 +24,9 @@ const compositionSelectHandler = (comp, id) =>{
       [trait]: info.activation
     }
   })
+  const filteredComp = deckRecoil.filter(composition => composition._id === id)
+  console.log(id, filteredComp[0].extraTraits)
+  setSelectedTrait(filteredComp[0].extraTraits)
   setSelectedComposition(id)
 }
 
