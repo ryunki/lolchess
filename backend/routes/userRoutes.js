@@ -10,5 +10,6 @@ router.use(verifyIsLoggedin)
 router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
 router.post('/composition', userController.saveComposition)
-router.get('/compositions/:id', userController.getCompositions)
+router.get('/compositions/:userId', userController.getCompositions)
+router.post('/compositions/:id', userController.deleteComposition)
 module.exports = router;

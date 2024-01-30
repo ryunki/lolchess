@@ -1,7 +1,7 @@
-const User = require('../models/UserModel');
-const { hashPassword, comparePasswords } = require('../utils/hashPassword');
-const generateAuthToken = require('../utils/generateAuthToken');
-const Deck = require('../models/DeckModel');
+const User = require('../models/UserModel')
+const { hashPassword, comparePasswords } = require('../utils/hashPassword')
+const generateAuthToken = require('../utils/generateAuthToken')
+const Deck = require('../models/DeckModel')
 
 const cookieOptions = {
   // This can enhance security by reducing the risk of cross-site scripting (XSS) attacks.
@@ -18,126 +18,153 @@ exports.getAllUsers = (req, res) => {
   // Send response
   console.log('get all users')
   res.send('hey')
-};
+}
 
 exports.getUserById = (req, res) => {
   // Logic to get a user by ID
   // Send response
-};
+}
 
-exports.loginUser = async (req, res , next) => {
+exports.loginUser = async (req, res, next) => {
   // Logic to get a user by ID
   // Send response
-  try{
-    const {username, password} = req.body
-    if (!(username && password)){
+  try {
+    const { username, password } = req.body
+    if (!(username && password)) {
       return res.status(400).send('All inputs are required')
     }
-    const user = await User.findOne({username})
+    const user = await User.findOne({ username })
     const passwordsMatch = comparePasswords(password, user.password)
     if (user && passwordsMatch) {
       const cookieValue = generateAuthToken(user._id, user.username)
-  
-      res.cookie('access_token',cookieValue, cookieOptions)
-      .status(201).json({
-                success: "User logged in",
-                userLoggedIn: {
-                  _id: user._id,
-                  username: user.username,
-                  deck: user.deck
-                },
-              })
-    }else{
-      return res.status(401).send("wrong credentials");
-    }
 
-  }catch(err){
-    next(err);
+      res
+        .cookie('access_token', cookieValue, cookieOptions)
+        .status(201)
+        .json({
+          success: 'User logged in',
+          userLoggedIn: {
+            _id: user._id,
+            username: user.username,
+            deck: user.deck,
+          },
+        })
+    } else {
+      return res.status(401).send('wrong credentials')
+    }
+  } catch (err) {
+    next(err)
   }
-};
+}
 
 exports.createUser = async (req, res, next) => {
   try {
     // Logic to create a new user
     // Send response
-    const { username, password, repeatPassword } = req.body;
+    const { username, password, repeatPassword } = req.body
     // check if user sent all the data needed
     if (!(username && password && repeatPassword)) {
-      return res.status(400).send('All inputs are required');
+      return res.status(400).send('All inputs are required')
     }
-    if (password !== repeatPassword){
-      return res.status(400).send('password does not match');
+    if (password !== repeatPassword) {
+      return res.status(400).send('password does not match')
     }
     // check if email already exists
-    const userExists = await User.findOne({ username });
+    const userExists = await User.findOne({ username })
 
     if (userExists) {
-      return res.status(400).send('User exists');
+      return res.status(400).send('User exists')
     } else {
-      const hashedPassword = hashPassword(password);
-      // create a user 
+      const hashedPassword = hashPassword(password)
+      // create a user
       const user = await User.create({
         username: username.toLowerCase(),
         password: hashedPassword,
-      });
+      })
       const cookieValue = generateAuthToken(user._id, user.username)
 
-      res.cookie('access_token',cookieValue, cookieOptions)
-        .status(201).json({
+      res
+        .cookie('access_token', cookieValue, cookieOptions)
+        .status(201)
+        .json({
           success: 'User created',
           userCreated: {
             _id: user._id,
-            username: user.username},
+            username: user.username,
+          },
         })
     }
   } catch (err) {
-    next(err);
+    next(err)
   }
-};
+}
 
 exports.updateUser = (req, res) => {
   // Logic to update a user by ID
   // Send response
-};
+}
 
 exports.deleteUser = (req, res) => {
   // Logic to delete a user by ID
   // Send response
-};
+}
 
-exports.saveComposition = async (req, res, next) =>{
-  try{
-    const {userId, championSelectedList,deckName, selectedTrait} = req.body
-    if(!userId && !deckName){
-      return res.status(400).send('Composition name is required');
+exports.saveComposition = async (req, res, next) => {
+  try {
+    const { userId, championSelectedList, deckName,selectedTrait } = req.body
+    if (!userId && !deckName) {
+      return res.status(400).send('Composition name is required')
     }
-    const result = await Deck.create({
-      name:deckName,
-      champions: championSelectedList,
-      user: userId,
-      extraTraits: selectedTrait
-    })
-    res.status(200).json({
-      success: 'Composition created',
-      composition: {
-        name: result.name,
-        champions: result.champions,
-        userId: result.user
-      }
-    })
-  }catch(error){
+    // find all the compositions of a user
+    const decks = await Deck.find({ name: deckName })
+    // if compositions exist
+    if (decks.length !== 0) {
+        res.status(400).send('Duplicated name')
+      } else {
+      // if no compositions were found, create new one
+      const result = await Deck.create({
+        name: deckName,
+        champions: championSelectedList,
+        user: userId,
+        extraTraits: selectedTrait,
+      })
+      res.status(200).json({
+        success: 'Composition created',
+        composition: {
+          name: result.name,
+          champions: result.champions,
+          userId: result.user,
+          extraTraits: result.extraTraits,
+        },
+      })
+    }
+  } catch (error) {
     next(error)
   }
 }
 
-exports.getCompositions = async (req,res,next) => {
-  try{
-    const {id} = req.params
-    const compositionsFound = await Deck.find({user:id})
-    if(compositionsFound){
-      res.json({compositions: compositionsFound})
+exports.getCompositions = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const compositionsFound = await Deck.find({ user: userId })
+    if (compositionsFound) {
+      res.json({ compositions: compositionsFound })
     }
-  }catch(error){
+  } catch (error) {
+    console.log(error)
+  }
+}
+exports.deleteComposition = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    console.log(id)
+    const compositionDeleted = await Deck.deleteOne({ _id: id })
+    if (compositionDeleted.deletedCount > 0) {
+      console.log(compositionDeleted)
+
+      res.status(200).send('Composition deleted')
+    }
+  } catch (error) {
     console.log(error)
   }
 }
