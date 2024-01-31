@@ -5,17 +5,17 @@ import {  useSetRecoilState, useRecoilValue } from 'recoil'
 import { userInfo,logoutSelector } from '../../../recoil/stateAtoms';
 import '../../../css/AdminPage.css'
 
-const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editChampion}) => {
+const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editChampion, openModal}) => {
   // display champions from DB
   const [displayChampions, setDisplayChampions] = useState({})
-  const [championUpdateMessage, setChampionUpdateMessage] = useState('')
+  // const [championUpdateMessage, setChampionUpdateMessage] = useState('')
   // display traits for selection
   const [displayTraits, setDisplayTraits] = useState([])
   // save all the traits a user selected for updating
   const [addTraits, setAddTraits] = useState({})
   // data for adding new champion
   const [name, setName] = useState('')
-  const [cost, setCost] = useState('')
+  const [cost, setCost] = useState(0)
   // data for editing champion
   const [editName, setEditName] = useState('')
   const [editCost, setEditCost] = useState('')
@@ -34,44 +34,63 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
   const deleteChampionHandler = async(id) =>{
     await axios.delete(`/api/admin/champion/${id}`).then(res=>{
       const message = res.data
-      console.log(message)
       // getChampions()
-      setChampionUpdateMessage(message)
+      // setChampionUpdateMessage(message)
+      openModal(message)
       setEditChampId('')
       setRerender(!rerender)
     }).catch(error=>{
-      console.log(error)
+      openModal(error)
     })
   }
   
   const addNewChampionSubmit = (e) =>{
     e.preventDefault()
+    console.log('name: ',name,'cost: ', cost)
+    if(!(name && cost)){
+      openModal('Name/Cost is missing')
+    }
+    if(cost < 1 || cost > 5){
+      openModal('Cost must be between 1 and 5')
+    }
+    if(name && cost && cost >= 1 && cost <= 5){
     addNewChampion(name, cost, addTraits).then(res=>{
       const message = res.success
       setDisplayChampions(prev => ({...prev, [Object.keys(prev).length]: res.championCreated}))
-      setChampionUpdateMessage(message)
+      // setChampionUpdateMessage(message)
+      openModal(message)
       setRerender(!rerender)
     }).catch(error=>{
       console.log(error)
+      openModal(error.response.data)
     })
     setName('')
-    setCost('')
+    setCost(0)
     setAddTraits({})
   }
+}
 
   const editChampionSubmit = (id) => {
-    // e.preventDefault()
-    editChampion(id, editName, editCost, addTraits).then(res=>{
-      const message = res.success
-      setChampionUpdateMessage(message)
-      setEditChampId('')
-      setRerender(!rerender)
-    }).catch(error=>{
-      console.log(error)
-    })
-    setEditName('')
-    setEditCost('')
-    setAddTraits({})
+    if(!(editName && editCost)){
+      openModal('Name/Cost is missing')
+    }
+    if(editCost < 1 || editCost > 5){
+      openModal('Cost must be between 1 and 5')
+    }
+    if(editName && editName && editCost >= 1 && editCost <= 5){
+      editChampion(id, editName, editCost, addTraits).then(res=>{
+        const message = res.success
+        // setChampionUpdateMessage(message)
+        openModal(message)
+        setEditChampId('')
+        setRerender(!rerender)
+      }).catch(error=>{
+        openModal(error.response.data)
+      })
+      setEditName('')
+      setEditCost(0)
+      setAddTraits({})
+    }
   }
 
   // when edit button is clicked
@@ -115,12 +134,11 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
   }
   useEffect(()=>{
     getChampions().then(res=>{
-      console.log(res)
       setDisplayChampions(res.champions)
     }).catch(error=>{
       logout()
       userRecoil('')
-      console.log(error)
+      openModal('You are logged out')
     })
     
   },[rerender])
@@ -129,7 +147,6 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
     getTraits().then(res=>{
       setDisplayTraits(res.traits)
     }).catch(error=>{
-      console.log(error)
     })
   },[])
 
@@ -162,7 +179,7 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
         </div>
         <div className="input-wrapper">
           <label htmlFor="cost">Cost</label>
-          <input className="small" type="number" id="cost" name="cost" value={cost} onChange={(e)=>{setCost(e.target.value)}} required />
+          <input className="small" type="number" id="cost" name="cost" value={cost} onChange={(e)=>{setCost(parseInt(isNaN(e.target.value) ? 0: e.target.value))}} required />
         </div>
         <div>
           <div className="display-button"onClick={addNewChampionSubmit} >Add</div>
@@ -173,14 +190,25 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
       {!editChampId && 
             <DisplayAddedTraits addTraits={addTraits} deleteTrait={deleteTrait}/>
         }
-        {championUpdateMessage && 
+        {/* {championUpdateMessage && 
           <div className="display-updated-message">
             {championUpdateMessage}
           </div>
-        }
+        } */}
       
       <div className="champions-and-trait-container">
-
+        {displayTraits.length !== 0 && 
+            <div className="traits-container-champions-page"ref={detectClickOtherThanEdit2}>
+              <div className="container-title">Click to add</div>
+              {/* display lists of traits for adding to new champs or to edit champion */}
+              <div className="traits-wrapper">
+                {displayTraits.map((trait,idx)=>(
+                  <div className="display-trait-add" key={trait._id} onClick={()=>addTraitsHandler(trait)}>{trait.name}</div>
+                  // <div key={trait._id} onClick={()=>setAddTraits(prev => ([...prev, ...{[trait.name]: trait._id}]))}>{trait.name}</div>
+                  ))}
+              </div>
+            </div>
+          }
         {/* display all champion with cost and traits */}
         <div className="champions-container">
           {displayChampions && Object.entries(displayChampions).map(([key,champ])=>(
@@ -194,7 +222,7 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
                   {/* <label htmlFor="editName">Name</label> */}
                   <input type="text" id="editName" name="editName" value={editName} placeholder={champ.name} onChange={(e)=>{setEditName(e.target.value)}} required />
                   {/* <label htmlFor="editCost">Cost</label> */}
-                  <input className="small" type="number" id="editCost" name="editCost" value={editCost} placeholder={champ.cost} onChange={(e)=>{setEditCost(e.target.value)}} required />
+                  <input className="small" type="number" id="editCost" name="editCost" value={editCost} placeholder={champ.cost} onChange={(e)=>{setEditCost(parseInt((isNaN(e.target.value) ? 0: e.target.value)))}} required />
                 </div>
                 <div className="">
                   <DisplayAddedTraits addTraits={addTraits} deleteTrait={deleteTrait}/>
@@ -226,18 +254,6 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
             </React.Fragment>
           ))}
         </div>
-        {displayTraits.length !== 0 && 
-          <div className="traits-container-champions-page"ref={detectClickOtherThanEdit2}>
-            <div className="container-title">Click to add</div>
-            {/* display lists of traits for adding to new champs or to edit champion */}
-            <div className="traits-wrapper">
-              {displayTraits.map((trait,idx)=>(
-                <div className="display-trait-add" key={trait._id} onClick={()=>addTraitsHandler(trait)}>{trait.name}</div>
-                // <div key={trait._id} onClick={()=>setAddTraits(prev => ([...prev, ...{[trait.name]: trait._id}]))}>{trait.name}</div>
-                ))}
-            </div>
-          </div>
-        }
       </div>
     </div>
   )

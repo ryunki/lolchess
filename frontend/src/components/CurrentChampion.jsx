@@ -3,7 +3,6 @@ import '../css/style.css';
 import '../css/traits.css';
 
 const CurrentChampion = ({ displayClickedChampion, costArray }) => {
-  console.log(displayClickedChampion)
   return (
     <>
     {displayClickedChampion.length !== 0 &&

@@ -69,14 +69,19 @@ exports.addTrait = async (req, res, next) => {
 exports.updateChampion = async (req, res, next) => {
   try{
     const {name, cost, traits} = req.body
-    const champion = await Champion.findById(req.params.id)
-    // replace to new data or existing data
-    champion.name = name || champion.name
-    champion.cost = cost || champion.cost 
-    champion.traits = traits || champion.traits 
-    await champion.save()
-    // if traits is added move on to addChampionToTrait() function
-    next()
+    console.log(name, cost, traits, req.params.id)
+    if(!(name && cost)){
+      console.log('no inputs')
+      return res.status(400).send('All inputs are required')
+    }else{
+      const champion = await Champion.findById(req.params.id)
+      // replace to new data or existing data
+      champion.name = name || champion.name
+      champion.cost = cost || champion.cost 
+      champion.traits = traits || champion.traits 
+      await champion.save()
+      res.status(200).send({success:'Champion updated'})
+    }
   }catch(err){
     next(err)
   }

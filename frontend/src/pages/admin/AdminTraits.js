@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import AdminTraitsComponent from "./components/AdminTraitsComponent"
 
 
-const AdminTraits = () => {
+const AdminTraits = ({openModal}) => {
 
   const getTraits = async() =>{
     const {data} = await axios.get('/api/content/traits')
@@ -18,7 +18,7 @@ const AdminTraits = () => {
   }
   
   return (
-    <AdminTraitsComponent getTraits={getTraits} addTrait={addTrait}/>
+    <AdminTraitsComponent getTraits={getTraits} addTrait={addTrait} openModal={openModal}/>
   )
 }
 

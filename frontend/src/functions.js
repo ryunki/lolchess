@@ -57,7 +57,6 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
     let inactivatedCategories = [];
 
     let currentAkali = { 'k/da': [false, 0], 'true damage': [false, 0] }
-    console.log(collectTraits)
     Object.entries(collectTraits).forEach(([trait, value]) => {
       let activated = false
       if(value.length !== 1){
@@ -183,7 +182,6 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
 }
 
 export const dataForTraitsAndRecommendation = (championSelectedList, displayActivation, traitHistory, selectedTrait) => {
-  console.log(championSelectedList,displayActivation)
   let collectTraits = {};
   // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
   Object.values(championSelectedList).forEach((champ) => {
@@ -203,8 +201,7 @@ export const dataForTraitsAndRecommendation = (championSelectedList, displayActi
     Object.entries(selectedTrait).forEach(([trait,value])=>{
       collectTraits[trait] = [collectTraits[trait] ? collectTraits[trait][0] + value[0] : value[0], value[1]]
     })
-    
-    console.log(collectTraits)
+
     // sort the traits in order, and get inactivated traits list
     const {sortedData, traitDifferenceList} = sortTraits(collectTraits, championSelectedList, traitHistory);
     // Convert back to object

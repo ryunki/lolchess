@@ -5,7 +5,7 @@ import { userInfo,logoutSelector } from '../../../recoil/stateAtoms';
 
 import '../../../css/AdminPage.css'
 
-const AdminTraitsComponent = ({getTraits, addTrait}) => {
+const AdminTraitsComponent = ({getTraits, addTrait, openModal}) => {
   // display traits
   const [displayTraits, setDisplayTraits] = useState([])
   // for detecting input field real time
@@ -25,7 +25,8 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
     await axios.delete(`/api/admin/trait/${id}`).then(res=>{
       const message = res.data
       if (message === 'Trait removed'){
-        setTraitUpdateMessage(message)
+        // setTraitUpdateMessage(message)
+        openModal(message)
         // need this state. in case a user deletes twice in a row (state won't change. won't re-render)
         setRerender(!rerender)
       }
@@ -40,10 +41,12 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
       addTrait(trait, activationList).then(trait=>{
         // to trigger re-render after adding new trait
         setDisplayTraits(prevTraits => ({...prevTraits, [Object.keys(prevTraits).length]:trait.traitCreated}));
-        setTraitUpdateMessage(trait.success)
+        // setTraitUpdateMessage(trait.success)
+        openModal(trait.success)
       }).catch(error=>{
         // console.log(error.response.data)
-        setTraitUpdateMessage(error.response.data)
+        // setTraitUpdateMessage(error.response.data)
+        openModal(error.response.data)
       })
       // empty all the input fields after submit
       setActivationList([])
@@ -51,10 +54,10 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
       setActivation('')
     }else if(activation){
       // user did not hit enter after filling in activation field
-      console.log('activation something',activation)
+      openModal('Press enter to apply activation')
     }else{
       // user did not fill in activation field
-      console.log('activation length 0 nothing',activation)
+      openModal('Field is empty')
     }
   }
 
@@ -76,7 +79,7 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
     }).catch(error=>{
       logout()
       userRecoil('')
-      console.log(error)
+      openModal('You are logged out')
     })
   }, [rerender])
 
@@ -96,7 +99,7 @@ const AdminTraitsComponent = ({getTraits, addTrait}) => {
           <div className="display-button" onClick={()=>addNewTraitSubmit()}>Add</div>
         </div>
       </div>
-      {trait && 
+      {(trait || activationList.length !== 0) && 
       <div className="display-input-data ">
         <div>{trait}</div>
           {activationList.length !== 0 && 

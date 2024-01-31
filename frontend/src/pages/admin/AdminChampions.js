@@ -3,7 +3,7 @@ import axios from "axios"
 import AdminChampionsComponent from "./components/AdminChampionsComponent"
 
 
-const AdminChampions = () => {
+const AdminChampions = ({openModal}) => {
   const getChampions = async () => {
     const {data} = await axios.get('/api/admin/champions')
     return data
@@ -42,7 +42,7 @@ const AdminChampions = () => {
     return data
   }
   return (
-    <AdminChampionsComponent getChampions={getChampions} getTraits={getTraits} addNewChampion={addNewChampion} editChampion={editChampion}/>
+    <AdminChampionsComponent getChampions={getChampions} getTraits={getTraits} addNewChampion={addNewChampion} editChampion={editChampion} openModal={openModal}/>
   )
 }
 

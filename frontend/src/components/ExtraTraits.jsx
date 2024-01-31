@@ -33,24 +33,24 @@ const deleteExtraTraitsFromSynergy = () =>{
   
   return (<>
         <div className='buttons-container'>
-          <div className='buttons-wrapper' onClick={()=>showExtraTraitHandler()}>{displayExtraTraits.switch ? 'Traits Close': 'Traits Open'}
+          <div className='buttons-wrapper-trait font-white' onClick={()=>showExtraTraitHandler()}>{displayExtraTraits.switch ? 'Traits Close': 'Traits Open'}
           </div> 
           {/* button for deleting all the extra traits added */}
           {Object.keys(selectedTrait).length !== 0 && 
-          <div className='buttons-wrapper' onClick={()=>deleteExtraTraitsFromSynergy()}>delete extra traits
+          <div className='font-white display-button-delete' onClick={()=>deleteExtraTraitsFromSynergy()}>delete extra traits
           </div>}
         </div>
         
         {/* button for display extra traits to add */}
-        <div>
-          {displayExtraTraits.switch && 
-            <div className='contents-container-extraTraits font-white'>
-            {Object.entries(displayExtraTraits.traits).map((trait,idx)=>(
-              <div style={{cursor: 'pointer'}}className={`current-traits ${highlightSelected(trait[0])}`} key={idx} onClick={()=>addExtraTraitHandler(trait)}> {trait[0]} </div>
-              ))}
-              </div>
-            }
-        </div>
+        
+        {displayExtraTraits.switch && 
+          <div className='contents-container-extraTraits font-white'>
+          {Object.entries(displayExtraTraits.traits).map((trait,idx)=>(
+            <div style={{cursor: 'pointer'}}className={`current-traits ${highlightSelected(trait[0])}`} key={idx} onClick={()=>addExtraTraitHandler(trait)}> {trait[0]} </div>
+            ))}
+            </div>
+          }
+        
     </>
   )
 }

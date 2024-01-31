@@ -59,15 +59,15 @@ useEffect(()=>{
       </div>
       <div className="signup-input-wrapper">
         <label className="signup-label">User name</label>
-        <input type="text"id="username" name="username" placeholder="Enter your username" onChange={e=>setUsername(e.target.value)} value={username}/>
+        <input className="signup-input" type="text"id="username" name="username" placeholder="Enter your username" onChange={e=>setUsername(e.target.value)} value={username}/>
       </div>
       <div className="signup-input-wrapper">
         <label className="signup-label">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password"onChange={e=>setPassword(e.target.value)} value={password}/>
+        <input className="signup-input" type="password" id="password" name="password" placeholder="Enter your password"onChange={e=>setPassword(e.target.value)} value={password}/>
       </div>
       <div className="signup-input-wrapper">
         <label className="signup-label">Repeat password</label>
-        <input type="password" id="repeatPassword" name="repeatPassword" placeholder="Repeat your password"onChange={e=>setRepeatPassword(e.target.value)} value={repeatPassword} />
+        <input className="signup-input" type="password" id="repeatPassword" name="repeatPassword" placeholder="Repeat your password"onChange={e=>setRepeatPassword(e.target.value)} value={repeatPassword} />
       </div>
         {message && <div style={{textAlign:'center', marginBottom:"5px"}}>{message}</div>}
       <div className="signup-footer">

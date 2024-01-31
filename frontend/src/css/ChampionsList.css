@@ -1,6 +1,9 @@
 
 .champions_list_wrapper{
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 5px;
+  display: flex;
 }
 
 .search-sort-container{
@@ -8,6 +11,7 @@
   margin: 10px;
   flex-wrap: wrap;
   gap: 10px;
+  justify-content: center;
 }
 
 .champion-item {

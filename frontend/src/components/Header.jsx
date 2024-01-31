@@ -29,7 +29,7 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
           setPassword('')
           if(userLoggedIn.username === 'admin'){
             setBackToAdmin(false)
-            navigate('/admin')
+            navigate('/admin/champions')
           }else{
             navigate('/')
           }
@@ -49,7 +49,7 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
 
   const redirectHandler = () => {
     if(backToAdmin){
-      navigate('/admin')
+      navigate('/admin/champions')
       setBackToAdmin(false)
     }
 }

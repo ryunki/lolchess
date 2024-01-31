@@ -38,7 +38,7 @@ const Recommendation = ({recommendChamp,championSelectedList,costArray,getTraits
   
   return (
     <>
-      {
+      {Object.keys(recommendedChampionsList).length !== 0 ?
         <div className="contents-container">
           {Object.entries(recommendedChampionsList).map(([trait, champs]) => {
             return (
@@ -55,7 +55,7 @@ const Recommendation = ({recommendChamp,championSelectedList,costArray,getTraits
               </div>
             );
           })}
-        </div>
+        </div> : <div className="contents-container font-white">No recommendation</div>
       }
     </>
   );
