@@ -213,22 +213,61 @@ input.small{
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
-  margin: 5px;
+  margin: 5px auto;
   padding: 10px;
   align-items: center;
   border-radius: 10px;
+  width: fit-content;
   background-color: rgb(53 53 53);
 }
-@media screen and (max-width: 510px) {
-  /* .champions-container{
-    max-width: 73vw;
-    flex-wrap: wrap;
+.input-wrapper-trait{
+  justify-content: space-evenly;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+@media screen and (max-width: 340px) {
+  input.small{
+    width: 5rem;
+  }
+  .display-button{
+    width: fit-content;
+    margin-inline:auto;
+  }
+  label{
+    width: 3rem;
+  }
+  .label-trait{
+    width: 5rem;
+  }
+  .display-button-wrapper{
+    width:100%;
+  }
+  .display-trait{
+    margin: 2px 19px;
+    background: rgb(39, 40, 46);
+    border: 1px solid rgb(50, 50, 50);
+    border-radius: 5px;
+    padding: 4px 8px;
     display: flex;
+    font-size: 12px;
+    justify-content: center;
+  }
+  .input-container-display-champions {
+    justify-content: center;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 5px;
+    padding: 10px;
     align-items: center;
-    border-radius: 20px;
-    background-color: rgb(75 74 74);
-    margin: 0.5rem;
-  } */
+    border-radius: 10px;
+    background-color: rgb(53 53 53);
+}
+}
+@media screen and (max-width: 510px) {
   .champions-container{
     border-radius: 20px;
     background-color: rgb(75 74 74);
@@ -246,6 +285,13 @@ input.small{
     display: flex;
     flex-wrap: wrap;
     gap: 7px;
+  }
+  /* .input-wrapper-trait{
+    display: flex;
+    gap: 5px;
+  } */
+  input.small{
+    width: 5rem;
   }
   .added-trait-container{
     padding: 0.5rem;

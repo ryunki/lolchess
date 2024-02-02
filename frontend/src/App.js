@@ -7,12 +7,11 @@ import Home from './pages/Home';
 import AdminChampions from './pages/admin/AdminChampions';
 import AdminTraits from './pages/admin/AdminTraits';
 import ErrorPage from './error-page';
-import Header from 'components/Header';
+import Header from 'components/HeaderComponent';
 import './css/ChampionsList.css';
 import './css/style.css';
 
 import { useState, useEffect } from 'react';
-import { useNavigate,useLocation  } from 'react-router-dom';
 import { Modal } from 'components/Modal';
 import ProtectedRoute from 'ProtectedRoute';
 function App() {
@@ -52,7 +51,7 @@ function App() {
         <Router>
           <Header backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>
           <Routes>
-            <Route path="/" element={<Home deckMessage={deckMessage} setDeckMessage={setDeckMessage} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} openModal={openModal} closeModal={closeModal}/>} />
+            <Route path="/" element={<Home openModal={openModal}/>} />
             <Route element={<ProtectedRoute clickToHomePage={clickToHomePage}/>}>
               {/* <Route path="/admin" element={<AdminPage clickToHomePage={clickToHomePage} />}> */}
                   <Route path="/admin/champions" element={<AdminChampions openModal={openModal}/>} />

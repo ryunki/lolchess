@@ -9,7 +9,7 @@ import axios from 'axios'
 import '../css/Header.css'
 import SignUp from './SignUp';
 
-const Header = ({backToAdmin, setBackToAdmin}) => {
+const HeaderComponent = ({backToAdmin, setBackToAdmin}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [userRecoil, setUserRecoil] = useRecoilState(userInfo);
@@ -18,10 +18,8 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
   const {logout} = useRecoilValue(logoutSelector);
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) =>{
-    e.preventDefault()
-    await axios.post('/api/users/login', {username,password})
-      .then(response =>{
+  const submitHandler = async(e) =>{
+    await axios.post('/api/users/login', {username,password}).then(response =>{
         const {success, userLoggedIn} = response.data
         if(success === 'User logged in'){
           localStorage.setItem('userInfo',JSON.stringify(userLoggedIn))
@@ -70,8 +68,8 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
               <input className="login-input-field" onChange={(e)=>{setPassword(e.target.value)}} 
                 type="password" id="password" name="password" value={password} required/>
           </div>
-          <div>
-            <button className="login-button" onClick={handleSubmit}>Login</button>
+          <div style={{display:'flex', gap:'3px'}}>
+            <button className="login-button" onClick={()=>submitHandler()}>Login</button>
             <button className="login-button" onClick={()=>setOpenSignUpModal(true)}>Sign Up</button>
           </div>
         </div>
@@ -86,4 +84,4 @@ const Header = ({backToAdmin, setBackToAdmin}) => {
   )
 }
 
-export default Header
+export default HeaderComponent

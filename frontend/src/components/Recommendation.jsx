@@ -4,38 +4,40 @@ import '../css/ChampionsList.css';
 import '../css/style.css';
 import '../css/recommendation.css';
 
-const Recommendation = ({recommendChamp,championSelectedList,costArray,getTraits}) => {
-  // number of traits that will be added for each champion
+const Recommendation = ({recommendTraits,championSelectedList,costArray,displayTraits}) => {
+
   let champAppearance = {}
   // for storing the list of recommended champions
-    let recommendedChampionsList = {};
-    Object.entries(recommendChamp).forEach(([diff, arrayOfTraits]) => {
-      // find all the champs of every inactivated traits
-      arrayOfTraits.forEach((trait) => {
-        if(getTraits[trait]){
-          // save the names of champion with the cost value
-          recommendedChampionsList[trait] = getTraits[trait].champions
+  let recommendedChampionsList = {};
+  Object.entries(recommendTraits).forEach(([diff, arrayOfTraits]) => {
+    // find all the champs of every inactivated traits
+    arrayOfTraits.forEach((trait) => {
+      displayTraits.forEach(item=>{
+        if(item.name === trait){
+          recommendedChampionsList[trait] = item.champions
         }
-      });
+      })
     });
-    // extract the names only from championSelectedList
-    const selectedChampions = [...Object.keys(championSelectedList)];
-    // remove list of selected champions name from the recommend list
-    // {trait: [[champion, cost], [champion2, cost], [champion3, cost]], trait2: [...]}
-    Object.keys(recommendedChampionsList).forEach((trait) => {
-      recommendedChampionsList[trait] = recommendedChampionsList[trait].filter(
-        (item) => !selectedChampions.includes(item[0])
-      );
-    });
+  });
+
+  // extract the names only from championSelectedList
+  const selectedChampions = [...Object.keys(championSelectedList)];
+  // remove list of selected champions name from the recommend list
+  // {trait: [[champion, cost], [champion2, cost], [champion3, cost]], trait2: [...]}
+  Object.keys(recommendedChampionsList).forEach((trait) => {
+    recommendedChampionsList[trait] = recommendedChampionsList[trait].filter(
+      (item) => !selectedChampions.includes(item[0])
+    );
+  });
 
     
-    // find the number of traits to be added for each champion
-    Object.values(recommendedChampionsList).forEach((champions) => {
-      champions.forEach(([champ, cost]) => {
-        champAppearance[champ] = (champAppearance[champ] || 0) + 1;
-      });
+  // find the number of traits to be added for each champion
+  Object.values(recommendedChampionsList).forEach((champions) => {
+    champions.forEach(([champ, cost]) => {
+      champAppearance[champ] = (champAppearance[champ] || 0) + 1;
     });
-  
+  });
+
   return (
     <>
       {Object.keys(recommendedChampionsList).length !== 0 ?

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import '../css/ChampionsList.css';
 
-const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampions}) => {
+const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayChampions}) => {
   //  getChampions from parents component for sorting actions
   // sorting by certain cost filters the champions arraylist. 
   // so always get complete list of champions from parent's component
@@ -18,7 +18,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampio
   const toggleAtoZ = () => {
     setSortAtoZ(!sortAtoZ);
     setChampions(() => {
-      return [...getChampions].sort((a, b) => {
+      return [...displayChampions].sort((a, b) => {
         return sortAtoZ ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
       });
     });
@@ -28,7 +28,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampio
     // when cost button is clicked (sort by cost)
     if(cost === 'cost'){
       setChampions(() => {
-        return [...getChampions].sort((a,b)=> !sortAtoZ ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name))
+        return [...displayChampions].sort((a,b)=> !sortAtoZ ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name))
           .sort((a, b) => sortCost[0] ? a.cost - b.cost : b.cost - a.cost);
       });
       // if the cost button is clicked twice in a row, trigger re-rendering
@@ -46,19 +46,19 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampio
           // if the same indicator is clicked.
           if(sortCost[0] === false){
             setSortCost([true, cost])
-            return [...getChampions].filter((item)=> item.cost === cost)
+            return [...displayChampions].filter((item)=> item.cost === cost)
             .sort((a,b)=> sortAtoZ ? a.name.localeCompare(b.name): b.name.localeCompare(a.name))
           }else{
             setSortCost([false, cost])
             // sort by current state of sortAtoZ
-            return [...getChampions].sort((a,b)=> sortAtoZ ? a.name.localeCompare(b.name): b.name.localeCompare(a.name) )
+            return [...displayChampions].sort((a,b)=> sortAtoZ ? a.name.localeCompare(b.name): b.name.localeCompare(a.name) )
           }
         })
         // if different cost indicator is clicked
       } else {
         setChampions(()=>{
           // first filter by the clicked cost, then sort by current state of sortAtoZ
-          return [...getChampions].filter((item)=> item.cost === cost)
+          return [...displayChampions].filter((item)=> item.cost === cost)
             .sort((a,b)=> sortAtoZ ? a.name.localeCompare(b.name): b.name.localeCompare(a.name))
         })
         setSortCost([true, cost])
@@ -70,7 +70,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, getChampio
   const searchChampionHandler = (e) => {
     const typed = e.target.value.toLowerCase();
     setChampions(() => {
-      return [...getChampions].filter((champ) => {
+      return [...displayChampions].filter((champ) => {
         return champ.name.toLowerCase().startsWith(typed);
       });
     });

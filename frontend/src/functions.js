@@ -55,7 +55,6 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
     // to store and group by the trait results by activated or inactivated
     let activatedCategories = [];
     let inactivatedCategories = [];
-
     let currentAkali = { 'k/da': [false, 0], 'true damage': [false, 0] }
     Object.entries(collectTraits).forEach(([trait, value]) => {
       let activated = false
@@ -87,7 +86,7 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
     const sameValue = currentAkali[kda][1] === currentAkali[td][1]
     const kdaIsLower = currentAkali[kda][1] < currentAkali[td][1]
     // if the list includes Akali
-    if(championSelectedList['Akali']){
+    if(championSelectedList['akali']){
       // eslint-disable-next-line no-sequences
       specialFunctionAkali(sameValue, inActivated, inactivatedCat, activatedCat, traitHistory, kdaIsLower, kda, td)
     }else{
@@ -181,7 +180,7 @@ export const specialFunctionAkali = (sameValue, inActivated, inactivatedCat, act
     
 }
 
-export const dataForTraitsAndRecommendation = (championSelectedList, displayActivation, traitHistory, selectedTrait) => {
+export const dataForTraitsAndRecommendation = (championSelectedList, displayActivation, traitHistory, selectedExtraTrait) => {
   let collectTraits = {};
   // remove duplicate traits and add up those number of accumulated traits and sorting from high to low
   Object.values(championSelectedList).forEach((champ) => {
@@ -198,10 +197,11 @@ export const dataForTraitsAndRecommendation = (championSelectedList, displayActi
     // ***************************************
     // this is for adding extra trait (selected) to synergy 
     // ***************************************
-    Object.entries(selectedTrait).forEach(([trait,value])=>{
+    Object.entries(selectedExtraTrait).forEach(([trait,value])=>{
+      console.log()
       collectTraits[trait] = [collectTraits[trait] ? collectTraits[trait][0] + value[0] : value[0], value[1]]
     })
-
+  
     // sort the traits in order, and get inactivated traits list
     const {sortedData, traitDifferenceList} = sortTraits(collectTraits, championSelectedList, traitHistory);
     // Convert back to object

@@ -87,12 +87,12 @@ const AdminTraitsComponent = ({getTraits, addTrait, openModal}) => {
     <div className="container">
       <div className="page-title">AdminTraits</div>
       <div className="input-container">
-        <div className="input-wrapper">
-          <label>Trait Name</label>
+        <div className="input-wrapper-trait">
+          <label className="label-trait">Name</label>
           <input type='text' id='trait' name='trait' value={trait} onChange={e=>setTrait(e.target.value)}/>
         </div>
-        <div className="input-wrapper">
-          <label>Activation</label>
+        <div className="input-wrapper-trait">
+          <label className="label-trait">Activation</label>
           <input className="small" type='number' id='activation' name='activation' value={activation} onKeyDown={handleKeyDown} onChange={e=>setActivation(e.target.value)}/>
         </div>
         <div >

@@ -15,9 +15,7 @@ exports.getChampions = async (req, res, next) => {
         // traitsInfo: champ.traits
       }
     })
-    res.json({
-      champions
-    })
+    res.json({champions})
   }catch(err){
     next(err)
   }

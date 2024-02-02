@@ -8,7 +8,7 @@ export const userInfo = atom({
 
 export const userDeck = atom({
   key: 'userDeck',
-  default: [ JSON.parse(localStorage.getItem('compositions')) || null],
+  default: [JSON.parse(localStorage.getItem('compositions')) || null],
 });
 
 export const logoutSelector = selector({

@@ -181,7 +181,7 @@ const AdminChampionsComponent = ({getChampions, getTraits, addNewChampion, editC
           <label htmlFor="cost">Cost</label>
           <input className="small" type="number" id="cost" name="cost" value={cost} onChange={(e)=>{setCost(parseInt(isNaN(e.target.value) ? 0: e.target.value))}} required />
         </div>
-        <div>
+        <div className="display-button-wrapper">
           <div className="display-button"onClick={addNewChampionSubmit} >Add</div>
         </div>
           {/* if edit button is clicked, do not show traits here! (adding new champion section) */}

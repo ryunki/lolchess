@@ -16,14 +16,6 @@ app.use("/api", apiRoutes);
 const connectDB = require("./config/db");
 connectDB();
 
-// this is to display error in console for backend
-app.use((error, req, res, next) => {
-  if (process.env.NODE_ENV === "development") {
-    console.error(error);
-  }
-  next(error);
-});
-
 // show errors in development mode
 app.use((error, req, res, next) => {
   if (process.env.NODE_ENV === "development") {

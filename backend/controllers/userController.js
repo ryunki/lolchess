@@ -116,11 +116,31 @@ exports.saveComposition = async (req, res, next) => {
       return res.status(400).send('Composition name is required')
     }
     // find all the compositions of a user
-    const decks = await Deck.find({ name: deckName })
+    const decks = await Deck.find({ user: userId })
     // if compositions exist
-    if (decks.length !== 0) {
-        res.status(400).send('Duplicated name')
-      } else {
+    if (decks.length > 0) {
+      const deckNameFound = await Deck.find({ name: deckName })
+      if(deckNameFound.length > 0){
+        return res.status(409).json({ error: 'Name already exists.' })
+      }else{
+        const result = await Deck.create({
+          name: deckName,
+          champions: championSelectedList,
+          user: userId,
+          extraTraits: selectedTrait,
+        })
+        return res.status(200).json({
+          success: 'Composition '+result.name+' created',
+          // this is not being used on the frontend
+          composition: {
+            name: result.name,
+            champions: result.champions,
+            userId: result.user,
+            extraTraits: result.extraTraits,
+          },
+        })
+      }
+    }else{
       // if no compositions were found, create new one
       const result = await Deck.create({
         name: deckName,
@@ -128,8 +148,9 @@ exports.saveComposition = async (req, res, next) => {
         user: userId,
         extraTraits: selectedTrait,
       })
-      res.status(200).json({
-        success: 'Composition created',
+      return res.status(200).json({
+        success: 'Composition '+result.name+' created',
+        // this is not being used on the frontend
         composition: {
           name: result.name,
           champions: result.champions,
@@ -138,8 +159,11 @@ exports.saveComposition = async (req, res, next) => {
         },
       })
     }
+    
   } catch (error) {
-    next(error)
+    console.error('Error in saveComposition:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+    // res.status(500).json({ error: 'Internal server error.' });
   }
 }
 

@@ -2,11 +2,11 @@
 import React, { useState } from 'react'
 import '../css/style.css';
 import '../css/traits.css';
-const ExtraTraits = ({showExtraTraitHandler, selectedTrait, displayExtraTraits, setSelectedTrait}) => {
+const ExtraTraits = ({showExtraTraitHandler, selectedExtraTrait, displayExtraTraits, setSelectedExtraTrait}) => {
   const [highlightTrait, setHighlightTrait] = useState([])
   // add selected traits to synergy, this function is to accumulate selected traits
 const addExtraTraitHandler = (trait) => {
-  setSelectedTrait(prev => {
+  setSelectedExtraTrait(prev => {
     return {
       ...prev,
       // if the trait value doesnt exist (null or undefined), return 0
@@ -27,7 +27,7 @@ const highlightSelected = (trait) =>{
 }
 const deleteExtraTraitsFromSynergy = () =>{
   // delete all the selected extra traits
-  setSelectedTrait({})
+  setSelectedExtraTrait({})
   setHighlightTrait([])
 }
   
@@ -36,7 +36,7 @@ const deleteExtraTraitsFromSynergy = () =>{
           <div className='buttons-wrapper-trait font-white' onClick={()=>showExtraTraitHandler()}>{displayExtraTraits.switch ? 'Traits Close': 'Traits Open'}
           </div> 
           {/* button for deleting all the extra traits added */}
-          {Object.keys(selectedTrait).length !== 0 && 
+          {Object.keys(selectedExtraTrait).length !== 0 && 
           <div className='font-white display-button-delete' onClick={()=>deleteExtraTraitsFromSynergy()}>delete extra traits
           </div>}
         </div>

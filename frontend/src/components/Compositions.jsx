@@ -4,12 +4,11 @@ import { userDeck, userInfo } from 'recoil/stateAtoms';
 import '../css/Compositions.css';
 import axios from 'axios';
 const Compositions = ({
-  getTraits,
+  displayTraits,
   displayCompositions,
   displayactivation,
   setChampionSelectedList,
-  setDisplayCompositions,
-  setSelectedTrait,
+  setSelectedExtraTrait,
   selectedComposition,
   setSelectedComposition,
   setSelectedChampion,
@@ -22,32 +21,29 @@ const Compositions = ({
 
   // user clicks one composition from the list
   const compositionSelectHandler = (comp, id) => {
+    // empty extraTraits state for display. otherwise this is going to be added to all other compositions selected
+    setSelectedExtraTrait('')
     // display the champion composition in the component
     setChampionSelectedList(comp);
     // delete activations if there are any
     displayactivation.current = {};
     // data manipulation for the 'dataForTraitsAndRecommendation' function
-    Object.entries(getTraits).forEach(([trait, info]) => {
+    Object.entries(displayTraits).forEach(([trait, info]) => {
       displayactivation.current = {
         ...displayactivation.current,
-        [trait]: info.activation,
+        [info.name]: info.activation,
       };
     });
     const filteredComp = deckRecoil.filter(
       (composition) => composition._id === id
     );
     if (filteredComp[0]['extraTraits']) {
-      setSelectedTrait(filteredComp[0].extraTraits);
+      setSelectedExtraTrait(filteredComp[0].extraTraits);
     }
     setSelectedComposition(id);
     const champs = Object.keys(comp).map((champ) => champ);
     setSelectedChampion(champs);
   };
-
-// const deleteCompositionHandler = (id) =>{
-//   setDeleteCompId(id)
-//   deleteComposition()
-// } 
 
 const deleteCompositionHandler = async (id) =>{
   await axios.post(`/api/users/compositions/${id}`).then(res=>{
@@ -63,10 +59,9 @@ const deleteCompositionHandler = async (id) =>{
     <>
       {/* button for displaying compositions */}
       {/* if user is logged in */}
-      {userRecoil && (
         <>
-          {/* if user has compositions saved */}
-          {Object.keys(deckRecoil).length !== 0 && (
+          {/* if user is logged in and if user has compositions saved */}
+          {userRecoil&& Object.keys(deckRecoil).length !== 0 && (
             <>
               {/* if user clicks My compositions button display list of compositions*/}
               {displayCompositions && (
@@ -84,7 +79,6 @@ const deleteCompositionHandler = async (id) =>{
             </>
           )}
         </>
-      )}
     </>
   );
 };

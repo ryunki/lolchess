@@ -69,7 +69,6 @@ exports.addTrait = async (req, res, next) => {
 exports.updateChampion = async (req, res, next) => {
   try{
     const {name, cost, traits} = req.body
-    console.log(name, cost, traits, req.params.id)
     if(!(name && cost)){
       console.log('no inputs')
       return res.status(400).send('All inputs are required')
@@ -80,7 +79,7 @@ exports.updateChampion = async (req, res, next) => {
       champion.cost = cost || champion.cost 
       champion.traits = traits || champion.traits 
       await champion.save()
-      res.status(200).send({success:'Champion updated'})
+      next()
     }
   }catch(err){
     next(err)
@@ -98,6 +97,7 @@ exports.addChampionToTrait = async (req,res,next) =>{
         if(traits.length > 0){
           // Use updateMany method to add championId to the champions array in all traits
           const result = await Trait.updateMany(
+            // traits: [traitId, traitId, traitId, traitId...]
             { _id: { $in: traits } }, // Match traits with the specified IDs of array
             { $addToSet: { champions: _id } } // Add championId to the champions array, $addToSet ensures uniqueness
           )

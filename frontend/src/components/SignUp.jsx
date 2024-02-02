@@ -1,8 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react"
 import axios from "axios"
-import { useRecoilState } from "recoil"
-import { userInfo } from "recoil/stateAtoms"
 
 import "../css/SignUp.css"
 
@@ -14,18 +12,15 @@ const SignUp = ({setOpenSignUpModal, setUserRecoil}) => {
   const detectClickOtherThanEdit = useRef()
 
   const signUpHandler = async () =>{
-    console.log(username, password, repeatPassword)
     if(username && password && repeatPassword){
       await axios.post('/api/users/register',{username,password,repeatPassword}).then(res=>{
         if(res.data.success === 'User created'){
-          console.log(res.data.userCreated.username)
           setOpenSignUpModal(false)
           localStorage.setItem('userInfo', JSON.stringify(res.data.userCreated))
           setUserRecoil(res.data.userCreated)
         }
       }).catch(error=>{
         setMessage(error.response.data)
-        console.log(error.response.data)
       })
     }else{
       setMessage('missing input')
