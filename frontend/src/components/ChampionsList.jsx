@@ -85,7 +85,6 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
         console.log(error)
       })
     }
-    console.log('useEffect championsList')
     getChampions()
   },[])
   return (
