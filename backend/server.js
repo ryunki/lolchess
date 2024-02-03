@@ -7,6 +7,13 @@ const app = express()
 app.use(cors());
 // Enable for express() to read cookie coming from browser
 app.use(cookieParser())
+
+// Middleware to set the 'x-content-type-options' header for all responses
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+});
+
 const apiRoutes = require('./routes/apiRoutes')
 
 // middleware that allows postman website to send data to express
