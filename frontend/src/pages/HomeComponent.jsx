@@ -285,7 +285,6 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
           selectedChampion={selectedChampion}
           costArray={costArray}
           displayChampions={displayChampions}
-          setSelectedComposition={setSelectedComposition}
         />
         {/* {console.log(userRecoil)} */}
         {userRecoil && userRecoil?.username !== 'admin' &&

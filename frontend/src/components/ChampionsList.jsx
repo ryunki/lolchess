@@ -13,7 +13,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
  
   // display all champions
   const [champions, setChampions] = useState({});
-
+  
   // change alphabetical order of champion list
   const toggleAtoZ = () => {
     setSortAtoZ(!sortAtoZ);
