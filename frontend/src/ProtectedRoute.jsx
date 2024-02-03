@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userInfo } from './recoil/stateAtoms';
 
-const ProtectedRoute = ({clickToHomePage}) => {
+const ProtectedRoute = ({clickToHomePage,openModal}) => {
   const [userRecoil, setUserRecoil] = useRecoilState(userInfo)
   // user authentication
   useEffect(() => {
@@ -16,13 +16,14 @@ const ProtectedRoute = ({clickToHomePage}) => {
           localStorage.setItem('userInfo',JSON.stringify(response.data))
         }
       }).catch((error) => {
-        console.error('Error fetching token:', error);
+        openModal(error.response.data)
+        // console.error('Error fetching token:', error);
       });
   }, [setUserRecoil])
-  
+
   return (
     <>
-      {userRecoil.username === 'admin' ? 
+      {userRecoil?.username === 'admin' ? 
       <>
       <div className='navbar'>
         <NavLink to='/admin/champions'  className={({isActive})=>(isActive?`active`:`inactive`)}>Champions</NavLink>

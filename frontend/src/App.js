@@ -52,7 +52,7 @@ function App() {
           <Header backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin} openModal={openModal}/>
           <Routes>
             <Route path="/" element={<Home openModal={openModal}/>} />
-            <Route element={<ProtectedRoute clickToHomePage={clickToHomePage}/>}>
+            <Route element={<ProtectedRoute clickToHomePage={clickToHomePage} openModal={openModal}/>}>
               {/* <Route path="/admin" element={<AdminPage clickToHomePage={clickToHomePage} />}> */}
                   <Route path="/admin/champions" element={<AdminChampions openModal={openModal}/>} />
                   <Route path="/admin/traits" element={<AdminTraits openModal={openModal}/>} />

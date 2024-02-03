@@ -16,6 +16,7 @@ import { userInfo, userDeck, logoutSelector } from '../recoil/stateAtoms'
 import '../css/ChampionsList.css'
 import '../css/style.css'
 import axios from 'axios'
+import Buttons from 'components/Buttons'
 const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, getCompositions}) => {
   // to display contents from API when page is opened
   const [displayTraits, setDisplayTraits] = useState([])
@@ -54,10 +55,9 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
   const compositionInputRef = useRef(null)
   const compositionInputRef2 = useRef(null)
 
-  const {logout} = useRecoilValue(logoutSelector)
   // just a variable that saves results to display traits
   let showAllTraits = {}
-
+console.log('home')
   // display activation indicator corresponding to its trait
   let displayactivation = useRef({})
   // for saving info for comparison (Akali season 10)
@@ -174,6 +174,7 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
     })
   }
 
+  // when user clicks reset
   const refreshHandler = () => {
     // delete currently clicked champion
     setDisplayClickedChampion([])
@@ -191,6 +192,8 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
     traitHistory.current = { 'k/da': [false, 0], 'true damage': [false, 0] }
     // empty selected compositions
     setSelectedComposition('')
+    // undo highlighted extra trait selected
+    setHighlightTrait([])
   }
   // when user clicks on save button
   const saveHandler = () => {
@@ -288,63 +291,9 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
           costArray={costArray}
           displayChampions={displayChampions}
         />
-        {/* if normal user is logged in  */}
-        {userRecoil && userRecoil?.username !== 'admin' ?
-        <>
-        {/* if a user has compositions in DB */}
-          {Object.keys(deckRecoil).length !== 0 ? 
-          <div className="buttons-container compositions-container">
-            <div className={`buttons-wrapper ${isMyCompositionsClicked && 'opacity'}`} onClick={() => displayCompositionsHandler()}>
-                  {' '} My Compositions
-            </div>
-            {/*when save button is clicked. display input for naming a composition */}
-            {openDeckInput && Object.keys(championSelectedList).length !== 0 &&(
-              <div className='composition-wrapper'>
-                <div style={{display: 'flex', alignItems: 'center'}}className='font-white'>Name</div>
-                <input className='composition-input'  ref={compositionInputRef}  onChange={(e) => setDeckName(e.target.value)}  type='text' id='composition' name='composition'value={deckName}/>
-              </div>
-            )}
-            {/* display save button when champion is selected*/}
-            {Object.keys(championSelectedList).length !== 0 &&(
-              <div ref={compositionInputRef2} className='buttons-wrapper-green' onClick={() => saveHandler()}>
-                save
-              </div>
-            )}
-            {Object.keys(championSelectedList).length !== 0 && 
-            <div className='buttons-wrapper-gray' onClick={() => refreshHandler()}>
-              reset
-            </div>
-            }
-          </div> 
-          : <>
-          {/*if a user doesnt have any compositions */}
-          {Object.keys(championSelectedList).length !== 0 && 
-            <div className="buttons-container compositions-container">
-              {/*when save button is clicked. display input for naming a composition */}
-              {openDeckInput && Object.keys(championSelectedList).length !== 0 &&(
-                <div className='composition-wrapper'>
-                  <div style={{display: 'flex', alignItems: 'center'}}className='font-white'>Name</div>
-                  <input className='composition-input'  ref={compositionInputRef}  onChange={(e) => setDeckName(e.target.value)}  type='text' id='composition' name='composition'value={deckName}/>
-                </div>
-              )}
-              <div ref={compositionInputRef2} className='buttons-wrapper-green' onClick={() => saveHandler()}>
-                save
-              </div>
-              <div className='buttons-wrapper-gray' onClick={() => refreshHandler()}>
-                reset
-              </div>
-              </div>
-          }
-          </>
-          }
-        </>
-        :<div className="buttons-container ">
-          <div className='buttons-wrapper-gray' onClick={() => refreshHandler()}>
-                reset
-              </div>
-          </div>
-
-        } 
+        
+        <Buttons userRecoil={userRecoil} deckRecoil={deckRecoil} isMyCompositionsClicked={isMyCompositionsClicked} openDeckInput={openDeckInput} championSelectedList={championSelectedList} compositionInputRef={compositionInputRef} compositionInputRef2={compositionInputRef2} displayCompositionsHandler={displayCompositionsHandler} setDeckName={setDeckName} deckName={deckName} saveHandler={saveHandler} refreshHandler={refreshHandler}/>
+         
         {/* display compositions */}
         <Compositions
           displayTraits={displayTraits}
