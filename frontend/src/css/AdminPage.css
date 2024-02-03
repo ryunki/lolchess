@@ -85,6 +85,7 @@ input.small{
   padding: 0.5rem;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 .added-trait-wrapper{
   border-radius: 5px;
