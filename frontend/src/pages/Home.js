@@ -23,7 +23,6 @@ const Home = ({openModal}) => {
     const {data} = await axios.post('/api/users/composition', {userId,championSelectedList, deckName, selectedTrait})
     return data
   }
-
   return (
     <>
       <HomeComponent openModal={openModal} getChampions={getChampions} getTraits={getTraits} saveComposition={saveComposition} getCompositions={getCompositions}/>

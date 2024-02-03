@@ -49,7 +49,7 @@ function App() {
           deckMessage={deckMessage}
         />
         <Router>
-          <Header backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin}/>
+          <Header backToAdmin={backToAdmin} setBackToAdmin={setBackToAdmin} openModal={openModal}/>
           <Routes>
             <Route path="/" element={<Home openModal={openModal}/>} />
             <Route element={<ProtectedRoute clickToHomePage={clickToHomePage}/>}>
@@ -58,6 +58,7 @@ function App() {
                   <Route path="/admin/traits" element={<AdminTraits openModal={openModal}/>} />
               {/* </Route> */}
             </Route>
+            <Route path="/*" element={<Home openModal={openModal}/>} />
           </Routes>
         </Router>
       </RecoilRoot>

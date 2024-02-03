@@ -74,18 +74,16 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
   useEffect(() => {
     // get traits to display when user clicks champion
     getTraits().then(res=>{
-      console.log(res)
       setDisplayTraits(res.traits)
     }).catch(error=>{
       console.log(error)
     })
 
     getChampions().then(res=>{
-      console.log(res)
       setDisplayChampions(res.champions)
     }).catch(error=>{
       console.log(error)
-      openModal(error)
+      // openModal(error)
     })
   }, [])
   // get champion compositions and save them to localstorage/recoil

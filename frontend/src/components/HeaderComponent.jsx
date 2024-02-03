@@ -9,7 +9,7 @@ import axios from 'axios'
 import '../css/Header.css'
 import SignUp from './SignUp';
 
-const HeaderComponent = ({backToAdmin, setBackToAdmin}) => {
+const HeaderComponent = ({backToAdmin, setBackToAdmin, openModal}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [userRecoil, setUserRecoil] = useRecoilState(userInfo);
@@ -35,7 +35,7 @@ const HeaderComponent = ({backToAdmin, setBackToAdmin}) => {
         }
       })
       .catch(error => {
-        console.error(error )
+        openModal('Wrong data. Please try again')
       })
   }
 

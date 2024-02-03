@@ -19,6 +19,7 @@ const ProtectedRoute = ({clickToHomePage}) => {
         console.error('Error fetching token:', error);
       });
   }, [setUserRecoil])
+  
   return (
     <>
       {userRecoil.username === 'admin' ? 
@@ -30,7 +31,7 @@ const ProtectedRoute = ({clickToHomePage}) => {
       </div>
         <Outlet/> 
         </>: 
-      <Navigate to="/" />}
+      <Navigate to="/"/>}
     </>
   )
 }
