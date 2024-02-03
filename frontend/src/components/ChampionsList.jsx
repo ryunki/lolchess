@@ -129,7 +129,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
         //       </div>
         //   )) : */}
           <div className="no-result">
-            No Champions
+            Loading..
           </div>
         }
       </div>
