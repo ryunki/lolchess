@@ -14,7 +14,8 @@ const Compositions = ({
   setSelectedChampion,
   retrieveCompositions,
   setRetrieveCompositions,
-  openModal
+  openModal,
+  setHighlightTrait
 }) => {
   const userRecoil = useRecoilValue(userInfo);
   const deckRecoil = useRecoilValue(userDeck);
@@ -23,6 +24,8 @@ const Compositions = ({
   const compositionSelectHandler = (comp, id) => {
     // empty extraTraits state for display. otherwise this is going to be added to all other compositions selected
     setSelectedExtraTrait('')
+    // undo highlighted extra traits from the list
+    setHighlightTrait([])
     // display the champion composition in the component
     setChampionSelectedList(comp);
     // delete activations if there are any

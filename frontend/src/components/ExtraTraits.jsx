@@ -2,8 +2,8 @@
 import React, { useState } from 'react'
 import '../css/style.css';
 import '../css/traits.css';
-const ExtraTraits = ({showExtraTraitHandler, selectedExtraTrait, displayExtraTraits, setSelectedExtraTrait}) => {
-  const [highlightTrait, setHighlightTrait] = useState([])
+const ExtraTraits = ({showExtraTraitHandler, selectedExtraTrait, displayExtraTraits, setSelectedExtraTrait, highlightTrait, setHighlightTrait}) => {
+
   // add selected traits to synergy, this function is to accumulate selected traits
 const addExtraTraitHandler = (trait) => {
   setSelectedExtraTrait(prev => {

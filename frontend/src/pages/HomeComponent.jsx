@@ -33,6 +33,9 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
   })
   // selecting extra trait, accumulate selected traits
   const [selectedExtraTrait, setSelectedExtraTrait] = useState({})
+  // highlight selected trait
+  const [highlightTrait, setHighlightTrait] = useState([])
+  
   // for opening a input for Deck name
   const [deckName, setDeckName] = useState('')
   const [openDeckInput, setOpenDeckInput] = useState(false)
@@ -117,6 +120,7 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
     })
   }
 
+  // user clicks champion from the list
   const onClickHandler = (champ) => {
     changeButtonColor(champ[0])
     // this variable is to store the traits of selected champion (this resets for every click)
@@ -284,8 +288,8 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
           costArray={costArray}
           displayChampions={displayChampions}
         />
-        {/* {console.log(userRecoil)} */}
-        {userRecoil && userRecoil?.username !== 'admin' &&
+        {/* if normal user is logged in  */}
+        {userRecoil && userRecoil?.username !== 'admin' ?
         <>
         {/* if a user has compositions in DB */}
           {Object.keys(deckRecoil).length !== 0 ? 
@@ -334,7 +338,13 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
           </>
           }
         </>
-         } 
+        :<div className="buttons-container ">
+          <div className='buttons-wrapper-gray' onClick={() => refreshHandler()}>
+                reset
+              </div>
+          </div>
+
+        } 
         {/* display compositions */}
         <Compositions
           displayTraits={displayTraits}
@@ -348,18 +358,21 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
           retrieveCompositions={retrieveCompositions}
           setRetrieveCompositions={setRetrieveCompositions}
           openModal={openModal}
+          setHighlightTrait={setHighlightTrait}
         />
 
         {Object.keys(championSelectedList).length !== 0 && (
           <>
-          {userRecoil && userRecoil?.username !== 'admin' &&<>
+          {userRecoil?.username !== 'admin' &&<>
               {/* display extra traits to add */}
             <ExtraTraits
-            showExtraTraitHandler={showExtraTraitHandler}
-            selectedExtraTrait={selectedExtraTrait}
-            displayExtraTraits={displayExtraTraits}
-            setSelectedExtraTrait={setSelectedExtraTrait}
-            />
+              showExtraTraitHandler={showExtraTraitHandler}
+              selectedExtraTrait={selectedExtraTrait}
+              displayExtraTraits={displayExtraTraits}
+              setSelectedExtraTrait={setSelectedExtraTrait}
+              highlightTrait={highlightTrait}
+              setHighlightTrait={setHighlightTrait}
+              />
             </>
           }
             
