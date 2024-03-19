@@ -16,8 +16,6 @@ const cookieOptions = {
 exports.getAllUsers = (req, res) => {
   // Logic to get all users
   // Send response
-  console.log('get all users')
-  res.send('hey')
 }
 
 exports.getUserById = (req, res) => {
@@ -161,7 +159,6 @@ exports.saveComposition = async (req, res, next) => {
     }
     
   } catch (error) {
-    console.error('Error in saveComposition:', error);
     res.status(500).json({ error: 'Internal server error.' });
     // res.status(500).json({ error: 'Internal server error.' });
   }
@@ -175,20 +172,17 @@ exports.getCompositions = async (req, res, next) => {
       res.json({ compositions: compositionsFound })
     }
   } catch (error) {
-    console.log(error)
+    next(error)
   }
 }
 exports.deleteComposition = async (req, res, next) => {
   try {
     const { id } = req.params
-    console.log(id)
     const compositionDeleted = await Deck.deleteOne({ _id: id })
     if (compositionDeleted.deletedCount > 0) {
-      console.log(compositionDeleted)
-
       res.status(200).send('Composition deleted')
     }
   } catch (error) {
-    console.log(error)
+    next(error)
   }
 }

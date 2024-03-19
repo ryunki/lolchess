@@ -70,7 +70,6 @@ exports.updateChampion = async (req, res, next) => {
   try{
     const {name, cost, traits} = req.body
     if(!(name && cost)){
-      console.log('no inputs')
       return res.status(400).send('All inputs are required')
     }else{
       const champion = await Champion.findById(req.params.id)

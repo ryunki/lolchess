@@ -57,7 +57,7 @@ const HomeComponent = ({openModal, getChampions, getTraits, saveComposition, get
 
   // just a variable that saves results to display traits
   let showAllTraits = {}
-console.log('home')
+
   // display activation indicator corresponding to its trait
   let displayactivation = useRef({})
   // for saving info for comparison (Akali season 10)
@@ -81,11 +81,10 @@ console.log('home')
     }).catch(error=>{
       console.log(error)
     })
-
     getChampions().then(res=>{
       setDisplayChampions(res.champions)
     }).catch(error=>{
-      console.log(error)
+      console.log('error: ',error)
       // openModal(error)
     })
   }, [])

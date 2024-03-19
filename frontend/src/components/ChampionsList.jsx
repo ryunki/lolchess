@@ -87,8 +87,12 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
     }
     getChampions()
   },[])
+  console.log('champions: ',champions)
+  console.log('displayChampions: ',displayChampions)
   return (
     <>
+    {Object.keys(champions).length !== 0 && Object.keys(displayChampions).length !== 0 &&
+
         <div className='search-sort-container'>
           <input className='input-search-champion'
             placeholder="search"
@@ -115,19 +119,15 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
             1<div className="one-indicator indicator-c" onClick={()=>toggleCost(1)}/>
           </div>
         </div>
+      }
+
       <div className="champions_list_wrapper">
-        {Object.keys(champions).length !== 0 ? 
+        {Object.keys(champions).length !== 0  && Object.keys(displayChampions).length !== 0 ? 
           Object.values(champions).map((champ, idx) => (
               <div key={idx}  className={`champion-item ${costArray[champ.cost]} ${selectedChampion.includes(champ.name) ? 'selected' : ''} `}onClick={() => onClickHandler([champ.name,champ.cost])}>
                 {champ.name}
               </div>
           )) :
-        // {/* {champions.length !== 0 ? 
-        //   champions.map((champ, idx) => (
-        //       <div key={idx}  className={`champion-item ${costArray[champ.cost]} ${selectedChampion.includes(champ[0]) ? 'selected' : ''} `}onClick={() => onClickHandler(champ)}>
-        //         {champ[0]}
-        //       </div>
-        //   )) : */}
           <div className="no-result">
             Loading..
           </div>
