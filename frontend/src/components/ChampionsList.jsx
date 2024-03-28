@@ -10,9 +10,12 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
   // so always get complete list of champions from parent's component
   const [sortAtoZ, setSortAtoZ] = useState(true);
   const [sortCost, setSortCost] = useState([false, 0]);
- 
+  
   // display all champions
   const [champions, setChampions] = useState({});
+  
+  // loading state
+  const [loading, setLoading] = useState(false);
   
   // change alphabetical order of champion list
   const toggleAtoZ = () => {
@@ -69,6 +72,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
   // display champions as you type in the search bar
   const searchChampionHandler = (e) => {
     const typed = e.target.value.toLowerCase();
+    console.log(typed)
     setChampions(() => {
       return [...displayChampions].filter((champ) => {
         return champ.name.toLowerCase().startsWith(typed);
@@ -79,8 +83,10 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
   // this useEffect is for initial rendering of champions
   useEffect(()=>{
     const getChampions = async () =>{
+      setLoading(true)
       await axios.get('/api/content/champions').then(res=>{
         setChampions(res.data.champions)
+        setLoading(false)
       }).catch(error=>{
         console.log(error)
       })
@@ -91,48 +97,59 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
   console.log('displayChampions: ',displayChampions)
   return (
     <>
-    {Object.keys(champions).length !== 0 && Object.keys(displayChampions).length !== 0 &&
-
-        <div className='search-sort-container'>
-          <input className='input-search-champion'
-            placeholder="search"
-            onChange={(e) => searchChampionHandler(e)}
-          />
-          <div
-            value={sortAtoZ}
-            className="sort indicator"
-            style={{ cursor: 'pointer' }}
-            onClick={toggleAtoZ}
-          >
-            {sortAtoZ ? 'AtoZ' : 'ZtoA'}
+    {loading && <div className="no-result">
+            Loading...
           </div>
+    }
+    {!loading && 
+    <>
+      {Object.keys(champions).length !== 0 &&
 
-          <div className="sort indicator" style={{ cursor: 'pointer' }}onClick={()=>toggleCost('cost')}>
-            Cost
-          </div>
-          <div className='cost-indicator' style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ paddingLeft: '8px'}}>5</span>
-             <div className="five-indicator indicator-c" onClick={()=>toggleCost(5)}/>
-            4<div className="four-indicator indicator-c" onClick={()=>toggleCost(4)}/>
-            3<div className="three-indicator indicator-c" onClick={()=>toggleCost(3)}/>
-            2<div className="two-indicator indicator-c" onClick={()=>toggleCost(2)}/>
-            1<div className="one-indicator indicator-c" onClick={()=>toggleCost(1)}/>
-          </div>
-        </div>
-      }
+          <div className='search-sort-container'>
+            <input className='input-search-champion'
+              placeholder="search"
+              onChange={(e) => searchChampionHandler(e)}
+            />
+            <div
+              value={sortAtoZ}
+              className="sort indicator"
+              style={{ cursor: 'pointer' }}
+              onClick={toggleAtoZ}
+            >
+              {sortAtoZ ? 'AtoZ' : 'ZtoA'}
+            </div>
 
-      <div className="champions_list_wrapper">
-        {Object.keys(champions).length !== 0  && Object.keys(displayChampions).length !== 0 ? 
-          Object.values(champions).map((champ, idx) => (
-              <div key={idx}  className={`champion-item ${costArray[champ.cost]} ${selectedChampion.includes(champ.name) ? 'selected' : ''} `}onClick={() => onClickHandler([champ.name,champ.cost])}>
-                {champ.name}
-              </div>
-          )) :
-          <div className="no-result">
-            Loading..
+            <div className="sort indicator" style={{ cursor: 'pointer' }}onClick={()=>toggleCost('cost')}>
+              Cost
+            </div>
+            <div className='cost-indicator' style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ paddingLeft: '8px'}}>5</span>
+              <div className="five-indicator indicator-c" onClick={()=>toggleCost(5)}/>
+              4<div className="four-indicator indicator-c" onClick={()=>toggleCost(4)}/>
+              3<div className="three-indicator indicator-c" onClick={()=>toggleCost(3)}/>
+              2<div className="two-indicator indicator-c" onClick={()=>toggleCost(2)}/>
+              1<div className="one-indicator indicator-c" onClick={()=>toggleCost(1)}/>
+            </div>
           </div>
         }
-      </div>
+
+        <div className="champions_list_wrapper">
+          {/* {Object.keys(champions).length !== 0  && Object.keys(displayChampions).length !== 0 ?  */}
+          {Object.keys(champions).length !== 0 ? 
+            Object.values(champions).map((champ, idx) => (
+                <div key={idx}  className={`champion-item ${costArray[champ.cost]} ${selectedChampion.includes(champ.name) ? 'selected' : ''} `}onClick={() => onClickHandler([champ.name,champ.cost])}>
+                  {champ.name}
+                </div>
+            )) :
+            <div className="no-result">
+              No champions
+            </div>
+          }
+        </div>
+      </>
+    
+    }
+
     </>
   );
 };
