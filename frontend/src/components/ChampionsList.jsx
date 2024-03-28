@@ -103,7 +103,7 @@ const ChampionsList = ({ onClickHandler, selectedChampion, costArray, displayCha
     }
     {!loading && 
     <>
-      {Object.keys(champions).length !== 0 &&
+      {Object.keys(displayChampions).length !== 0 &&
 
           <div className='search-sort-container'>
             <input className='input-search-champion'
